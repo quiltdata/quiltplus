@@ -1,0 +1,14 @@
+QuiltPlusURI:
+  registry: uri 
+  ?package: str # require "/"
+  ?top_hash: base64
+  ?path: str 
+  ?catalog: uri
+  ?property: json
+QuiltPlusPackage:
+  prefix: str
+  suffix: str
+  ?top_hash: base64
+QuiltPlusPath:
+  paths: "list[str]"
+  ?absolute: bool=true
