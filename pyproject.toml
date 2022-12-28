@@ -5,6 +5,10 @@ description = "Resource-oriented Python API for Quilt's decentralized social kno
 authors = ["Ernest Prabhakar <ernest@quiltdata.io>"]
 license = "MIT"
 readme = "README.md"
+keywords = ["yaml", "api", "resource", "quilt"]
+packages = [
+   { include = "quiltplus" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
