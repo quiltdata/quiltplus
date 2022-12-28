@@ -21,20 +21,14 @@ def test_imports():
     assert URI_KEY in TEST_DICT
 
 
-def test_make_dataclass():
-    KEY = "Ktest"
-    dict = {"field": "str"}
-    klass = schema2class(KEY, dict)
-    assert klass
-    inst = klass("string")
-    assert inst
-    assert isinstance(inst, klass)
-
-
 def test_parse_field():
     assert parse_field("a", "str") == ("a", str)
-    assert parse_field("?a", "str") == ("a", Optional[str])
     assert parse_field("a", "str='hello'")[2].default == "hello"
+
+    result = parse_field("?a", "str")
+    assert result[0] == "a"
+    assert result[2].default == None
+    assert result[1] == Optional[str]
 
     result = parse_field("?a", "str='hello'")
     assert result[0] == "a"
@@ -42,10 +36,31 @@ def test_parse_field():
     assert result[1] == Optional[str]
 
 
-def untest_schema2class():
+def test_make_dataclass():
+    KEY = "Ktest"
+    dict = {"init": "bool", "?field": "str='hi'"}
+    klass = schema2class(KEY, dict)
+    assert klass
+    inst = klass(True)
+    assert inst
+    assert isinstance(inst, klass)
+    assert inst.field == "hi"
+
+    inst2 = klass(False, "bye")
+    assert inst2.field == "bye"
+
+
+def test_schema2class():
     fields = TEST_DICT[URI_KEY]
+    print(fields)
     assert fields
     klass = schema2class(URI_KEY, fields)
-    uri_class = globals()[URI_KEY]
-    assert uri_class
-    assert klass == uri_class
+    inst = klass("s3://quilt-examples")
+    assert inst
+    assert isinstance(inst, klass)
+
+
+def test_load_schemas():
+    klasses = load_schemas(TEST_FILE)
+    inst = klasses[2](["."])
+    assert inst

@@ -1,14 +1,14 @@
 QuiltPlusURI:
-  registry: uri 
+  registry: str # uri
   ?package: str # require "/"
-  ?top_hash: base64
+  ?top_hash: str # base64
   ?path: str 
-  ?catalog: uri
-  ?property: json
+  ?catalog: str # uri
+  ?property: dict
 QuiltPlusPackage:
   prefix: str
   suffix: str
-  ?top_hash: base64
+  ?top_hash: str # base64
 QuiltPlusPath:
   paths: "list[str]"
-  ?absolute: bool=true
+  ?absolute: bool=True
