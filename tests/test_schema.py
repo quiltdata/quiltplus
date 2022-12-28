@@ -1,10 +1,11 @@
 import importlib.resources
+from typing import Any, Generic, Literal, Optional, TypedDict, TypeVar, Union
 
 import pytest
 import yaml
 
 import tests
-from quiltplus.schema import schema2class
+from quiltplus.schema import *
 
 TDIR = importlib.resources.files(tests)
 TEST_FILE = TDIR / "examples" / "schemas.yml"
@@ -28,6 +29,17 @@ def test_make_dataclass():
     inst = klass("string")
     assert inst
     assert isinstance(inst, klass)
+
+
+def test_parse_field():
+    assert parse_field("a", "str") == ("a", str)
+    assert parse_field("?a", "str") == ("a", Optional[str])
+    assert parse_field("a", "str='hello'")[2].default == "hello"
+
+    result = parse_field("?a", "str='hello'")
+    assert result[0] == "a"
+    assert result[2].default == "hello"
+    assert result[1] == Optional[str]
 
 
 def untest_schema2class():
