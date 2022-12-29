@@ -17,6 +17,7 @@ fondat = "^4.0.19"
 
 [tool.poetry.group.dev.dependencies]
 pytest-watch = "^4.2.0"
+flake8 = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core"]
