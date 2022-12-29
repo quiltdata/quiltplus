@@ -16,6 +16,13 @@ def test_pkg_fixture(pkg):
     assert pkg
 
 
-def test_pkg_install(pkg):
-    rc = pkg.install()
+def test_pkg_get(pkg):
+    rc = pkg.get()
     assert rc
+
+
+def test_pkg_list(pkg):
+    files = pkg.list()
+    assert files
+    assert len(files) > 3
+    assert "README.md" in files

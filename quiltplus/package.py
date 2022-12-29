@@ -9,8 +9,12 @@ class QuiltPackage:
     def __init__(self, uri, root=ROOT):
         self.uri = uri
         self.root = root / uri.package
-        self.pkg = Package()
+        self.pkg = Package.browse(self.uri.package, self.uri.registry)
 
-    def install(self):
-        self.pkg.install(self.uri.package, self.uri.registry, dest=self.root)
-        return True
+    def get(self):
+        self.pkg.fetch(dest=self.root)
+        return self.root
+
+    def list(self):
+        keys = self.pkg.keys()
+        return list(keys)
