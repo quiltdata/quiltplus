@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "quiltplus"
+version = "0.1.0"
+description = "Resource-oriented Python API for Quilt's decentralized social knowledge platform"
+authors = ["Ernest Prabhakar <ernest@quiltdata.io>"]
+license = "MIT"
+readme = "README.md"
+keywords = ["yaml", "api", "resource", "quilt"]
+packages = [
+   { include = "quiltplus" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+quilt3 = "^5.1.0"
+fondat = "^4.0.19"
+
+[tool.poetry.group.dev.dependencies]
+pytest-watch = "^4.2.0"
+flake8 = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

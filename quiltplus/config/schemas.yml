@@ -1,0 +1,14 @@
+URI:
+  registry: str # uri
+  ?package: str # require "/"
+  ?top_hash: str # base64
+  ?path: str 
+  ?catalog: str # uri
+  ?property: dict
+Package:
+  prefix: str
+  suffix: str
+  ?top_hash: str # base64
+Path:
+  paths: "list[str]"
+  ?absolute: bool=True
