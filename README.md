@@ -12,7 +12,11 @@ poetry install
 poetry run pytest-watch
 ```
 ## Pushing Changes
+Be sure you to first set your [API token](https://pypi.org/manage/account/) using `poetry config pypi-token.pypi <pypi-api-token>`
 ```
-poetry version
+# merge PR
+poetry build
 poetry publish
+# create new branch
+poetry version prepatch
 ```
