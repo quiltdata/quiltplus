@@ -15,8 +15,9 @@ poetry run pytest-watch
 Be sure you to first set your [API token](https://pypi.org/manage/account/) using `poetry config pypi-token.pypi <pypi-api-token>`
 ```
 # merge PR
+poetry version patch # minor major
 poetry build
 poetry publish
 # create new branch
-poetry version prepatch
+poetry version prepatch # preminor premajor
 ```
