@@ -44,7 +44,7 @@ class QuiltID:
 
     def parse_id(self, host):
         if not PREFIX in self.uri.scheme:
-            throw(f"Error: invalid URI scheme {self.uri.scheme}: {self.uri}")
+            raise ValueError(f"Error: invalid URI scheme {self.uri.scheme}: {self.uri}")
         self.attr[K_CLD] = self.uri.scheme.replace(PREFIX, "")
         self.attr[K_HNM] = host
         self.attr[K_REG] = f"{self.attr[K_CLD]}://{host}"
