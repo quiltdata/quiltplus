@@ -24,16 +24,14 @@ def test_qc_get(qc):
 
 
 def test_qc_recents(qc):
-    REG_URL = "quilt+s3://quilt-example"
-    PKG_URL = "quilt+s3://quilt-example#package=examples/wellplates"
-    PKG2_URL = "quilt+s3://quilt-example#package=examples/echarts"
+    with TemporaryDirectory() as tmpdirname:
+        p = Path(tmpdirname)
+        qc = QuiltClient(p)
+        assert len(qc.recents) == 0
 
-    assert len(qc.recents) == 0
+        for url in TEST_URLS:
+            qc.get(QuiltID(url), K_PKG)
+        assert len(qc.recents) == 2
 
-    for url in [TEST_URL, REG_URL, PKG_URL, PKG2_URL]:
-        print(url)
-        qid = QuiltID(url)
-        pkg = qc.get(qid, K_PKG)
-        print(qc.recents.keys())
-
-    assert len(qc.recents) == 2
+        qc2 = QuiltClient(p)
+        assert len(qc2.recents) == 2
