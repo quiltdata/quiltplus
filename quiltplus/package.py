@@ -1,19 +1,18 @@
-from pathlib import Path
-
 from quilt3 import Package
 
-ROOT = Path.home() / "Documents" / "QuiltData"
+from .id import *
 
 
 class QuiltPackage:
-    def __init__(self, uri, root=ROOT):
-        self.uri = uri
-        self.root = root / uri.package
-        self.pkg = Package.browse(self.uri.package, self.uri.registry)
+    def __init__(self, id, root=Path("/tmp")):
+        self.id = id
+        self.dest = root / id.get(K_ID)
+        self.name = id.get(K_PKG)
+        self.pkg = Package.browse(self.name, id.get(K_REG))
 
     def get(self):
-        self.pkg.fetch(dest=self.root)
-        return self.root
+        self.pkg.fetch(dest=self.dest)
+        return self.dest
 
     def list(self):
         keys = self.pkg.keys()
