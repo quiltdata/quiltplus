@@ -21,15 +21,20 @@ class QuiltClient:
 
     def get(self, qid, asType=None):
         type = asType or qid.type()
-        resource = QuiltPackage(qid)  # Should create appropriate resource by type
-        self.update(qid)
-        return resource
+        try:
+            resource = QuiltPackage(qid)  # Should create appropriate resource by type
+            self.update(qid)
+            return resource
+        except Exception as err:
+            print(err)
+            return None
 
     def list(self):
         return self.recents
 
     def update(self, qid):
-        self.recents[qid.raw] = qid.attr
+        print(f"update: {qid.id()}")
+        self.recents[qid.id()] = qid.attr
         print(self.path)
         with self.path.open("a+") as f:
             dump(self.recents, f)

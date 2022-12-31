@@ -30,6 +30,9 @@ class QuiltID:
     def get(self, key):
         return self.attr[key]
 
+    def id(self):
+        return self.get(K_ID)
+
     def type(self):
         for index, key in enumerate(TYPES):
             next_key = TYPES[index + 1]
