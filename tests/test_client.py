@@ -10,6 +10,12 @@ def qc():
         yield qc
 
 
+def setup_package(qc):
+    qid = QuiltID(TEST_URL)
+    pkg = qc.get(qid, K_PKG)
+    return pkg
+
+
 def test_qc(qc):
     assert qc
     assert qc.recents == {}
@@ -38,6 +44,7 @@ def test_qc_recents(qc):
 
 
 def test_qc_list(qc):
+    setup_package(qc)
     l = qc.list()
     assert l
     assert len(l) > 0
@@ -45,6 +52,7 @@ def test_qc_list(qc):
 
 
 def test_qc_local(qc):
+    setup_package(qc)
     qid = QuiltID.Local(TEST_PKG)
     pkg = qc.get(qid, K_PKG)
     assert pkg
