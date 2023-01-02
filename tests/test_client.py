@@ -42,3 +42,9 @@ def test_qc_list(qc):
     assert l
     assert len(l) > 0
     assert TEST_PKG in l
+
+
+def test_qc_local(qc):
+    qid = QuiltID.Local(TEST_PKG)
+    pkg = qc.get(qid, K_PKG)
+    assert pkg

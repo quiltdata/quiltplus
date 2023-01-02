@@ -22,10 +22,13 @@ TYPES = [K_STR, K_REG, K_PTH, K_PRP, K_QRY, None]
 
 class QuiltID:
     LOCAL_HOST = gethostname()
+    LOCAL_SCHEME = "local"
 
     @classmethod
     def Local(cls, pkg):
-        uri_string = f"{PREFIX}local://{QuiltID.LOCAL_HOST}#package={pkg}"
+        uri_string = (
+            f"{PREFIX}{QuiltID.LOCAL_SCHEME}://{QuiltID.LOCAL_HOST}#package={pkg}"
+        )
         return cls(uri_string)
 
     def __init__(self, uri_string):
