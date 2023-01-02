@@ -1,5 +1,7 @@
 from tempfile import TemporaryDirectory
 
+from quilt3 import list_packages
+
 from .conftest import *
 
 
@@ -8,6 +10,12 @@ def qc():
     with TemporaryDirectory() as tmpdirname:
         qc = QuiltClient(Path(tmpdirname))
         yield qc
+
+
+def setup_package(qc):
+    qid = QuiltID(TEST_URL)
+    pkg = qc.get(qid, K_PKG)
+    return pkg
 
 
 def test_qc(qc):
@@ -35,3 +43,20 @@ def test_qc_recents(qc):
 
         qc2 = QuiltClient(p)
         assert len(qc2.recents) == 2
+
+
+def test_qc_list(qc):
+    setup_package(qc)
+    for p in list_packages():
+        print(p)
+    l = qc.list()
+    assert l
+    assert len(l) > 0
+    assert TEST_PKG in l
+
+
+def test_qc_local(qc):
+    setup_package(qc)
+    qid = QuiltID.Local(TEST_PKG)
+    pkg = qc.get(qid, K_PKG)
+    assert pkg

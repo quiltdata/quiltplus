@@ -1,9 +1,10 @@
 # Create Immutable Identifier from a Quilt+ URI
 
 from pathlib import Path
+from socket import gethostname
 from urllib.parse import parse_qs, urlparse
 
-K_CLD = "cloud"
+K_STR = "store"
 K_HSH = "top_hash"
 K_HNM = "hostname"
 K_ID = "id"
@@ -16,10 +17,20 @@ K_QRY = "query"
 K_TAG = "tag"
 
 PREFIX = "quilt+"
-TYPES = [K_CLD, K_REG, K_PTH, K_PRP, K_QRY, None]
+TYPES = [K_STR, K_REG, K_PTH, K_PRP, K_QRY, None]
 
 
 class QuiltID:
+    LOCAL_HOST = gethostname()
+    LOCAL_SCHEME = "local"
+
+    @classmethod
+    def Local(cls, pkg):
+        uri_string = (
+            f"{PREFIX}{QuiltID.LOCAL_SCHEME}://{QuiltID.LOCAL_HOST}#package={pkg}"
+        )
+        return cls(uri_string)
+
     def __init__(self, uri_string):
         self.raw = uri_string
         self.uri = urlparse(uri_string)
@@ -48,10 +59,10 @@ class QuiltID:
     def parse_id(self, host):
         if not PREFIX in self.uri.scheme:
             raise ValueError(f"Error: invalid URI scheme {self.uri.scheme}: {self.uri}")
-        self.attr[K_CLD] = self.uri.scheme.replace(PREFIX, "")
+        self.attr[K_STR] = self.uri.scheme.replace(PREFIX, "")
         self.attr[K_HNM] = host
-        self.attr[K_REG] = f"{self.attr[K_CLD]}://{host}"
-        self.attr[K_PID] = Path(self.attr[K_CLD]) / host
+        self.attr[K_REG] = f"{self.attr[K_STR]}://{host}"
+        self.attr[K_PID] = Path(self.attr[K_STR]) / host
         if self.parse_package():
             self.attr[K_PID] /= self.attr[K_PKG]
         self.attr[K_ID] = str(self.attr[K_PID])
