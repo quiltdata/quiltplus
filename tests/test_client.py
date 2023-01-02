@@ -35,3 +35,10 @@ def test_qc_recents(qc):
 
         qc2 = QuiltClient(p)
         assert len(qc2.recents) == 2
+
+
+def test_qc_list(qc):
+    l = qc.list()
+    assert l
+    assert len(l) > 0
+    assert TEST_PKG in l

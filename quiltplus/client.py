@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from quilt3 import list_packages
 from yaml import Loader, dump, load, safe_load
 
 from .package import QuiltPackage
@@ -29,8 +30,9 @@ class QuiltClient:
             print(err)
             return None
 
-    def list(self):
-        return self.recents
+    def list(self, registry=None):
+        pkgs = [l for l in list_packages(registry)]
+        return pkgs
 
     def update(self, qid):
         print(f"update: {qid.id()}")
