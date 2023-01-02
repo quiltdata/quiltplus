@@ -15,6 +15,7 @@ def qc():
 def setup_package(qc):
     qid = QuiltID(TEST_URL)
     pkg = qc.get(qid, K_PKG)
+    pkg.get()
     return pkg
 
 
