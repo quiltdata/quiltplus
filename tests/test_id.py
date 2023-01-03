@@ -25,6 +25,7 @@ def test_id_id(qid):
     path = Path("s3") / TEST_REG / TEST_PKG
     assert qid.get(K_ID) == str(path)
     assert qid.get(K_PID) == path
+    assert qid.get(K_RAW) == TEST_URL
 
 
 def test_id_type(qid):

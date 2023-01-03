@@ -1,7 +1,5 @@
 from tempfile import TemporaryDirectory
 
-from quilt3 import list_packages
-
 from .conftest import *
 
 
@@ -47,12 +45,12 @@ def test_qc_recents(qc):
 
 def test_qc_list(qc):
     setup_package(qc)
-    for p in list_packages():
-        print(p)
     l = qc.list()
     assert l
     assert len(l) > 0
-    assert TEST_PKG in l
+    qid = l[0]
+    assert isinstance(qid, QuiltID)
+    assert TEST_PKG in qid.source()
 
 
 def test_qc_local(qc):
