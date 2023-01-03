@@ -4,6 +4,7 @@ from pathlib import Path
 from socket import gethostname
 from urllib.parse import parse_qs, urlparse
 
+K_RAW = "source_uri"
 K_STR = "store"
 K_HSH = "top_hash"
 K_HNM = "hostname"
@@ -25,6 +26,11 @@ class QuiltID:
     LOCAL_SCHEME = "local"
 
     @classmethod
+    def FromAttrDict(cls, attr):
+        uri_string = attr[K_RAW]
+        return cls(uri_string)
+
+    @classmethod
     def Local(cls, pkg):
         uri_string = (
             f"{PREFIX}{QuiltID.LOCAL_SCHEME}://{QuiltID.LOCAL_HOST}#package={pkg}"
@@ -32,17 +38,20 @@ class QuiltID:
         return cls(uri_string)
 
     def __init__(self, uri_string):
-        self.raw = uri_string
         self.uri = urlparse(uri_string)
         self.attr = self.parse_fragments(self.uri.fragment)
         self.parse_id(self.uri.netloc)
         self.attr[K_QRY] = self.uri.query
+        self.attr[K_RAW] = uri_string
 
     def get(self, key):
         return self.attr[key]
 
     def id(self):
         return self.get(K_ID)
+
+    def source(self):
+        return self.get(K_RAW)
 
     def type(self):
         for index, key in enumerate(TYPES):

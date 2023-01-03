@@ -3,6 +3,7 @@ from pathlib import Path
 from quilt3 import list_packages
 from yaml import Loader, dump, load, safe_load
 
+from .id import QuiltID
 from .package import QuiltPackage
 
 ROOT = Path.home() / "Documents" / "QuiltData"
@@ -31,8 +32,8 @@ class QuiltClient:
             return None
 
     def list(self, registry=None):
-        pkgs = [l for l in list_packages(registry)]
-        return pkgs
+        qids = [QuiltID.FromAttrDict(attr) for attr in self.recents.values()]
+        return qids
 
     def update(self, qid):
         print(f"update: {qid.id()}")
