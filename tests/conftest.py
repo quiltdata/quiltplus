@@ -1,8 +1,6 @@
 from pytest import fixture
 
-from quiltplus.client import *
-from quiltplus.id import *
-from quiltplus.package import *
+from quiltplus import *
 
 TEST_REG = "quilt-example"
 TEST_PKG = "examples/wellplates"
