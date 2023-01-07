@@ -10,9 +10,9 @@ def qc():
         yield qc
 
 
-def setup_package(qc):
+async def setup_package(qc):
     qid = QuiltID(TEST_URL)
-    pkg = qc.get(qid, K_PKG)
+    pkg = await qc.get(qid, K_PKG)
     return pkg
 
 
@@ -21,31 +21,31 @@ def test_qc(qc):
     assert qc.recents == {}
 
 
-def test_qc_get(qc):
+async def test_qc_get(qc):
     qid = QuiltID(TEST_URL)
-    pkg = qc.get(qid, K_PKG)
+    pkg = await qc.get(qid, K_PKG)
     assert isinstance(pkg, QuiltPackage)
     key = qid.id()
     assert qc.recents[key]
 
 
-def test_qc_recents(qc):
+async def test_qc_recents(qc):
     with TemporaryDirectory() as tmpdirname:
         p = Path(tmpdirname)
         qc = QuiltClient(p)
         assert len(qc.recents) == 0
 
         for url in TEST_URLS:
-            qc.get(QuiltID(url), K_PKG)
+            await qc.get(QuiltID(url), K_PKG)
         assert len(qc.recents) == 2
 
         qc2 = QuiltClient(p)
         assert len(qc2.recents) == 2
 
 
-def test_qc_list(qc):
-    setup_package(qc)
-    l = qc.list()
+async def test_qc_list(qc):
+    await setup_package(qc)
+    l = await qc.list()
     assert l
     assert len(l) > 0
     qid = l[0]
@@ -53,8 +53,8 @@ def test_qc_list(qc):
     assert TEST_PKG in qid.source()
 
 
-def untest_qc_local(qc):
-    setup_package(qc)
+async def untest_qc_local(qc):
+    await setup_package(qc)
     qid = QuiltID.Local(TEST_PKG)
-    pkg = qc.get(qid, K_PKG)
+    pkg = await qc.get(qid, K_PKG)
     assert pkg
