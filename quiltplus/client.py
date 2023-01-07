@@ -3,7 +3,7 @@ from pathlib import Path
 from quilt3 import list_packages
 from yaml import Loader, dump, load, safe_load
 
-from .id import QuiltID
+from .id import K_IDX, QuiltID
 from .package import QuiltPackage
 
 ROOT = Path.home() / "Documents" / "QuiltData"
@@ -37,6 +37,7 @@ class QuiltClient:
 
     def update(self, qid):
         print(f"update: {qid.id()}")
+        qid.attr[K_IDX] = len(self.recents)
         self.recents[qid.id()] = qid.attr
         print(self.path)
         with self.path.open("a+") as f:
