@@ -14,10 +14,12 @@ packages = [
 python = "^3.10"
 quilt3 = "^5.1.0"
 fondat = "^4.0.19"
+trio = "^0.22.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest-watch = "^4.2.0"
 flake8 = "^6.0.0"
+pytest-trio = "^0.8.0"
 
 [build-system]
 requires = ["poetry-core"]
