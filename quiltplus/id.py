@@ -25,6 +25,7 @@ TYPES = [K_STR, K_REG, K_PTH, K_PRP, K_QRY, None]
 class QuiltID:
     LOCAL_HOST = gethostname()
     LOCAL_SCHEME = "local"
+    INDEX = 0
 
     @classmethod
     def FromAttrDict(cls, attr):
@@ -44,6 +45,8 @@ class QuiltID:
         self.parse_id(self.uri.netloc)
         self.attr[K_QRY] = self.uri.query
         self.attr[K_RAW] = uri_string
+        QuiltID.INDEX += 1
+        self.index = QuiltID.INDEX
 
     def get(self, key):
         return self.attr[key]

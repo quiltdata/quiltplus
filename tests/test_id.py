@@ -28,6 +28,12 @@ def test_id_id(qid):
     assert qid.get(K_RAW) == TEST_URL
 
 
+def test_id_index(qid):
+    n = QuiltID.INDEX
+    assert n + 1 == QuiltID(TEST_URL).index
+    assert n + 2 == QuiltID(REG_URL).index
+
+
 def test_id_type(qid):
     assert qid.type() == K_PTH
 
