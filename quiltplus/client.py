@@ -21,7 +21,7 @@ class QuiltClient:
         with self.path.open() as f:
             self.recents = load(f, Loader) or {}
 
-    def get(self, qid, asType=None):
+    async def get(self, qid, asType=None):
         type = asType or qid.type()
         try:
             resource = QuiltPackage(qid)  # Should create appropriate resource by type
@@ -31,7 +31,7 @@ class QuiltClient:
             print(err)
             return None
 
-    def list(self, registry=None):
+    async def list(self, registry=None):
         qids = [QuiltID.FromAttrDict(attr) for attr in self.recents.values()]
         return qids
 
