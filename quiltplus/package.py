@@ -16,10 +16,10 @@ class QuiltPackage:
             else Package.browse(self.name, self.registry)
         )
 
-    def get(self):
+    async def get(self):
         self.pkg.fetch(dest=self.dest)
         return self.dest
 
-    def list(self):
+    async def list(self):
         keys = self.pkg.keys()
         return list(keys)
