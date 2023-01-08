@@ -4,33 +4,24 @@ from pathlib import Path
 from socket import gethostname
 from urllib.parse import parse_qs, urlparse
 
-K_RAW = "source_uri"
-K_STR = "store"
-K_HSH = "top_hash"
-K_HNM = "hostname"
-K_ID = "id"
-K_IDX = "index"
-K_PID = "id_path"
-K_PKG = "package"
-K_PTH = "path"
-K_PRP = "property"
-K_REG = "registry"
-K_QRY = "query"
-K_TAG = "tag"
-
-PREFIX = "quilt+"
-TYPES = [K_STR, K_REG, K_PTH, K_PRP, K_QRY, None]
+from .unparse import *
 
 
 class QuiltID:
+
     LOCAL_HOST = gethostname()
     LOCAL_SCHEME = "local"
     INDEX = 0
 
     @classmethod
-    def FromAttrDict(cls, attr):
-        uri_string = attr[K_RAW]
-        return cls(uri_string)
+    def Decode(cls, encoded):
+        decoded = encoded.replace("%2F", "/").replace("%40", "@")
+        return decoded
+
+    @classmethod
+    def FromAttrs(cls, attrs, index=None):
+        uri_string = QuiltUnparse(attrs).unparse()
+        return cls(uri_string, index)
 
     @classmethod
     def Local(cls, pkg):
@@ -39,17 +30,20 @@ class QuiltID:
         )
         return cls(uri_string)
 
-    def __init__(self, uri_string):
+    def __init__(self, uri_string, index=None):
         self.uri = urlparse(uri_string)
-        self.attr = self.parse_fragments(self.uri.fragment)
+        self.attrs = self.parse_fragments(self.uri.fragment)
         self.parse_id(self.uri.netloc)
-        self.attr[K_QRY] = self.uri.query
-        self.attr[K_RAW] = uri_string
-        QuiltID.INDEX += 1
-        self.index = QuiltID.INDEX
+        self.attrs[K_QRY] = self.uri.query
+        self.attrs[K_RAW] = uri_string
+        if index:
+            self.index = index
+        else:
+            QuiltID.INDEX += 1
+            self.index = QuiltID.INDEX
 
     def get(self, key):
-        return self.attr[key]
+        return self.attrs.get(key)
 
     def id(self):
         return self.get(K_ID)
@@ -60,7 +54,7 @@ class QuiltID:
     def type(self):
         for index, key in enumerate(TYPES):
             next_key = TYPES[index + 1]
-            if next_key not in self.attr:
+            if next_key not in self.attrs:
                 return key
         return False
 
@@ -72,24 +66,24 @@ class QuiltID:
     def parse_id(self, host):
         if not PREFIX in self.uri.scheme:
             raise ValueError(f"Error: invalid URI scheme {self.uri.scheme}: {self.uri}")
-        self.attr[K_STR] = self.uri.scheme.replace(PREFIX, "")
-        self.attr[K_HNM] = host
-        self.attr[K_REG] = f"{self.attr[K_STR]}://{host}"
-        self.attr[K_PID] = Path(self.attr[K_STR]) / host
+        self.attrs[K_STR] = self.uri.scheme.replace(PREFIX, "")
+        self.attrs[K_HNM] = host
+        self.attrs[K_REG] = f"{self.attrs[K_STR]}://{host}"
+        self.attrs[K_PID] = Path(self.attrs[K_STR]) / host
         if self.parse_package():
-            self.attr[K_PID] /= self.attr[K_PKG]
-        self.attr[K_ID] = str(self.attr[K_PID])
+            self.attrs[K_PID] /= self.attrs[K_PKG]
+        self.attrs[K_ID] = str(self.attrs[K_PID])
 
     def parse_package(self):
-        if K_PKG not in self.attr:
+        if K_PKG not in self.attrs:
             return False
-        pkg = self.attr[K_PKG]
+        pkg = self.attrs[K_PKG]
         if "@" in pkg:
             s = pkg.split("@")
-            self.attr[K_HSH] = s[1]
-            self.attr[K_PKG] = s[0]
+            self.attrs[K_HSH] = s[1]
+            self.attrs[K_PKG] = s[0]
         if ":" in pkg:
             s = pkg.split(":")
-            self.attr[K_TAG] = s[1]
-            self.attr[K_PKG] = s[0]
+            self.attrs[K_TAG] = s[1]
+            self.attrs[K_PKG] = s[0]
         return True
