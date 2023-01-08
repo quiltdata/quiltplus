@@ -85,7 +85,7 @@ class QuiltClient(QidCache):
 
     async def get(self, index=-1):
         if index < 1:
-            return self.qids
+            return list(self.qids)
         try:
             qid = self.find_qid(index)
             # resource = QuiltPackage(qid)

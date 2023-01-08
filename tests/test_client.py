@@ -38,7 +38,7 @@ async def test_qc_recents(qc):
         qid = await qc.post(orig.attrs)
         assert qc.size() == 1
 
-        qlist = list(await qc.get())
+        qlist = await qc.get()
         assert len(qlist) == 1
         assert qlist[0] == qid
 
@@ -64,7 +64,7 @@ async def test_qc_post(qc):
     assert qc.size() == 1
     assert qid.id() == orig.id()
 
-    qlist = list(await qc.get())
+    qlist = await qc.get()
     assert len(qlist) == qc.size()
     assert qlist[0] == qid
 
