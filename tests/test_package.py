@@ -15,6 +15,7 @@ def test_pkg_fixture(pkg):
 async def test_pkg_get(pkg):
     rc = await pkg.get()
     assert rc
+    await pkg.open()
 
 
 async def test_pkg_list(pkg):

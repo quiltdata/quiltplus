@@ -1,3 +1,7 @@
+import os
+import platform
+import subprocess
+
 from quilt3 import Package
 
 from .id import *
@@ -5,8 +9,9 @@ from .id import *
 
 class QuiltPackage:
     def __init__(self, id, root=Path("/tmp")):
+        cache = id.cache()
         self.id = id
-        self.dest = root / id.get(K_ID)
+        self.dest = cache if cache else root / id.get(K_ID)
         self.name = id.get(K_PKG)
         self.registry = id.get(K_REG)
 
@@ -23,3 +28,11 @@ class QuiltPackage:
     async def list(self):
         keys = self.pkg.keys()
         return list(keys)
+
+    async def open(self):
+        if platform.system() == "Windows":
+            os.startfile(self.dest)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", "-R", self.dest])
+        else:
+            subprocess.Popen(["xdg-open", self.dest])
