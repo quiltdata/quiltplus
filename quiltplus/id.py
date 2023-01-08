@@ -51,6 +51,13 @@ class QuiltID:
     def source(self):
         return self.get(K_RAW)
 
+    def with_keys(self, index, title, subtitle):
+        return {
+            index: self.index,
+            title: self.get(K_PKG),
+            subtitle: self.source(),
+        }
+
     def type(self):
         for index, key in enumerate(TYPES):
             next_key = TYPES[index + 1]

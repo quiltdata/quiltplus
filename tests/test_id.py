@@ -47,6 +47,15 @@ def test_id_from_attrs(qid):
     assert qid.source() == QuiltID.Decode(url2)
 
 
+def test_id_with_keys(qid):
+    result = qid.with_keys("id", "a", "b")
+    assert result
+    assert isinstance(result, dict)
+    assert result["id"] == qid.index
+    assert result["a"] == qid.get(K_PKG)
+    assert result["b"] == qid.source()
+
+
 def test_id_local():
     qid = QuiltID.Local(TEST_PKG)
     check = {
