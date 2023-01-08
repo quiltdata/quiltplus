@@ -20,7 +20,7 @@ class QidCache:
     def __init__(self, path):
         self.path = path
         self.path.touch(exist_ok=True)
-        self.qids = []
+        self.qids = set()
         self.load_qids()
 
     def save_qids(self):
@@ -32,14 +32,14 @@ class QidCache:
         with self.path.open() as f:
             recents = load(f, Loader) or []
             print("recents", recents)
-            [self.create_qid(attrs) for attrs in recents]
+            {self.create_qid(attrs) for attrs in recents}
 
     def find_qid(self, index):
         result = [q for q in self.qids if q.index == index]
         return next(iter(result), None)
 
     def add_qid(self, qid):
-        self.qids.append(qid)
+        self.qids.add(qid)
         self.save_qids()
 
     def create_qid(self, attrs):
