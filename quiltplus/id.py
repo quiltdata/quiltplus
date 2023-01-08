@@ -31,6 +31,7 @@ class QuiltID:
         return cls(uri_string)
 
     def __init__(self, uri_string, index=None):
+        self.client = None
         self.uri = urlparse(uri_string)
         self.attrs = self.parse_fragments(self.uri.fragment)
         self.parse_id(self.uri.netloc)
@@ -48,8 +49,18 @@ class QuiltID:
     def id(self):
         return self.get(K_ID)
 
+    def cache(self):
+        return str(self.client.root / self.id()) if self.client else None
+
     def source(self):
         return self.get(K_RAW)
+
+    def with_keys(self, index, title, subtitle):
+        return {
+            index: self.index,
+            title: self.get(K_PKG),
+            subtitle: self.source(),
+        }
 
     def type(self):
         for index, key in enumerate(TYPES):

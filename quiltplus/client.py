@@ -20,6 +20,7 @@ class QidCache:
     def __init__(self, path):
         self.path = path
         self.path.touch(exist_ok=True)
+        self.qids = []
         self.load_qids()
 
     def save_qids(self):
@@ -31,7 +32,7 @@ class QidCache:
         with self.path.open() as f:
             recents = load(f, Loader) or []
             print("recents", recents)
-            self.qids = [QuiltID.FromAttrs(attrs) for attrs in recents]
+            [self.post(attrs) for attrs in recents]
 
     def find_qid(self, index):
         result = [q for q in self.qids if q.index == index]
@@ -62,6 +63,7 @@ class QuiltClient(QidCache):
 
     async def post(self, attrs):
         qid = QuiltID.FromAttrs(attrs)
+        qid.client = self
         self.add_qid(qid)
         return qid
 
