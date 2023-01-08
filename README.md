@@ -1,6 +1,8 @@
 # quiltplus
 Resource-oriented API for Quilt's decentralized social knowledge platform
 
+As of v0.4.0 all Resources are fetched sing the [trio](https://trio.readthedocs.io/en/stable/) version of `async`
+
 # Developmment
 ## Setup
 

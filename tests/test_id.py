@@ -1,3 +1,5 @@
+from urllib.parse import urlencode, urlunparse
+
 from .conftest import *
 
 
@@ -28,8 +30,21 @@ def test_id_id(qid):
     assert qid.get(K_RAW) == TEST_URL
 
 
+def test_id_index(qid):
+    n = QuiltID.INDEX
+    assert n + 1 == QuiltID(TEST_URL).index
+    assert n + 2 == QuiltID(REG_URL).index
+
+
 def test_id_type(qid):
     assert qid.type() == K_PTH
+
+
+def test_id_from_attrs(qid):
+    assert qid.attrs
+    url2 = QuiltID.FromAttrs(qid.attrs).source()
+    print(url2)
+    assert qid.source() == QuiltID.Decode(url2)
 
 
 def test_id_local():
