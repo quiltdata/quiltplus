@@ -27,6 +27,16 @@ def test_qc(qc):
     assert qc.size() == 0
 
 
+async def test_qc_id_cache(qc):
+    orig = QuiltID(TEST_URL)
+    assert orig.cache() == None
+    qid = await qc.post(orig.attrs)
+    cache = qid.cache()
+    assert cache
+    assert str(qc.root) in cache
+    assert qid.id() in cache
+
+
 async def test_qc_post(qc):
     BASE = qc.size()
     orig = QuiltID(TEST_URL)
