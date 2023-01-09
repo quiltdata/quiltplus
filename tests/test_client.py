@@ -14,6 +14,7 @@ def qc():
     with TemporaryDirectory() as tmpdirname:
         qc = QuiltClient(Path(tmpdirname))
         yield qc
+        qc.save_qids()
 
 
 async def setup_package(qc):
@@ -27,7 +28,18 @@ def test_qc(qc):
     assert qc.size() == 0
 
 
-async def test_qc_recents(qc):
+async def test_qc_saved(qc):
+    with TemporaryDirectory() as tmpdirname:
+        p = Path(tmpdirname)
+        qc = QuiltClient(p)
+        assert qc.path.exists() == True
+        assert not qc.saved
+
+        qc.save_qids()
+        assert qc.saved
+
+
+async def test_qc_reload(qc):
     with TemporaryDirectory() as tmpdirname:
         print(tmpdirname)
         p = Path(tmpdirname)
@@ -42,8 +54,10 @@ async def test_qc_recents(qc):
         assert len(qlist) == 1
         assert qlist[0] == qid
 
+        qc.save_qids()
         qc2 = QuiltClient(p)
         assert qc2.size() == 1
+        qc2.save_qids()
 
 
 async def test_qc_id_cache(qc):

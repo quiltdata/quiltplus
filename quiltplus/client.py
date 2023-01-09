@@ -22,16 +22,20 @@ class QidCache:
         self.path.touch(exist_ok=True)
         self.qids = set()
         self.load_qids()
+        self.saved = False
+        print(f"QidCache.load_qids[{path}] {len(self.qids)}")
 
     def save_qids(self):
         recents = [qid.attrs for qid in self.qids]
-        with self.path.open("a+") as f:
+        print(f"QidCache.save_qids[{self.path}] {self.size()} / {len(recents)}")
+        with self.path.open("w+") as f:
             dump(recents, f)
+        self.saved = True
 
     def load_qids(self):
         with self.path.open() as f:
             recents = load(f, Loader) or []
-            print("recents", recents)
+            print("load_qids.recents", recents)
             {self.create_qid(attrs) for attrs in recents}
 
     def find_qid(self, index):
@@ -40,7 +44,6 @@ class QidCache:
 
     def add_qid(self, qid):
         self.qids.add(qid)
-        self.save_qids()
 
     def create_qid(self, attrs):
         qid = QuiltID.FromAttrs(attrs)
@@ -49,21 +52,25 @@ class QidCache:
         return qid
 
     def remove_qid(self, index):
-        print(f"delete[{index}].size", self.size())
         qid = self.find_qid(index)
-        print(f"delete.find_qid", qid)
         if qid:
-            print(f"delete.qids", self.qids)
             self.qids.remove(qid)
-            print("+delete.qids", self.qids)
             return qid
 
     def size(self):
         return len(self.qids)
 
+    def __del__(self):
+        assert (
+            self.saved or self.path.exists()
+        ), f"Cannot save QidCache[{self.path}]saved={self.saved}"
+        if self.path.exists():
+            self.save_qids()
+
 
 class QuiltClient(QidCache):
     def __init__(self, root=ROOT):
+        root.mkdir(parents=True, exist_ok=True)
         super().__init__(root / RECENTS)
         self.root = root
 
