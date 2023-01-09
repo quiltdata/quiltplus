@@ -28,6 +28,14 @@ def test_qc(qc):
     assert qc.size() == 0
 
 
+async def test_qc_str(qc):
+    with TemporaryDirectory() as tmpdirname:
+        p = Path(tmpdirname)
+        qc = QuiltClient(p)
+        assert tmpdirname in str(qc)
+        qc.save_qids()
+
+
 async def test_qc_saved(qc):
     with TemporaryDirectory() as tmpdirname:
         p = Path(tmpdirname)

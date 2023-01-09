@@ -40,7 +40,7 @@ class QidCache:
     def load_qids(self):
         with self.path.open() as f:
             recents = load(f, Loader) or []
-            logging.debug("load_qids.recents", recents)
+            logging.debug("load_qids.recents: {recents}")
             {self.create_qid(attrs) for attrs in recents}
 
     def find_qid(self, index):
@@ -80,6 +80,12 @@ class QuiltClient(QidCache):
         super().__init__(root / RECENTS)
         self.root = root
 
+    def __repr__(self):
+        return f"QuiltClient({self.root})"
+
+    def __str__(self):
+        return self.__repr__()
+
     async def delete(self, index):
         return self.remove_qid(index)
 
@@ -87,13 +93,11 @@ class QuiltClient(QidCache):
         return self.create_qid(attrs)
 
     async def put(self, attrs, index):
-        logging.debug("put.size", self.size())
+        logging.debug(f"put.size: {self.size()}")
         await self.delete(index)
-        logging.debug("put.delete.size", self.size())
+        logging.debug(f"put.delete.size: {self.size()}")
         qid = QuiltID.FromAttrs(attrs, index)
-        logging.debug("put.FromAttrs.size", self.size())
         self.add_qid(qid)
-        logging.debug("put.add_qid.size", self.size())
         return qid
 
     async def get(self, index=-1):

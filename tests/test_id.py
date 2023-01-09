@@ -12,6 +12,13 @@ def test_id_exists(qid):
     assert qid
 
 
+def test_id_str(qid):
+    u = qid.quilt_uri()
+    assert u == TEST_URL
+    s = str(qid)
+    assert TEST_URL in s
+
+
 def test_id_get(qid):
     assert qid.registry() == f"s3://{TEST_REG}"
     assert qid.get(K_PKG) == TEST_PKG

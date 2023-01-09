@@ -41,6 +41,12 @@ class QuiltID:
             QuiltID.INDEX += 1
             self.index = QuiltID.INDEX
 
+    def __repr__(self):
+        return f"QuiltID({self.quilt_uri()}, {self.index})"
+
+    def __str__(self):
+        return self.__repr__()
+
     def get(self, key):
         return self.attrs.get(key)
 
@@ -56,7 +62,7 @@ class QuiltID:
     def source(self):
         return self.get(K_RAW)
 
-    def uri(self):
+    def quilt_uri(self):
         uri_string = QuiltUnparse(self.attrs).unparse()
         return uri_string
 

@@ -16,10 +16,11 @@ K_PRP = "property"
 K_QRY = "query"
 K_TAG = "tag"
 
-K_STR_DEFAULT = "s3"
+K_PKG_FULL = "__package__"
 
+K_STR_DEFAULT = "s3"
 TYPES = [K_STR, K_BKT, K_PKG, K_PTH, K_PRP, K_QRY, None]
-FRAG_KEYS = [K_PKG, K_PTH, K_PRP]
+FRAG_KEYS = [K_PKG_FULL, K_PTH, K_PRP]
 
 
 class QuiltUnparse:
@@ -30,21 +31,24 @@ class QuiltUnparse:
 
     def __init__(self, attrs):
         self.attrs = attrs
-        self.pkg = self.get(K_PKG)
+        self.attrs[K_PKG_FULL] = self.get(K_PKG)
         self.unparse_package()
 
     def get(self, key):
         return self.attrs.get(key)
 
     def unparse_package(self):
+        logging.debug(f"unparse_package: {self.attrs}")
         if K_HSH in self.attrs:
-            self.attrs[K_PKG] = f"{self.pkg}@{self.get(K_HSH)}"
+            self.attrs[K_PKG_FULL] = f"{self.get(K_PKG)}@{self.get(K_HSH)}"
         elif K_TAG in self.attrs:
-            self.attrs[K_PKG] = f"{self.pkg}:{self.get(K_TAG)}"
+            self.attrs[K_PKG_FULL] = f"{self.get(K_PKG)}:{self.get(K_TAG)}"
+        logging.debug(f"+unparse_package: {self.attrs}")
 
     def unparse_fragments(self):
         frags = {k: self.get(k) for k in FRAG_KEYS if self.get(k)}
-        return urlencode(frags)
+        encoded = urlencode(frags)
+        return encoded.replace(K_PKG_FULL, K_PKG)
 
     # (scheme='', netloc='www.cwi.nl:80', path='/%7Eguido/Python.html', params='', query='', fragment='')
     def unparse(self):
@@ -56,6 +60,6 @@ class QuiltUnparse:
             self.get(K_QRY),
             self.unparse_fragments(),
         )
-        logging.debug("unparse", args)
+        logging.debug(f"unparse {args}")
         encoded = urlunparse(args)
         return QuiltUnparse.Decode(encoded)
