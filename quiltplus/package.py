@@ -1,3 +1,7 @@
+# Resource-oriented version of a Quilt Package
+# (must already exist, at least for now)
+
+import logging
 import os
 import platform
 import subprocess

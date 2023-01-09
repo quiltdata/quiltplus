@@ -1,5 +1,5 @@
 # Create Immutable Identifier from a Quilt+ URI
-
+import logging
 from pathlib import Path
 from socket import gethostname
 from urllib.parse import parse_qs, urlparse
@@ -14,13 +14,11 @@ class QuiltID:
     INDEX = 0
 
     @classmethod
-    def Decode(cls, encoded):
-        decoded = encoded.replace("%2F", "/").replace("%40", "@")
-        return decoded
-
-    @classmethod
     def FromAttrs(cls, attrs, index=None):
+        if K_STR not in attrs:
+            attrs[K_STR] = K_STR_DEFAULT
         uri_string = QuiltUnparse(attrs).unparse()
+        logging.debug(f"FromAttrs: {uri_string}", attrs)
         return cls(uri_string, index)
 
     @classmethod
