@@ -1,5 +1,5 @@
 # Create Immutable Identifier from a Quilt+ URI
-
+import logging
 from pathlib import Path
 from socket import gethostname
 from urllib.parse import parse_qs, urlparse
@@ -14,13 +14,11 @@ class QuiltID:
     INDEX = 0
 
     @classmethod
-    def Decode(cls, encoded):
-        decoded = encoded.replace("%2F", "/").replace("%40", "@")
-        return decoded
-
-    @classmethod
     def FromAttrs(cls, attrs, index=None):
+        if K_STR not in attrs:
+            attrs[K_STR] = K_STR_DEFAULT
         uri_string = QuiltUnparse(attrs).unparse()
+        logging.debug(f"FromAttrs: {uri_string}", attrs)
         return cls(uri_string, index)
 
     @classmethod
@@ -43,6 +41,12 @@ class QuiltID:
             QuiltID.INDEX += 1
             self.index = QuiltID.INDEX
 
+    def __repr__(self):
+        return f"QuiltID({self.quilt_uri()}, {self.index})"
+
+    def __str__(self):
+        return self.__repr__()
+
     def get(self, key):
         return self.attrs.get(key)
 
@@ -52,8 +56,15 @@ class QuiltID:
     def cache(self):
         return str(self.client.root / self.id()) if self.client else None
 
+    def registry(self):
+        return f"{self.get(K_STR)}://{self.get(K_BKT)}"
+
     def source(self):
         return self.get(K_RAW)
+
+    def quilt_uri(self):
+        uri_string = QuiltUnparse(self.attrs).unparse()
+        return uri_string
 
     def with_keys(self, index, title, subtitle):
         return {
@@ -79,7 +90,6 @@ class QuiltID:
             raise ValueError(f"Error: invalid URI scheme {self.uri.scheme}: {self.uri}")
         self.attrs[K_STR] = self.uri.scheme.replace(PREFIX, "")
         self.attrs[K_BKT] = host
-        self.attrs[K_REG] = f"{self.attrs[K_STR]}://{host}"
         self.attrs[K_PID] = Path(self.attrs[K_STR]) / host
         if self.parse_package():
             self.attrs[K_PID] /= self.attrs[K_PKG]

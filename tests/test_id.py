@@ -10,11 +10,17 @@ def qid():
 
 def test_id_exists(qid):
     assert qid
-    assert K_REG
+
+
+def test_id_str(qid):
+    u = qid.quilt_uri()
+    assert u == TEST_URL
+    s = str(qid)
+    assert TEST_URL in s
 
 
 def test_id_get(qid):
-    assert qid.get(K_REG) == f"s3://{TEST_REG}"
+    assert qid.registry() == f"s3://{TEST_REG}"
     assert qid.get(K_PKG) == TEST_PKG
     assert (
         qid.get(K_HSH)
@@ -44,7 +50,7 @@ def test_id_from_attrs(qid):
     assert qid.attrs
     url2 = QuiltID.FromAttrs(qid.attrs).source()
     print(url2)
-    assert qid.source() == QuiltID.Decode(url2)
+    assert qid.source() == url2
 
 
 def test_id_with_keys(qid):
@@ -59,7 +65,6 @@ def test_id_with_keys(qid):
 def test_id_local():
     qid = QuiltID.Local(TEST_PKG)
     check = {
-        K_REG: f"{QuiltID.LOCAL_SCHEME}://{QuiltID.LOCAL_HOST}",
         K_STR: QuiltID.LOCAL_SCHEME,
         K_BKT: QuiltID.LOCAL_HOST,
         K_PKG: TEST_PKG,

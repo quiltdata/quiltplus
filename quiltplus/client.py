@@ -1,3 +1,14 @@
+# Client managing local package cache (pseudo-registry)
+
+# get() returns recent QuiltID by numerical index
+# get(index) returns Package with that index
+# delete(index) removes QuiltID with that index from recents
+# put(index) updates Package with that index
+# post() create Package (add to recents)
+
+# TODO: Make this explicitly Local, and support Remote registries
+
+import logging
 from pathlib import Path
 
 from quilt3 import list_packages
@@ -9,12 +20,6 @@ from .package import QuiltPackage
 ROOT = Path.home() / "Documents" / "QuiltData"
 RECENTS = "recents.yaml"
 
-# get() returns recent QuiltID by numerical index
-# get(index) returns Package with that index
-# delete(index) removes QuiltID with that index from recents
-# put(index) updates Package with that index
-# post() create Package (add to recents)
-
 
 class QidCache:
     def __init__(self, path):
@@ -23,11 +28,11 @@ class QidCache:
         self.qids = set()
         self.load_qids()
         self.saved = False
-        print(f"QidCache.load_qids[{path}] {len(self.qids)}")
+        logging.debug(f"QidCache.load_qids[{path}] {len(self.qids)}")
 
     def save_qids(self):
         recents = [qid.attrs for qid in self.qids]
-        print(f"QidCache.save_qids[{self.path}] {self.size()} / {len(recents)}")
+        logging.debug(f"QidCache.save_qids[{self.path}] {self.size()} / {len(recents)}")
         with self.path.open("w+") as f:
             dump(recents, f)
         self.saved = True
@@ -35,7 +40,7 @@ class QidCache:
     def load_qids(self):
         with self.path.open() as f:
             recents = load(f, Loader) or []
-            print("load_qids.recents", recents)
+            logging.debug("load_qids.recents: {recents}")
             {self.create_qid(attrs) for attrs in recents}
 
     def find_qid(self, index):
@@ -61,6 +66,7 @@ class QidCache:
         return len(self.qids)
 
     def __del__(self):
+        logging.debug(f"QidCache.__del__[{self.path}]")
         assert (
             self.saved or self.path.exists()
         ), f"Cannot save QidCache[{self.path}]saved={self.saved}"
@@ -74,6 +80,12 @@ class QuiltClient(QidCache):
         super().__init__(root / RECENTS)
         self.root = root
 
+    def __repr__(self):
+        return f"QuiltClient({self.root})"
+
+    def __str__(self):
+        return self.__repr__()
+
     async def delete(self, index):
         return self.remove_qid(index)
 
@@ -81,13 +93,11 @@ class QuiltClient(QidCache):
         return self.create_qid(attrs)
 
     async def put(self, attrs, index):
-        print("put.size", self.size())
+        logging.debug(f"put.size: {self.size()}")
         await self.delete(index)
-        print("put.delete.size", self.size())
+        logging.debug(f"put.delete.size: {self.size()}")
         qid = QuiltID.FromAttrs(attrs, index)
-        print("put.FromAttrs.size", self.size())
         self.add_qid(qid)
-        print("put.add_qid.size", self.size())
         return qid
 
     async def get(self, index=-1):
@@ -98,5 +108,5 @@ class QuiltClient(QidCache):
             # resource = QuiltPackage(qid)
             return qid
         except Exception as err:
-            print(err)
+            logging.error(err)
             return None
