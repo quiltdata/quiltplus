@@ -1,3 +1,5 @@
+# Create URL from attributes
+import logging
 from urllib.parse import urlencode, urlunparse
 
 PREFIX = "quilt+"
@@ -15,11 +17,18 @@ K_REG = "registry"
 K_QRY = "query"
 K_TAG = "tag"
 
+K_STR_DEFAULT = "s3"
+
 TYPES = [K_STR, K_REG, K_PKG, K_PTH, K_PRP, K_QRY, None]
 FRAG_KEYS = [K_PKG, K_PTH, K_PRP]
 
 
 class QuiltUnparse:
+    @classmethod
+    def Decode(cls, encoded):
+        decoded = encoded.replace("%2F", "/").replace("%40", "@")
+        return decoded
+
     def __init__(self, attrs):
         self.attrs = attrs
         self.pkg = self.get(K_PKG)
@@ -48,4 +57,6 @@ class QuiltUnparse:
             self.get(K_QRY),
             self.unparse_fragments(),
         )
-        return urlunparse(args)
+        logging.debug("unparse", args)
+        encoded = urlunparse(args)
+        return QuiltUnparse.Decode(encoded)

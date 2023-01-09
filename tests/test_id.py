@@ -44,7 +44,7 @@ def test_id_from_attrs(qid):
     assert qid.attrs
     url2 = QuiltID.FromAttrs(qid.attrs).source()
     print(url2)
-    assert qid.source() == QuiltID.Decode(url2)
+    assert qid.source() == url2
 
 
 def test_id_with_keys(qid):
