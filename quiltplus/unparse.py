@@ -3,9 +3,9 @@ from urllib.parse import urlencode, urlunparse
 PREFIX = "quilt+"
 
 K_RAW = "source_uri"
-K_STR = "store"
+K_STR = "storage"
 K_HSH = "top_hash"
-K_HNM = "hostname"
+K_BKT = "bucket"
 K_ID = "id"
 K_PID = "id_path"
 K_PKG = "package"
@@ -42,7 +42,7 @@ class QuiltUnparse:
     def unparse(self):
         args = (
             PREFIX + self.get(K_STR),
-            self.get(K_HNM),
+            self.get(K_BKT),
             "",
             "",
             self.get(K_QRY),

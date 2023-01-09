@@ -78,7 +78,7 @@ class QuiltID:
         if not PREFIX in self.uri.scheme:
             raise ValueError(f"Error: invalid URI scheme {self.uri.scheme}: {self.uri}")
         self.attrs[K_STR] = self.uri.scheme.replace(PREFIX, "")
-        self.attrs[K_HNM] = host
+        self.attrs[K_BKT] = host
         self.attrs[K_REG] = f"{self.attrs[K_STR]}://{host}"
         self.attrs[K_PID] = Path(self.attrs[K_STR]) / host
         if self.parse_package():

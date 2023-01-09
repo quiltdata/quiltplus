@@ -61,7 +61,7 @@ def test_id_local():
     check = {
         K_REG: f"{QuiltID.LOCAL_SCHEME}://{QuiltID.LOCAL_HOST}",
         K_STR: QuiltID.LOCAL_SCHEME,
-        K_HNM: QuiltID.LOCAL_HOST,
+        K_BKT: QuiltID.LOCAL_HOST,
         K_PKG: TEST_PKG,
     }
     assert qid
