@@ -17,7 +17,7 @@ class QuiltPackage:
         self.id = id
         self.dest = cache if cache else root / id.get(K_ID)
         self.name = id.get(K_PKG)
-        self.registry = id.get(K_REG)
+        self.registry = id.registry()
 
         self.pkg = (
             Package.browse(self.name)

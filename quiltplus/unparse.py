@@ -13,13 +13,12 @@ K_PID = "id_path"
 K_PKG = "package"
 K_PTH = "path"
 K_PRP = "property"
-K_REG = "registry"
 K_QRY = "query"
 K_TAG = "tag"
 
 K_STR_DEFAULT = "s3"
 
-TYPES = [K_STR, K_REG, K_PKG, K_PTH, K_PRP, K_QRY, None]
+TYPES = [K_STR, K_BKT, K_PKG, K_PTH, K_PRP, K_QRY, None]
 FRAG_KEYS = [K_PKG, K_PTH, K_PRP]
 
 

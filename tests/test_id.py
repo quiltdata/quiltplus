@@ -10,11 +10,10 @@ def qid():
 
 def test_id_exists(qid):
     assert qid
-    assert K_REG
 
 
 def test_id_get(qid):
-    assert qid.get(K_REG) == f"s3://{TEST_REG}"
+    assert qid.registry() == f"s3://{TEST_REG}"
     assert qid.get(K_PKG) == TEST_PKG
     assert (
         qid.get(K_HSH)
@@ -59,7 +58,6 @@ def test_id_with_keys(qid):
 def test_id_local():
     qid = QuiltID.Local(TEST_PKG)
     check = {
-        K_REG: f"{QuiltID.LOCAL_SCHEME}://{QuiltID.LOCAL_HOST}",
         K_STR: QuiltID.LOCAL_SCHEME,
         K_BKT: QuiltID.LOCAL_HOST,
         K_PKG: TEST_PKG,

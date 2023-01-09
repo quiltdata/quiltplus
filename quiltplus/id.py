@@ -50,8 +50,15 @@ class QuiltID:
     def cache(self):
         return str(self.client.root / self.id()) if self.client else None
 
+    def registry(self):
+        return f"{self.get(K_STR)}://{self.get(K_BKT)}"
+
     def source(self):
         return self.get(K_RAW)
+
+    def uri(self):
+        uri_string = QuiltUnparse(self.attrs).unparse()
+        return uri_string
 
     def with_keys(self, index, title, subtitle):
         return {
@@ -77,7 +84,6 @@ class QuiltID:
             raise ValueError(f"Error: invalid URI scheme {self.uri.scheme}: {self.uri}")
         self.attrs[K_STR] = self.uri.scheme.replace(PREFIX, "")
         self.attrs[K_BKT] = host
-        self.attrs[K_REG] = f"{self.attrs[K_STR]}://{host}"
         self.attrs[K_PID] = Path(self.attrs[K_STR]) / host
         if self.parse_package():
             self.attrs[K_PID] /= self.attrs[K_PKG]
