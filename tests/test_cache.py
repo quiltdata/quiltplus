@@ -12,7 +12,7 @@ from .conftest import *
 @fixture
 def qc():
     with TemporaryDirectory() as tmpdirname:
-        qc = QuiltClient(Path(tmpdirname))
+        qc = QuiltIdCache(Path(tmpdirname))
         yield qc
         qc.save_qids()
 
@@ -31,7 +31,7 @@ def test_qc(qc):
 async def test_qc_str(qc):
     with TemporaryDirectory() as tmpdirname:
         p = Path(tmpdirname)
-        qc = QuiltClient(p)
+        qc = QuiltIdCache(p)
         assert tmpdirname in str(qc)
         qc.save_qids()
 
@@ -39,7 +39,7 @@ async def test_qc_str(qc):
 async def test_qc_saved(qc):
     with TemporaryDirectory() as tmpdirname:
         p = Path(tmpdirname)
-        qc = QuiltClient(p)
+        qc = QuiltIdCache(p)
         assert qc.path.exists() == True
         assert not qc.saved
 
@@ -51,7 +51,7 @@ async def test_qc_reload(qc):
     with TemporaryDirectory() as tmpdirname:
         print(tmpdirname)
         p = Path(tmpdirname)
-        qc = QuiltClient(p)
+        qc = QuiltIdCache(p)
         assert qc.size() == 0
 
         orig = QuiltID(TEST_URL)
@@ -63,16 +63,16 @@ async def test_qc_reload(qc):
         assert qlist[0] == qid
 
         qc.save_qids()
-        qc2 = QuiltClient(p)
+        qc2 = QuiltIdCache(p)
         assert qc2.size() == 1
         qc2.save_qids()
 
 
-async def test_qc_id_cache(qc):
+async def test_qc_id_local(qc):
     orig = QuiltID(TEST_URL)
-    assert orig.cache() == None
+    assert orig.local() == None
     qid = await qc.post(orig.attrs)
-    cache = qid.cache()
+    cache = qid.local()
     assert cache
     assert str(qc.root) in cache
     assert qid.id() in cache
@@ -107,7 +107,7 @@ async def test_qc_put(qc):
     assert qc.size() == 1
     assert qid.id() == orig.id()
 
-    attrs["package"] = "test/client"
+    attrs["package"] = "test/cache"
     del attrs["top_hash"]
     qput = await qc.put(attrs, qid.index)
     assert qc.size() == 1

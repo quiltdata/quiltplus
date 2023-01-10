@@ -29,7 +29,7 @@ class QuiltID:
         return cls(uri_string)
 
     def __init__(self, uri_string, index=None):
-        self.client = None
+        self.cache = None
         self.uri = urlparse(uri_string)
         self.attrs = self.parse_fragments(self.uri.fragment)
         self.parse_id(self.uri.netloc)
@@ -53,8 +53,8 @@ class QuiltID:
     def id(self):
         return self.get(K_ID)
 
-    def cache(self):
-        return str(self.client.root / self.id()) if self.client else None
+    def local(self):
+        return str(self.cache.root / self.id()) if self.cache else None
 
     def registry(self):
         return f"{self.get(K_STR)}://{self.get(K_BKT)}"

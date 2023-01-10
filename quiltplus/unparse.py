@@ -5,11 +5,12 @@ from urllib.parse import urlencode, urlunparse
 PREFIX = "quilt+"
 
 K_RAW = "source_uri"
+K_ID = "id"
+K_PID = "id_path"
+
 K_STR = "storage"
 K_HSH = "top_hash"
 K_BKT = "bucket"
-K_ID = "id"
-K_PID = "id_path"
 K_PKG = "package"
 K_PTH = "path"
 K_PRP = "property"
@@ -17,7 +18,6 @@ K_QRY = "query"
 K_TAG = "tag"
 
 K_PKG_FULL = "__package__"
-
 K_STR_DEFAULT = "s3"
 TYPES = [K_STR, K_BKT, K_PKG, K_PTH, K_PRP, K_QRY, None]
 FRAG_KEYS = [K_PKG_FULL, K_PTH, K_PRP]

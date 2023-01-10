@@ -13,7 +13,7 @@ from .id import *
 
 class QuiltPackage:
     def __init__(self, id, root=Path("/tmp")):
-        cache = id.cache()
+        cache = id.local()
         self.id = id
         self.root = root
         self.dest = cache if cache else str(root / id.get(K_ID))

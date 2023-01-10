@@ -21,7 +21,7 @@ ROOT = Path.home() / "Documents" / "QuiltData"
 RECENTS = "recents.yaml"
 
 
-class QidCache:
+class IdCache:
     def __init__(self, path):
         self.path = path
         self.path.touch(exist_ok=True)
@@ -52,7 +52,7 @@ class QidCache:
 
     def create_qid(self, attrs):
         qid = QuiltID.FromAttrs(attrs)
-        qid.client = self
+        qid.cache = self
         self.add_qid(qid)
         return qid
 
@@ -74,14 +74,14 @@ class QidCache:
             self.save_qids()
 
 
-class QuiltClient(QidCache):
+class QuiltIdCache(IdCache):
     def __init__(self, root=ROOT):
         root.mkdir(parents=True, exist_ok=True)
         super().__init__(root / RECENTS)
         self.root = root
 
     def __repr__(self):
-        return f"QuiltClient({self.root})"
+        return f"{__class__.__name__}({self.root})"
 
     def __str__(self):
         return self.__repr__()
