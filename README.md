@@ -11,7 +11,8 @@ git clone https://github.com/quiltdata/quiltplus
 cd quiltplus
 poetry self update
 poetry install
-poetry run pytest-watch
+poetry run pre-commit install
+poetry run ptw --now .
 ```
 ## Pushing Changes
 Be sure you to first set your [API token](https://pypi.org/manage/account/) using `poetry config pypi-token.pypi <pypi-api-token>`

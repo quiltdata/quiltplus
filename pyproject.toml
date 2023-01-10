@@ -16,9 +16,10 @@ quilt3 = "^5.1.0"
 trio = "^0.22.0"
 
 [tool.poetry.group.dev.dependencies]
-pytest-watch = "^4.2.0"
 flake8 = "^6.0.0"
+pre-commit = "^2.21.0"
 pytest-trio = "^0.8.0"
+pytest-watcher = "^0.2.6"
 
 [build-system]
 requires = ["poetry-core"]
