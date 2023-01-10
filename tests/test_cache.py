@@ -40,7 +40,7 @@ async def test_qc_saved(qc):
     with TemporaryDirectory() as tmpdirname:
         p = Path(tmpdirname)
         qc = QuiltIdCache(p)
-        assert qc.path.exists() == True
+        assert qc.cache_file.exists() == True
         assert not qc.saved
 
         qc.save_qids()

@@ -23,22 +23,24 @@ RECENTS = "recents.yaml"
 
 class IdCache:
     def __init__(self, path):
-        self.path = path
-        self.path.touch(exist_ok=True)
+        self.cache_file = path
+        self.cache_file.touch(exist_ok=True)
         self.qids = set()
         self.load_qids()
         self.saved = False
-        logging.debug(f"QidCache.load_qids[{path}] {len(self.qids)}")
+        logging.debug(f"{__class__.__name__}.load_qids[{path}] {len(self.qids)}")
 
     def save_qids(self):
         recents = [qid.attrs for qid in self.qids]
-        logging.debug(f"QidCache.save_qids[{self.path}] {self.size()} / {len(recents)}")
-        with self.path.open("w+") as f:
+        logging.debug(
+            f"{__class__.__name__}.save_qids[{self.cache_file}] {self.size()} / {len(recents)}"
+        )
+        with self.cache_file.open("w+") as f:
             dump(recents, f)
         self.saved = True
 
     def load_qids(self):
-        with self.path.open() as f:
+        with self.cache_file.open() as f:
             recents = load(f, Loader) or []
             logging.debug("load_qids.recents: {recents}")
             {self.create_qid(attrs) for attrs in recents}
@@ -66,11 +68,11 @@ class IdCache:
         return len(self.qids)
 
     def __del__(self):
-        logging.debug(f"QidCache.__del__[{self.path}]")
+        logging.debug(f"QidCache.__del__[{self.cache_file}]")
         assert (
-            self.saved or self.path.exists()
-        ), f"Cannot save QidCache[{self.path}]saved={self.saved}"
-        if self.path.exists():
+            self.saved or self.cache_file.exists()
+        ), f"Cannot save QidCache[{self.cache_file}]saved={self.saved}"
+        if self.cache_file.exists():
             self.save_qids()
 
 
