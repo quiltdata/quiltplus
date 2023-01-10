@@ -15,7 +15,6 @@ def test_pkg_fixture(pkg):
 async def untest_pkg_get(pkg):
     rc = await pkg.get()
     assert rc
-    await pkg.open()
 
 
 async def test_pkg_list(pkg):
@@ -23,3 +22,9 @@ async def test_pkg_list(pkg):
     assert files
     assert len(files) > 3
     assert "README.md" in files
+
+
+async def test_pkg_open(pkg):
+    rc = await pkg.get()
+    assert rc
+    pkg.open()
