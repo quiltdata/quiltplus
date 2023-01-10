@@ -16,7 +16,7 @@ class QuiltPackage:
         cache = id.local_path()
         self.id = id
         self.root = root
-        self.dest = cache if cache else str(root / id.get(K_ID))
+        self.dest = cache if cache else root / id.sub_path()
         self.name = id.get(K_PKG)
         self.registry = id.registry()
 

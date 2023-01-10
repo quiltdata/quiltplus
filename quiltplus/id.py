@@ -30,10 +30,7 @@ class QuiltParse:
             raise ValueError(f"Error: invalid URI scheme {self.uri.scheme}: {self.uri}")
         self.attrs[K_STR] = self.uri.scheme.replace(PREFIX, "")
         self.attrs[K_BKT] = host
-        self.attrs[K_PID] = Path(self.attrs[K_STR]) / host
-        if self.parse_package():
-            self.attrs[K_PID] /= self.attrs[K_PKG]
-        self.attrs[K_ID] = str(self.attrs[K_PID])
+        self.has_package = self.parse_package()
 
     def parse_package(self):
         if K_PKG not in self.attrs:
@@ -74,6 +71,7 @@ class QuiltID(QuiltParse):
         super().__init__(uri_string)
         self._source_uri = uri_string
         self.cache = None
+
         if index:
             self.index = index
         else:
@@ -89,8 +87,14 @@ class QuiltID(QuiltParse):
     def get(self, key):
         return self.attrs.get(key)
 
+    def sub_path(self):
+        sub_path = Path(self.get(K_STR)) / self.get(K_BKT)
+        if self.has_package:
+            return sub_path / self.attrs[K_PKG]
+        return sub_path
+
     def local_path(self):
-        return str(self.cache.root / self.get(K_ID)) if self.cache else None
+        return self.cache.root / self.sub_path() if self.cache else None
 
     def registry(self):
         return f"{self.get(K_STR)}://{self.get(K_BKT)}"

@@ -29,10 +29,9 @@ def test_id_get(qid):
     assert qid.get(K_PTH) == "README.md"
 
 
-def test_id_id(qid):
+def test_id_sub_path(qid):
     path = Path("s3") / TEST_REG / TEST_PKG
-    assert qid.get(K_ID) == str(path)
-    assert qid.get(K_PID) == path
+    assert qid.sub_path() == path
     assert qid.source_uri() == TEST_URL
 
 
@@ -62,7 +61,7 @@ def test_id_with_keys(qid):
     assert result["b"] == qid.source_uri()
 
 
-def test_id_local_path():
+def test_id_local():
     qid = QuiltID.Local(TEST_PKG)
     check = {
         K_STR: QuiltID.LOCAL_SCHEME,
@@ -70,5 +69,6 @@ def test_id_local_path():
         K_PKG: TEST_PKG,
     }
     assert qid
+
     for key in check.keys():
         assert qid.get(key) == check[key]

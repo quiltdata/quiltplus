@@ -4,9 +4,7 @@ from urllib.parse import urlencode, urlunparse
 
 PREFIX = "quilt+"
 
-K_ID = "id"
-K_PID = "id_path"
-
+K_PID = "local_path"
 K_STR = "storage"
 K_HSH = "top_hash"
 K_BKT = "bucket"

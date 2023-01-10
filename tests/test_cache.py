@@ -74,8 +74,8 @@ async def test_qc_id_local_path(qc):
     qid = await qc.post(orig.attrs)
     cache = qid.local_path()
     assert cache
-    assert str(qc.root) in cache
-    assert qid.get(K_ID) in cache
+    assert str(qc.root) in str(cache)
+    assert str(qid.sub_path()) in str(cache)
 
 
 async def test_qc_post(qc):
