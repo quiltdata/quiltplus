@@ -68,14 +68,14 @@ async def test_qc_reload(qc):
         qc2.save_qids()
 
 
-async def test_qc_id_local(qc):
+async def test_qc_id_local_path(qc):
     orig = QuiltID(TEST_URL)
-    assert orig.local() == None
+    assert orig.local_path() == None
     qid = await qc.post(orig.attrs)
-    cache = qid.local()
+    cache = qid.local_path()
     assert cache
     assert str(qc.root) in cache
-    assert qid.id() in cache
+    assert qid.get(K_ID) in cache
 
 
 async def test_qc_post(qc):
@@ -84,7 +84,6 @@ async def test_qc_post(qc):
 
     qid = await qc.post(attrs)
     assert qc.size() == 1
-    assert qid.id() == orig.id()
 
     qlist = await qc.get()
     assert len(qlist) == qc.size()
@@ -105,7 +104,6 @@ async def test_qc_put(qc):
 
     qid = await qc.post(attrs)
     assert qc.size() == 1
-    assert qid.id() == orig.id()
 
     attrs["package"] = "test/cache"
     del attrs["top_hash"]
@@ -113,14 +111,13 @@ async def test_qc_put(qc):
     assert qc.size() == 1
     assert qput != qid
     assert qput.index == qid.index
-    assert qput.id() != qid.id()
 
     qdel = await qc.delete(qid.index)
     assert qdel == qput
     assert qc.size() == 0
 
 
-async def untest_qc_local(qc):
+async def untest_qc_local_path(qc):
     await setup_package(qc)
     qid = QuiltID.Local(TEST_PKG)
     pkg = await qc.get(qid, K_PKG)

@@ -4,7 +4,6 @@ from urllib.parse import urlencode, urlunparse
 
 PREFIX = "quilt+"
 
-K_RAW = "source_uri"
 K_ID = "id"
 K_PID = "id_path"
 

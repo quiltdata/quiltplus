@@ -33,7 +33,7 @@ def test_id_id(qid):
     path = Path("s3") / TEST_REG / TEST_PKG
     assert qid.get(K_ID) == str(path)
     assert qid.get(K_PID) == path
-    assert qid.get(K_RAW) == TEST_URL
+    assert qid.source_uri() == TEST_URL
 
 
 def test_id_index(qid):
@@ -48,9 +48,9 @@ def test_id_type(qid):
 
 def test_id_from_attrs(qid):
     assert qid.attrs
-    url2 = QuiltID.FromAttrs(qid.attrs).source()
+    url2 = QuiltID.FromAttrs(qid.attrs).source_uri()
     print(url2)
-    assert qid.source() == url2
+    assert qid.source_uri() == url2
 
 
 def test_id_with_keys(qid):
@@ -59,10 +59,10 @@ def test_id_with_keys(qid):
     assert isinstance(result, dict)
     assert result["id"] == qid.index
     assert result["a"] == qid.get(K_PKG)
-    assert result["b"] == qid.source()
+    assert result["b"] == qid.source_uri()
 
 
-def test_id_local():
+def test_id_local_path():
     qid = QuiltID.Local(TEST_PKG)
     check = {
         K_STR: QuiltID.LOCAL_SCHEME,
