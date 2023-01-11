@@ -41,10 +41,10 @@ async def test_qc_saved(qc):
         p = Path(tmpdirname)
         qc = QuiltIdCache(p)
         assert qc.cache_file.exists() == True
-        assert not qc.saved
+        assert not qc.dirty
 
         qc.save_qids()
-        assert qc.saved
+        assert not qc.dirty
 
 
 async def test_qc_reload(qc):
@@ -70,7 +70,6 @@ async def test_qc_reload(qc):
 
 async def test_qc_id_local_path(qc):
     orig = QuiltID(TEST_URL)
-    assert orig.local_path() == None
     qid = await qc.post(orig.attrs)
     cache = qid.local_path()
     assert cache

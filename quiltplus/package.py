@@ -24,16 +24,14 @@ class QuiltPackage:
             subprocess.Popen(["xdg-open", dest])
         return dest
 
-    def __init__(self, id, root=Path("/tmp")):
+    def __init__(self, id, root=None):
         assert id.has_package
         self.id = id
-        self.root = root
         self.name = id.get(K_PKG)
         self.registry = id.registry()
 
-        cache = id.local_path()
-        self._local_path = cache if cache else root / id.sub_path()
-        self._local_path.touch()
+        self._local_path = root / id.sub_path() if root else id.local_path()
+        # self._local_path.touch()
         self._q3pkg = None
 
     def __repr__(self):

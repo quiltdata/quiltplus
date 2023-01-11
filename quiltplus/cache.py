@@ -27,7 +27,7 @@ class IdCache:
         self.cache_file.touch(exist_ok=True)
         self.qids = set()
         self.load_qids()
-        self.saved = False
+        self.dirty = False
         logging.debug(f"{__class__.__name__}.load_qids[{path}] {len(self.qids)}")
 
     def save_qids(self):
@@ -37,7 +37,7 @@ class IdCache:
         )
         with self.cache_file.open("w+") as f:
             dump(recents, f)
-        self.saved = True
+        self.dirty = False
 
     def load_qids(self):
         with self.cache_file.open() as f:
@@ -50,6 +50,7 @@ class IdCache:
         return next(iter(result), None)
 
     def add_qid(self, qid):
+        self.dirty = True
         self.qids.add(qid)
 
     def create_qid(self, attrs):
@@ -68,11 +69,11 @@ class IdCache:
         return len(self.qids)
 
     def __del__(self):
-        logging.debug(f"QidCache.__del__[{self.cache_file}]")
         assert (
-            self.saved or self.cache_file.exists()
-        ), f"Cannot save QidCache[{self.cache_file}]saved={self.saved}"
+            not self.dirty or self.cache_file.exists()
+        ), f"Cannot save {__class__.__name__}[{self.cache_file}]saved={self.saved}"
         if self.cache_file.exists():
+            print(f"{__class__.__name__}.__del__[{self.cache_file}]")
             self.save_qids()
 
 

@@ -1,7 +1,9 @@
 # Create Immutable Identifier from a Quilt+ URI
 import logging
+import os
 from pathlib import Path
 from socket import gethostname
+from tempfile import TemporaryDirectory
 from urllib.parse import parse_qs, urlparse
 
 from .parse import *
@@ -33,7 +35,8 @@ class QuiltID(QuiltParse):
         super().__init__(uri_string)
         self._source_uri = uri_string
         self.cache = None
-
+        self._tempDir = None
+        self._cleanup = False
         if index:
             self.index = index
         else:
@@ -55,8 +58,17 @@ class QuiltID(QuiltParse):
             return sub_path / self.attrs[K_PKG]
         return sub_path
 
+    def root(self):
+        if self._tempDir:
+            return Path(self._tempDir.name)
+        if self.cache:
+            return self.cache.root
+        self._tempDir = TemporaryDirectory()
+        self._cleanup = False  # "PYTEST_CURRENT_TEST" not in os.environ
+        return Path(self._tempDir.name)
+
     def local_path(self):
-        return self.cache.root / self.sub_path() if self.cache else None
+        return self.root() / self.sub_path()
 
     def registry(self):
         return f"{self.get(K_STR)}://{self.get(K_BKT)}"
@@ -88,3 +100,8 @@ class QuiltID(QuiltParse):
             if next_key not in self.attrs:
                 return key
         return False
+
+    def __del__(self):
+        if self._cleanup:
+            print(f"{__class__.__name__}.__del__[{self._tempDir}]")
+            self._tempDir.cleanup()
