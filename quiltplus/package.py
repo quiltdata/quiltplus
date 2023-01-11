@@ -12,20 +12,29 @@ from .id import *
 
 
 class QuiltPackage:
+    WEBLOC_FILENAME = "REVISEME.webloc"
+
+    @staticmethod
+    def OpenLocally(dest):
+        if platform.system() == "Windows":
+            os.startfile(dest)
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", "-R", dest])
+        else:
+            subprocess.Popen(["xdg-open", dest])
+        return dest
+
     def __init__(self, id, root=Path("/tmp")):
         assert id.has_package
         cache = id.local_path()
         self.id = id
         self.root = root
         self._local_path = cache if cache else root / id.sub_path()
+        self._local_path.touch()
         self.name = id.get(K_PKG)
         self.registry = id.registry()
 
-        self.q3pkg = (
-            Package.browse(self.name)
-            if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
-            else Package.browse(self.name, self.registry)
-        )
+        self._q3pkg = None
 
     def __repr__(self):
         return f"QuiltPackage({self.id}, {self.root})"
@@ -39,23 +48,40 @@ class QuiltPackage:
     def dest(self):
         return str(self._local_path)
 
+    def webloc(self):
+        return f'{{ URL = "{self.id.catalog_uri()}?action=revisePackage"; }}'
+
+    def save_webloc(self):
+        p = self.local_path() / QuiltPackage.WEBLOC_FILENAME
+        p.write_text(self.webloc())
+        return p
+
+    async def quilt(self, key=None):
+        if not self._q3pkg:
+            self._q3pkg = (
+                Package.browse(self.name)
+                if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
+                else Package.browse(self.name, self.registry)
+            )
+        return self._q3pkg
+
     async def get(self, key=None):
         dest = self.dest()
+        q = await self.quilt()
         if key:
-            self.q3pkg.fetch(key, dest=dest)
+            q.fetch(key, dest=dest)
         else:
-            self.q3pkg.fetch(dest=dest)
+            q.fetch(dest=dest)
         return dest
 
     async def list(self):
-        keys = self.q3pkg.keys()
-        return list(keys)
+        q = await self.quilt()
+        return list(q.keys())
 
     def open(self):
-        dest = self.dest()
-        if platform.system() == "Windows":
-            os.startfile(dest)
-        elif platform.system() == "Darwin":
-            subprocess.Popen(["open", "-R", dest])
-        else:
-            subprocess.Popen(["xdg-open", dest])
+        return QuiltPackage.OpenLocally(self.dest())
+
+    async def getAll(self):
+        await self.get()
+        self.save_webloc()
+        return self.open()

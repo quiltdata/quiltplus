@@ -9,6 +9,7 @@ from .unparse import *
 
 
 class QuiltID(QuiltParse):
+    DEFAULT_CATALOG = "open.quiltdata.com"
     LOCAL_HOST = gethostname()
     LOCAL_SCHEME = "local"
     INDEX = 0
@@ -45,8 +46,8 @@ class QuiltID(QuiltParse):
     def __str__(self):
         return self.__repr__()
 
-    def get(self, key):
-        return self.attrs.get(key)
+    def get(self, key, default=None):
+        return self.attrs.get(key, default)
 
     def sub_path(self):
         sub_path = Path(self.get(K_STR)) / self.get(K_BKT)
@@ -65,6 +66,13 @@ class QuiltID(QuiltParse):
 
     def quilt_uri(self):
         uri_string = QuiltUnparse(self.attrs).unparse()
+        return uri_string
+
+    def catalog_uri(self):
+        catalog = self.get(K_CAT, QuiltID.DEFAULT_CATALOG)
+        uri_string = f"https://{catalog}/b/{self.get(K_BKT)}"
+        if self.has_package:
+            uri_string += f"/packages/{self.get(K_PKG)}"
         return uri_string
 
     def with_keys(self, index, title, subtitle):

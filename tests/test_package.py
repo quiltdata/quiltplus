@@ -12,11 +12,6 @@ def test_pkg_fixture(pkg):
     assert pkg
 
 
-async def untest_pkg_get(pkg):
-    rc = await pkg.get()
-    assert rc
-
-
 async def test_pkg_list(pkg):
     files = await pkg.list()
     assert files
@@ -24,7 +19,18 @@ async def test_pkg_list(pkg):
     assert "README.md" in files
 
 
-async def test_pkg_open(pkg):
+async def untest_pkg_get(pkg):
     rc = await pkg.get()
     assert rc
+
+
+async def untest_pkg_open(pkg):
+    rc = await pkg.get()
+    assert rc
+    pkg.save_webloc()
     pkg.open()
+
+
+async def test_pkg_getAll(pkg):
+    rc = await pkg.getAll()
+    assert rc

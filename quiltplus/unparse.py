@@ -19,11 +19,14 @@ class QuiltUnparse:
     def get(self, key):
         return self.attrs.get(key)
 
+    def has(self, key):
+        return key in self.attrs and len(self.get(key)) > 0
+
     def unparse_package(self):
         logging.debug(f"unparse_package: {self.attrs}")
-        if K_HSH in self.attrs:
+        if self.has(K_HSH):
             self.attrs[K_PKG_FULL] = f"{self.get(K_PKG)}@{self.get(K_HSH)}"
-        elif K_TAG in self.attrs:
+        elif self.has(K_TAG):
             self.attrs[K_PKG_FULL] = f"{self.get(K_PKG)}:{self.get(K_TAG)}"
         logging.debug(f"+unparse_package: {self.attrs}")
 

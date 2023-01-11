@@ -72,3 +72,9 @@ def test_id_local():
 
     for key in check.keys():
         assert qid.get(key) == check[key]
+
+
+async def test_id_catalog(qid):
+    url = qid.catalog_uri()
+    assert url
+    assert url == CATALOG_URL
