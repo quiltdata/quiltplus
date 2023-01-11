@@ -26,14 +26,14 @@ class QuiltPackage:
 
     def __init__(self, id, root=Path("/tmp")):
         assert id.has_package
-        cache = id.local_path()
         self.id = id
         self.root = root
-        self._local_path = cache if cache else root / id.sub_path()
-        self._local_path.touch()
         self.name = id.get(K_PKG)
         self.registry = id.registry()
 
+        cache = id.local_path()
+        self._local_path = cache if cache else root / id.sub_path()
+        self._local_path.touch()
         self._q3pkg = None
 
     def __repr__(self):
@@ -56,7 +56,10 @@ class QuiltPackage:
         p.write_text(self.webloc())
         return p
 
-    async def quilt(self, key=None):
+    def open(self):
+        return QuiltPackage.OpenLocally(self.dest())
+
+    async def quilt(self):
         if not self._q3pkg:
             self._q3pkg = (
                 Package.browse(self.name)
@@ -64,6 +67,10 @@ class QuiltPackage:
                 else Package.browse(self.name, self.registry)
             )
         return self._q3pkg
+
+    async def list(self):
+        q = await self.quilt()
+        return list(q.keys())
 
     async def get(self, key=None):
         dest = self.dest()
@@ -73,13 +80,6 @@ class QuiltPackage:
         else:
             q.fetch(dest=dest)
         return dest
-
-    async def list(self):
-        q = await self.quilt()
-        return list(q.keys())
-
-    def open(self):
-        return QuiltPackage.OpenLocally(self.dest())
 
     async def getAll(self):
         await self.get()
