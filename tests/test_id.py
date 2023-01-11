@@ -29,11 +29,10 @@ def test_id_get(qid):
     assert qid.get(K_PTH) == "README.md"
 
 
-def test_id_id(qid):
+def test_id_sub_path(qid):
     path = Path("s3") / TEST_REG / TEST_PKG
-    assert qid.get(K_ID) == str(path)
-    assert qid.get(K_PID) == path
-    assert qid.get(K_RAW) == TEST_URL
+    assert qid.sub_path() == path
+    assert qid.source_uri() == TEST_URL
 
 
 def test_id_index(qid):
@@ -48,9 +47,9 @@ def test_id_type(qid):
 
 def test_id_from_attrs(qid):
     assert qid.attrs
-    url2 = QuiltID.FromAttrs(qid.attrs).source()
+    url2 = QuiltID.FromAttrs(qid.attrs).source_uri()
     print(url2)
-    assert qid.source() == url2
+    assert qid.source_uri() == url2
 
 
 def test_id_with_keys(qid):
@@ -59,7 +58,7 @@ def test_id_with_keys(qid):
     assert isinstance(result, dict)
     assert result["id"] == qid.index
     assert result["a"] == qid.get(K_PKG)
-    assert result["b"] == qid.source()
+    assert result["b"] == qid.source_uri()
 
 
 def test_id_local():
@@ -70,5 +69,12 @@ def test_id_local():
         K_PKG: TEST_PKG,
     }
     assert qid
+
     for key in check.keys():
         assert qid.get(key) == check[key]
+
+
+async def test_id_catalog(qid):
+    url = qid.catalog_uri()
+    assert url
+    assert url == CATALOG_URL

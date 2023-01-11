@@ -2,25 +2,7 @@
 import logging
 from urllib.parse import urlencode, urlunparse
 
-PREFIX = "quilt+"
-
-K_RAW = "source_uri"
-K_STR = "storage"
-K_HSH = "top_hash"
-K_BKT = "bucket"
-K_ID = "id"
-K_PID = "id_path"
-K_PKG = "package"
-K_PTH = "path"
-K_PRP = "property"
-K_QRY = "query"
-K_TAG = "tag"
-
-K_PKG_FULL = "__package__"
-
-K_STR_DEFAULT = "s3"
-TYPES = [K_STR, K_BKT, K_PKG, K_PTH, K_PRP, K_QRY, None]
-FRAG_KEYS = [K_PKG_FULL, K_PTH, K_PRP]
+from .parse import *
 
 
 class QuiltUnparse:
@@ -37,11 +19,14 @@ class QuiltUnparse:
     def get(self, key):
         return self.attrs.get(key)
 
+    def has(self, key):
+        return key in self.attrs and len(self.get(key)) > 0
+
     def unparse_package(self):
         logging.debug(f"unparse_package: {self.attrs}")
-        if K_HSH in self.attrs:
+        if self.has(K_HSH):
             self.attrs[K_PKG_FULL] = f"{self.get(K_PKG)}@{self.get(K_HSH)}"
-        elif K_TAG in self.attrs:
+        elif self.has(K_TAG):
             self.attrs[K_PKG_FULL] = f"{self.get(K_PKG)}:{self.get(K_TAG)}"
         logging.debug(f"+unparse_package: {self.attrs}")
 

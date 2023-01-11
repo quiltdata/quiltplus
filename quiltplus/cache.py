@@ -21,24 +21,26 @@ ROOT = Path.home() / "Documents" / "QuiltData"
 RECENTS = "recents.yaml"
 
 
-class QidCache:
+class IdCache:
     def __init__(self, path):
-        self.path = path
-        self.path.touch(exist_ok=True)
+        self.cache_file = path
+        self.cache_file.touch(exist_ok=True)
         self.qids = set()
         self.load_qids()
-        self.saved = False
-        logging.debug(f"QidCache.load_qids[{path}] {len(self.qids)}")
+        self.dirty = False
+        logging.debug(f"{__class__.__name__}.load_qids[{path}] {len(self.qids)}")
 
     def save_qids(self):
         recents = [qid.attrs for qid in self.qids]
-        logging.debug(f"QidCache.save_qids[{self.path}] {self.size()} / {len(recents)}")
-        with self.path.open("w+") as f:
+        logging.debug(
+            f"{__class__.__name__}.save_qids[{self.cache_file}] {self.size()} / {len(recents)}"
+        )
+        with self.cache_file.open("w+") as f:
             dump(recents, f)
-        self.saved = True
+        self.dirty = False
 
     def load_qids(self):
-        with self.path.open() as f:
+        with self.cache_file.open() as f:
             recents = load(f, Loader) or []
             logging.debug("load_qids.recents: {recents}")
             {self.create_qid(attrs) for attrs in recents}
@@ -48,11 +50,12 @@ class QidCache:
         return next(iter(result), None)
 
     def add_qid(self, qid):
+        self.dirty = True
         self.qids.add(qid)
 
     def create_qid(self, attrs):
         qid = QuiltID.FromAttrs(attrs)
-        qid.client = self
+        qid.cache = self
         self.add_qid(qid)
         return qid
 
@@ -66,22 +69,22 @@ class QidCache:
         return len(self.qids)
 
     def __del__(self):
-        logging.debug(f"QidCache.__del__[{self.path}]")
         assert (
-            self.saved or self.path.exists()
-        ), f"Cannot save QidCache[{self.path}]saved={self.saved}"
-        if self.path.exists():
+            not self.dirty or self.cache_file.exists()
+        ), f"Cannot save {__class__.__name__}[{self.cache_file}]saved={self.saved}"
+        if self.cache_file.exists():
+            print(f"{__class__.__name__}.__del__[{self.cache_file}]")
             self.save_qids()
 
 
-class QuiltClient(QidCache):
+class QuiltIdCache(IdCache):
     def __init__(self, root=ROOT):
         root.mkdir(parents=True, exist_ok=True)
         super().__init__(root / RECENTS)
         self.root = root
 
     def __repr__(self):
-        return f"QuiltClient({self.root})"
+        return f"{__class__.__name__}({self.root})"
 
     def __str__(self):
         return self.__repr__()
