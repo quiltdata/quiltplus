@@ -11,7 +11,6 @@ git clone https://github.com/quiltdata/quiltplus
 cd quiltplus
 poetry self update
 poetry install
-poetry run pre-commit install
 poetry run ptw --now .
 ```
 ## Pushing Changes
