@@ -19,15 +19,15 @@ async def test_pkg_list(pkg):
     assert "README.md" in files
 
 
-async def untest_pkg_get(pkg):
+async def test_pkg_get(pkg):
     rc = await pkg.get()
     assert rc
 
 
-async def untest_pkg_open(pkg):
+async def test_pkg_open(pkg):
     rc = await pkg.get()
     assert rc
-    pkg.save_webloc()
+    pkg.save_config()
     pkg.open()
 
 
