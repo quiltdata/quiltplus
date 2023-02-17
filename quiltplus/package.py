@@ -33,8 +33,8 @@ class QuiltPackage:
         self.registry = id.registry()
 
         self._local_path = root / id.sub_path() if root else id.local_path()
-        # self._local_path.touch()
         self._q3pkg = None
+        self._q3local = None
 
     def __repr__(self):
         return f"QuiltPackage({self.id}, {self.root})"
@@ -45,6 +45,7 @@ class QuiltPackage:
     def local_path(self):
         p = self._local_path
         p.mkdir(parents=True, exist_ok=True)
+        # logging.debug(f"local_path.mkdir {p}")
         return p
 
     def local_config(self):
@@ -53,7 +54,7 @@ class QuiltPackage:
         return p
 
     def dest(self):
-        return str(self._local_path)
+        return str(self.local_path()) + "/"
 
     def webloc(self, suffix=""):
         return f'{{ URL = "{self.id.catalog_uri()}{suffix}"; }}'
@@ -71,11 +72,18 @@ class QuiltPackage:
         return QuiltPackage.OpenLocally(self.dest())
 
     async def browse(self):
-        return (
+        p = (
             Package.browse(self.name)
             if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
             else Package.browse(self.name, self.registry)
         )
+        return p
+
+    async def local(self):
+        if not self._q3local:
+            self._q3local = Package().set_dir(".", path=self.dest())
+        self._q3local.build(self.name)
+        return self._q3local
 
     async def quilt(self):
         if not self._q3pkg:
@@ -85,6 +93,12 @@ class QuiltPackage:
     async def list(self):
         q = await self.quilt()
         return list(q.keys())
+
+    async def diff(self):
+        q = await self.quilt()
+        q_local = await self.local()
+        diffs = q.diff(q_local)
+        return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[0]}
 
     async def get(self, key=None):
         dest = self.dest()

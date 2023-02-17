@@ -19,6 +19,23 @@ async def test_pkg_list(pkg):
     assert "README.md" in files
 
 
+async def test_pkg_local(pkg):
+    q = await pkg.local()
+    assert q is not None
+    qkeys = q.keys()
+    assert qkeys is not None
+    qlist = list(qkeys)
+    assert len(qlist) == 0
+    
+
+@mark.skip(reason="unready")
+async def test_pkg_diff(pkg):
+    diffs = await pkg.diff()
+    assert diffs
+    # assert len(files) > 3
+    # assert "README.md" in files
+
+
 async def test_pkg_get(pkg):
     rc = await pkg.get()
     assert rc
