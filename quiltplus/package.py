@@ -52,6 +52,10 @@ class QuiltPackage:
         p.mkdir(parents=True, exist_ok=True)
         return p
 
+    def local_files(self, pattern='*'):
+        root = self.local_path()
+        return [os.path.relpath(os.path.join(dir, file), root) for (dir, dirs, files) in os.walk(root) for file in files]
+
     def dest(self):
         return str(self.local_path()) + "/"
 
@@ -79,10 +83,9 @@ class QuiltPackage:
         return p
 
     async def local(self):
-        if not self._q3local:
-            self._q3local = Package().set_dir(".", path=self.dest())
-        self._q3local.build(self.name)
-        return self._q3local
+        q3local = Package().set_dir(".", path=self.dest())
+        q3local.build(self.name)
+        return q3local
 
     async def quilt(self):
         if not self._q3pkg:
@@ -91,14 +94,17 @@ class QuiltPackage:
             self._q3pkg.browse(self.name)
         return self._q3pkg
 
-    async def list(self):
+    async def list(self, changed_only=False):
+        if changed_only:
+            diffs = await self.diff()
+            return [x for sub in diffs.values() for x in sub]
         q = await self.quilt()
         return list(q.keys())
 
     async def diff(self):
-        q = await self.quilt()
+        q_remote = await self.quilt()
         q_local = await self.local()
-        diffs = q.diff(q_local)  # q_local.diff(q) #
+        diffs = q_remote.diff(q_local)
         return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[0]}
 
     async def get(self, key=None):

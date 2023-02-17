@@ -1,5 +1,6 @@
 from .conftest import *
 
+RM_LOCAL = os.path.join(QuiltPackage.CONFIG_FOLDER, QuiltPackage.REVISEME_FILE)
 
 @fixture
 def pkg():
@@ -19,6 +20,17 @@ async def test_pkg_list(pkg):
     assert "README.md" in files
 
 
+async def test_pkg_changed(pkg):
+    dfiles = await pkg.list(True)
+    print(dfiles)
+    assert len(dfiles) == 0
+
+    pkg.save_config()
+    print(dfiles)
+    dfiles = await pkg.list(True)
+    assert RM_LOCAL in dfiles
+
+
 async def test_pkg_local(pkg):
     q = await pkg.local()
     assert len(q.keys()) == 0
@@ -28,20 +40,29 @@ async def test_pkg_local(pkg):
     assert len(q.keys()) > 0
 
 
+async def test_pkg_local_files(pkg):
+    assert pkg.local_files() == []
+    await pkg.get()
+    assert pkg.local_files() != []
+    assert 'README.md' in pkg.local_files()
+    pkg.save_config()
+    assert RM_LOCAL in pkg.local_files()
+
+
 async def test_pkg_diff(pkg):
     diffs = await pkg.diff()
-    logging.debug(f"diffs {diffs}")
     assert diffs == {"added": [], "modified": [], "deleted": []}
 
     await pkg.get()
     diff2 = await pkg.diff()
-    logging.debug(f"diff2 {diff2}")
     assert diff2 == {"added": [], "modified": [], "deleted": []}
 
     pkg.save_config()
     diff3 = await pkg.diff()
-    logging.debug(f"diff3 {diff3}")
-    assert diff3 == {"added": [], "modified": [], "deleted": []}
+    assert diff3 != {"added": [], "modified": [], "deleted": []}
+    adds = diff3['added']
+    assert adds != []
+    assert RM_LOCAL in adds
 
 
 async def test_pkg_get(pkg):
