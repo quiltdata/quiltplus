@@ -21,19 +21,27 @@ async def test_pkg_list(pkg):
 
 async def test_pkg_local(pkg):
     q = await pkg.local()
-    assert q is not None
-    qkeys = q.keys()
-    assert qkeys is not None
-    qlist = list(qkeys)
-    assert len(qlist) == 0
-    
+    assert len(q.keys()) == 0
 
-@mark.skip(reason="unready")
+    await pkg.get()
+    q = await pkg.local()
+    assert len(q.keys()) > 0
+
+
 async def test_pkg_diff(pkg):
     diffs = await pkg.diff()
-    assert diffs
-    # assert len(files) > 3
-    # assert "README.md" in files
+    logging.debug(f"diffs {diffs}")
+    assert diffs == {"added": [], "modified": [], "deleted": []}
+
+    await pkg.get()
+    diff2 = await pkg.diff()
+    logging.debug(f"diff2 {diff2}")
+    assert diff2 == {"added": [], "modified": [], "deleted": []}
+
+    pkg.save_config()
+    diff3 = await pkg.diff()
+    logging.debug(f"diff3 {diff3}")
+    assert diff3 == {"added": [], "modified": [], "deleted": []}
 
 
 async def test_pkg_get(pkg):

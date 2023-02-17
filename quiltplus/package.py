@@ -45,7 +45,6 @@ class QuiltPackage:
     def local_path(self):
         p = self._local_path
         p.mkdir(parents=True, exist_ok=True)
-        # logging.debug(f"local_path.mkdir {p}")
         return p
 
     def local_config(self):
@@ -88,6 +87,8 @@ class QuiltPackage:
     async def quilt(self):
         if not self._q3pkg:
             self._q3pkg = await self.browse()
+        else:
+            self._q3pkg.browse(self.name)
         return self._q3pkg
 
     async def list(self):
@@ -97,7 +98,7 @@ class QuiltPackage:
     async def diff(self):
         q = await self.quilt()
         q_local = await self.local()
-        diffs = q.diff(q_local)
+        diffs = q.diff(q_local)  # q_local.diff(q) #
         return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[0]}
 
     async def get(self, key=None):
