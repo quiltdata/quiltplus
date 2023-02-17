@@ -52,9 +52,13 @@ class QuiltPackage:
         p.mkdir(parents=True, exist_ok=True)
         return p
 
-    def local_files(self, pattern='*'):
+    def local_files(self, pattern="*"):
         root = self.local_path()
-        return [os.path.relpath(os.path.join(dir, file), root) for (dir, dirs, files) in os.walk(root) for file in files]
+        return [
+            os.path.relpath(os.path.join(dir, file), root)
+            for (dir, dirs, files) in os.walk(root)
+            for file in files
+        ]
 
     def dest(self):
         return str(self.local_path()) + "/"

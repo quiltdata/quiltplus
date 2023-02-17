@@ -2,6 +2,7 @@ from .conftest import *
 
 RM_LOCAL = os.path.join(QuiltPackage.CONFIG_FOLDER, QuiltPackage.REVISEME_FILE)
 
+
 @fixture
 def pkg():
     qid = QuiltID(TEST_URL)
@@ -44,7 +45,7 @@ async def test_pkg_local_files(pkg):
     assert pkg.local_files() == []
     await pkg.get()
     assert pkg.local_files() != []
-    assert 'README.md' in pkg.local_files()
+    assert "README.md" in pkg.local_files()
     pkg.save_config()
     assert RM_LOCAL in pkg.local_files()
 
@@ -60,7 +61,7 @@ async def test_pkg_diff(pkg):
     pkg.save_config()
     diff3 = await pkg.diff()
     assert diff3 != {"added": [], "modified": [], "deleted": []}
-    adds = diff3['added']
+    adds = diff3["added"]
     assert adds != []
     assert RM_LOCAL in adds
 
