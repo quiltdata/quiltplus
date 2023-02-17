@@ -23,12 +23,11 @@ class QuiltUnparse:
         return key in self.attrs and len(self.get(key)) > 0
 
     def unparse_package(self):
-        logging.debug(f"unparse_package: {self.attrs}")
+        # logging.debug(f"unparse_package: {self.attrs}")
         if self.has(K_HSH):
             self.attrs[K_PKG_FULL] = f"{self.get(K_PKG)}@{self.get(K_HSH)}"
         elif self.has(K_TAG):
             self.attrs[K_PKG_FULL] = f"{self.get(K_PKG)}:{self.get(K_TAG)}"
-        logging.debug(f"+unparse_package: {self.attrs}")
 
     def unparse_fragments(self):
         frags = {k: self.get(k) for k in FRAG_KEYS if self.get(k)}
@@ -45,6 +44,6 @@ class QuiltUnparse:
             self.get(K_QRY),
             self.unparse_fragments(),
         )
-        logging.debug(f"unparse {args}")
+        # logging.debug(f"unparse {args}")
         encoded = urlunparse(args)
         return QuiltUnparse.Decode(encoded)
