@@ -14,24 +14,6 @@ def test_pkg_fixture(pkg):
     assert pkg
 
 
-async def test_pkg_list(pkg):
-    files = await pkg.list()
-    assert files
-    assert len(files) > 3
-    assert "README.md" in files
-
-
-async def test_pkg_changed(pkg):
-    dfiles = await pkg.list(True)
-    print(dfiles)
-    assert len(dfiles) == 0
-
-    pkg.save_config()
-    print(dfiles)
-    dfiles = await pkg.list(True)
-    assert RM_LOCAL in dfiles
-
-
 async def test_pkg_local(pkg):
     q = await pkg.local()
     assert len(q.keys()) == 0
@@ -64,6 +46,24 @@ async def test_pkg_diff(pkg):
     adds = diff3["added"]
     assert adds != []
     assert RM_LOCAL in adds
+
+
+async def test_pkg_list(pkg):
+    files = await pkg.list()
+    assert files
+    assert len(files) > 3
+    assert "README.md" in files
+
+
+async def test_pkg_changed(pkg):
+    dfiles = await pkg.list(True)
+    print(dfiles)
+    assert len(dfiles) == 0
+
+    pkg.save_config()
+    print(dfiles)
+    dfiles = await pkg.list(True)
+    assert RM_LOCAL in dfiles
 
 
 async def test_pkg_get(pkg):
