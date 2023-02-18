@@ -9,7 +9,7 @@ from .conftest import *
 # post() create Package (add to recents)
 
 
-@fixture
+@pytest.fixture
 def qc():
     with TemporaryDirectory() as tmpdirname:
         qc = QuiltIdCache(Path(tmpdirname))

@@ -3,7 +3,7 @@ from urllib.parse import urlencode, urlunparse
 from .conftest import *
 
 
-@fixture
+@pytest.fixture
 def qid():
     return QuiltID(TEST_URL)
 

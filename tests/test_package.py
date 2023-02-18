@@ -3,15 +3,21 @@ from .conftest import *
 RM_LOCAL = os.path.join(QuiltPackage.CONFIG_FOLDER, QuiltPackage.REVISEME_FILE)
 
 
-@fixture
+@pytest.fixture
 def pkg():
-    qid = QuiltID(TEST_URL)
-    pkg = QuiltPackage(qid)
-    return pkg
+    return QuiltPackage.FromURI(TEST_URL)
 
 
 def test_pkg_fixture(pkg):
     assert pkg
+
+
+async def test_pkg_empty(pkg):
+    assert pkg is not None
+    l = await pkg.local()
+    assert l is not None
+    q = await pkg.quilt()
+    assert q is not None
 
 
 async def test_pkg_local(pkg):

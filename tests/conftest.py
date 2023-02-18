@@ -1,7 +1,7 @@
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
-from pytest import fixture, mark
+import pytest
 
 from quiltplus import *
 

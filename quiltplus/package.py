@@ -17,6 +17,12 @@ class QuiltPackage:
     CATALOG_FILE = "CATALOG.webloc"
 
     @staticmethod
+    def FromURI(url_string):
+        qid = QuiltID(url_string)
+        pkg = QuiltPackage(qid)
+        return pkg
+
+    @staticmethod
     def OpenLocally(dest):
         if platform.system() == "Windows":
             os.startfile(dest)
