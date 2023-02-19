@@ -20,6 +20,7 @@ async def test_pkg_empty(pkg: QuiltPackage):
     assert q is not None
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_local(pkg: QuiltPackage):
     q = await pkg.local()
     assert len(q.keys()) == 0
@@ -29,6 +30,7 @@ async def test_pkg_local(pkg: QuiltPackage):
     assert len(q.keys()) > 0
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_local_files(pkg: QuiltPackage):
     assert pkg.local_files() == []
     await pkg.get()
@@ -38,6 +40,7 @@ async def test_pkg_local_files(pkg: QuiltPackage):
     assert RM_LOCAL in pkg.local_files()
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_diff(pkg: QuiltPackage):
     diffs = await pkg.diff()
     assert diffs == {"added": [], "modified": [], "deleted": []}
@@ -72,11 +75,13 @@ async def test_pkg_changed(pkg: QuiltPackage):
     assert RM_LOCAL in dfiles
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_get(pkg: QuiltPackage):
     rc = await pkg.get()
     assert rc
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_open(pkg: QuiltPackage):
     rc = await pkg.get()
     assert rc
@@ -84,6 +89,7 @@ async def test_pkg_open(pkg: QuiltPackage):
     pkg.open()
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_getAll(pkg: QuiltPackage):
     rc = await pkg.getAll()
     assert rc

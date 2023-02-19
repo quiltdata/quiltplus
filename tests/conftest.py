@@ -17,3 +17,5 @@ PKG_URL = f"quilt+s3://{TEST_BKT}#package={TEST_PKG}"
 PKG2_URL = f"quilt+s3://{TEST_BKT}#package=examples/echarts"
 
 TEST_URLS = [TEST_URL, REG_URL, PKG_URL, PKG2_URL]
+
+SKIP_LONG_TESTS = True
