@@ -8,11 +8,11 @@ def pkg():
     return QuiltPackage.FromURI(TEST_URL)
 
 
-def test_pkg_fixture(pkg):
+def test_pkg_fixture(pkg: QuiltPackage):
     assert pkg
 
 
-async def test_pkg_empty(pkg):
+async def test_pkg_empty(pkg: QuiltPackage):
     assert pkg is not None
     l = await pkg.local()
     assert l is not None
@@ -20,7 +20,7 @@ async def test_pkg_empty(pkg):
     assert q is not None
 
 
-async def test_pkg_local(pkg):
+async def test_pkg_local(pkg: QuiltPackage):
     q = await pkg.local()
     assert len(q.keys()) == 0
 
@@ -29,7 +29,7 @@ async def test_pkg_local(pkg):
     assert len(q.keys()) > 0
 
 
-async def test_pkg_local_files(pkg):
+async def test_pkg_local_files(pkg: QuiltPackage):
     assert pkg.local_files() == []
     await pkg.get()
     assert pkg.local_files() != []
@@ -38,7 +38,7 @@ async def test_pkg_local_files(pkg):
     assert RM_LOCAL in pkg.local_files()
 
 
-async def test_pkg_diff(pkg):
+async def test_pkg_diff(pkg: QuiltPackage):
     diffs = await pkg.diff()
     assert diffs == {"added": [], "modified": [], "deleted": []}
 
@@ -54,14 +54,14 @@ async def test_pkg_diff(pkg):
     assert RM_LOCAL in adds
 
 
-async def test_pkg_list(pkg):
+async def test_pkg_list(pkg: QuiltPackage):
     files = await pkg.list()
     assert files
     assert len(files) > 3
     assert "README.md" in files
 
 
-async def test_pkg_changed(pkg):
+async def test_pkg_changed(pkg: QuiltPackage):
     dfiles = await pkg.list(True)
     print(dfiles)
     assert len(dfiles) == 0
@@ -72,18 +72,18 @@ async def test_pkg_changed(pkg):
     assert RM_LOCAL in dfiles
 
 
-async def test_pkg_get(pkg):
+async def test_pkg_get(pkg: QuiltPackage):
     rc = await pkg.get()
     assert rc
 
 
-async def test_pkg_open(pkg):
+async def test_pkg_open(pkg: QuiltPackage):
     rc = await pkg.get()
     assert rc
     pkg.save_config()
     pkg.open()
 
 
-async def test_pkg_getAll(pkg):
+async def test_pkg_getAll(pkg: QuiltPackage):
     rc = await pkg.getAll()
     assert rc

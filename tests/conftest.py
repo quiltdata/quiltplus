@@ -1,5 +1,6 @@
 import logging
 import time
+from typing import Generator
 
 import pytest
 
