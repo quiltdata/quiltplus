@@ -20,7 +20,7 @@ def test_id_str(qid):
 
 
 def test_id_get(qid):
-    assert qid.registry() == f"s3://{TEST_REG}"
+    assert qid.registry() == f"s3://{TEST_BKT}"
     assert qid.get(K_PKG) == TEST_PKG
     assert (
         qid.get(K_HSH)
@@ -30,7 +30,7 @@ def test_id_get(qid):
 
 
 def test_id_sub_path(qid):
-    path = Path("s3") / TEST_REG / TEST_PKG
+    path = Path("s3") / TEST_BKT / TEST_PKG
     assert qid.sub_path() == path
     assert qid.source_uri() == TEST_URL
 
