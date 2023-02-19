@@ -20,6 +20,16 @@ async def test_pkg_empty(pkg: QuiltPackage):
     assert q is not None
 
 
+async def test_pkg_write(pkg: QuiltPackage):
+    p = pkg.write_text("abc", "test.txt")
+    assert "test.txt" in str(p)
+    assert "abc" == p.read_text()
+
+    p2 = pkg.write_text("abc", "test.txt", "parent")
+    path = os.path.join("parent", "test.txt")
+    assert path in str(p2)
+
+
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_local(pkg: QuiltPackage):
     q = await pkg.local()

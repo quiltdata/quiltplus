@@ -17,13 +17,13 @@ class QuiltPackage:
     CATALOG_FILE = "CATALOG.webloc"
 
     @staticmethod
-    def FromURI(url_string):
+    def FromURI(url_string: str):
         qid = QuiltID(url_string)
         pkg = QuiltPackage(qid)
         return pkg
 
     @staticmethod
-    def OpenLocally(dest):
+    def OpenLocally(dest: str):
         if platform.system() == "Windows":
             os.startfile(dest)
         elif platform.system() == "Darwin":
@@ -32,7 +32,7 @@ class QuiltPackage:
             subprocess.Popen(["xdg-open", dest])
         return dest
 
-    def __init__(self, id, root=None):
+    def __init__(self, id: QuiltID, root=None):
         assert id.has_package
         self.id = id
         self.name = id.get(K_PKG)
@@ -48,13 +48,11 @@ class QuiltPackage:
     def __str__(self):
         return f"QuiltPackage[{self.name}]@{self.local_path()})"
 
-    def local_path(self):
+    def local_path(self, *paths: str):
         p = self._local_path
-        p.mkdir(parents=True, exist_ok=True)
-        return p
+        for path in paths:
+            p = p / path
 
-    def local_config(self):
-        p = self._local_path / QuiltPackage.CONFIG_FOLDER
         p.mkdir(parents=True, exist_ok=True)
         return p
 
@@ -72,10 +70,14 @@ class QuiltPackage:
     def webloc(self, suffix=""):
         return f'{{ URL = "{self.id.catalog_uri()}{suffix}"; }}'
 
-    def save_webloc(self, path, suffix=""):
-        p = self.local_config() / path
-        p.write_text(self.webloc(suffix))
+    def write_text(self, text: str, file: str, *paths: str):
+        dir = self.local_path(*paths)
+        p = dir / file
+        p.write_text(text)
         return p
+
+    def save_webloc(self, file: str, suffix=""):
+        return self.write_text(self.webloc(suffix), file, QuiltPackage.CONFIG_FOLDER)
 
     def save_config(self):
         self.save_webloc(QuiltPackage.CATALOG_FILE)
