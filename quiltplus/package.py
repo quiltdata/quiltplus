@@ -87,16 +87,20 @@ class QuiltPackage:
         return QuiltPackage.OpenLocally(self.dest())
 
     async def browse(self):
-        p = (
-            Package.browse(self.name)
-            if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
-            else Package.browse(self.name, self.registry)
-        )
-        return p
+        try: 
+            p = (
+                Package.browse(self.name)
+                if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
+                else Package.browse(self.name, self.registry)
+            )
+            p.set_dir(".", path=self.dest())
+            return p
+        except Exception as err:
+            logging.error(err)
+            return None
 
     async def local(self):
         q3local = Package().set_dir(".", path=self.dest())
-        q3local.build(self.name)
         return q3local
 
     async def quilt(self):
@@ -104,7 +108,7 @@ class QuiltPackage:
             self._q3pkg = await self.browse()
         else:
             self._q3pkg.browse(self.name)
-        return self._q3pkg
+        return self._q3pkg or await self.local()
 
     async def list(self, changed_only=False):
         if changed_only:
@@ -128,11 +132,18 @@ class QuiltPackage:
             q.fetch(dest=dest)
         return dest
 
-    async def put(self,msg=None):
+    async def put(self, msg=None): # create new package from scratch
         q = await self.local()
-        logging.debug(f'put.msg={msg}: {q}')
+        q.set_dir(".", path=self.dest())
+        q.build(self.name)
         result = q.push(self.name, registry=self.registry, message=msg)
-        await self.quilt()
+        return result
+
+    async def post(self, msg=None): # update existing package
+        q = await self.quilt()
+        q.set_dir(".", path=self.dest())
+        q.build(self.name)
+        result = q.push(self.name, registry=self.registry, message=msg)
         return result
 
     async def getAll(self):

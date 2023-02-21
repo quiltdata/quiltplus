@@ -24,22 +24,36 @@ async def test_push(pkg: QuiltPackage):
     assert pkg is not None
 
     # Create new Package
-    pkg.write_text(f"# Hello World!\n{TIMESTAMP}", 'README.md')
-    qpkg = await pkg.put('README')
+    pkg.write_text(f"# Hello World!\n{TIMESTAMP}", "README.md")
+    qpkg = await pkg.put("README")
     assert qpkg is not None
 
-# Read that Package
+    # Read that Package
     files = await pkg.list()
-    assert 'README.md' in files
+    assert "README.md" in files
 
-# Update Package
-    pkg.write_text(f"# Goodbye Cruel World!\n{TIMESTAMP}", 'WRITEME.md')
+    # Update Package
+    # await pkg.get()
+    pkg.write_text(f"# Goodbye Cruel World!\n{TIMESTAMP}", "WRITEME.md")
+    print('WRITEME pkg')
+    print(pkg)
+    print('WRITEME list')
+    print(await pkg.list())
+    print('WRITEME diff')
+    print(await pkg.diff())
+
     q_local = await pkg.local()
+    print('q_local')
     print(q_local)
-    q_local.browse(pkg.name, registry=pkg.registry)
-    result = q_local.push(pkg.name, registry=pkg.registry, message='direct WRITEME')
+    print(q_local.keys())
 
-    #qpkg2 = await pkg.put('WRITEME')
-    #assert qpkg2 is not None
+    qpkg2 = await pkg.post('WRITEME')
+    assert qpkg2 is not None
 
-# Verify Result
+
+    # Verify Result
+    q3 = Package.browse(pkg.name, pkg.registry)
+    files3 = list(q3.keys())
+    assert "README.md" in files3
+    assert "WRITEME.md" in files3
+

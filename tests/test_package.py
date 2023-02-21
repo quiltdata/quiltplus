@@ -11,6 +11,7 @@ def pkg():
 def test_pkg_fixture(pkg: QuiltPackage):
     assert pkg
 
+
 def test_pkg_str(pkg: QuiltPackage):
     s = str(pkg)
     assert pkg.name in s
