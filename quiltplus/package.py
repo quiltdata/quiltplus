@@ -43,10 +43,10 @@ class QuiltPackage:
         self._q3local = None
 
     def __repr__(self):
-        return f"QuiltPackage({self.id}, {self.root})"
+        return f"QuiltPackage[{self.id}]@{self.local_path()})"
 
     def __str__(self):
-        return f"QuiltPackage[{self.name}]@{self.local_path()})"
+        return self.__repr__()
 
     def local_path(self, *paths: str):
         p = self._local_path
@@ -127,6 +127,13 @@ class QuiltPackage:
         else:
             q.fetch(dest=dest)
         return dest
+
+    async def put(self,msg=None):
+        q = await self.local()
+        logging.debug(f'put.msg={msg}: {q}')
+        result = q.push(self.name, registry=self.registry, message=msg)
+        await self.quilt()
+        return result
 
     async def getAll(self):
         await self.get()

@@ -11,6 +11,11 @@ def pkg():
 def test_pkg_fixture(pkg: QuiltPackage):
     assert pkg
 
+def test_pkg_str(pkg: QuiltPackage):
+    s = str(pkg)
+    assert pkg.name in s
+    logging.debug(pkg)
+
 
 async def test_pkg_empty(pkg: QuiltPackage):
     assert pkg is not None
