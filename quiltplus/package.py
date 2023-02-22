@@ -65,7 +65,7 @@ class QuiltPackage:
         ]
 
     def dest(self):
-        return str(self.local_path()) + "/"
+        return str(self.local_path())  # + "/"
 
     def webloc(self, suffix=""):
         return f'{{ URL = "{self.id.catalog_uri()}{suffix}"; }}'
@@ -104,10 +104,7 @@ class QuiltPackage:
         return q3local
 
     async def quilt(self):
-        if not self._q3pkg:
-            self._q3pkg = await self.browse()
-        else:
-            self._q3pkg.browse(self.name)
+        self._q3pkg = await self.browse()
         return self._q3pkg or await self.local()
 
     async def list(self, changed_only=False):
