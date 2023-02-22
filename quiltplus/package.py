@@ -87,7 +87,7 @@ class QuiltPackage:
         return QuiltPackage.OpenLocally(self.dest())
 
     async def browse(self):
-        try: 
+        try:
             p = (
                 Package.browse(self.name)
                 if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
@@ -132,14 +132,14 @@ class QuiltPackage:
             q.fetch(dest=dest)
         return dest
 
-    async def put(self, msg=None): # create new package from scratch
+    async def put(self, msg=None):  # create new package from scratch
         q = await self.local()
         q.set_dir(".", path=self.dest())
         q.build(self.name)
         result = q.push(self.name, registry=self.registry, message=msg)
         return result
 
-    async def post(self, msg=None): # update existing package
+    async def post(self, msg=None):  # update existing package
         q = await self.quilt()
         q.set_dir(".", path=self.dest())
         q.build(self.name)

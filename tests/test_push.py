@@ -32,28 +32,19 @@ async def test_push(pkg: QuiltPackage):
     files = await pkg.list()
     assert "README.md" in files
 
-    # Update Package
-    # await pkg.get()
+    # Add a file
     pkg.write_text(f"# Goodbye Cruel World!\n{TIMESTAMP}", "WRITEME.md")
-    print('WRITEME pkg')
-    print(pkg)
-    print('WRITEME list')
-    print(await pkg.list())
-    print('WRITEME diff')
-    print(await pkg.diff())
 
-    q_local = await pkg.local()
-    print('q_local')
-    print(q_local)
-    print(q_local.keys())
+    # Verify diff
+    diffs = await pkg.diff()
+    assert "WRITEME.md" in diffs["added"]
 
-    qpkg2 = await pkg.post('WRITEME')
+    # Update Package
+    qpkg2 = await pkg.post("WRITEME")
     assert qpkg2 is not None
 
-
-    # Verify Result
+    # Verify Result using legacy quilt3 APIs
     q3 = Package.browse(pkg.name, pkg.registry)
     files3 = list(q3.keys())
     assert "README.md" in files3
     assert "WRITEME.md" in files3
-
