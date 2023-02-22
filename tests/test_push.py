@@ -1,11 +1,12 @@
 from .conftest import *
 
 WRITE_URL = None
-WRITE_BKT = "quilt-ernest-staging"
+WRITE_BUCKET = os.environ.get("WRITE_BUCKET")
 TIMESTAMP = int(round(time.time()))
-WRITE_URL = f"quilt+s3://{WRITE_BKT}#package=test/{TIMESTAMP}"
+WRITE_URL = f"quilt+s3://{WRITE_BUCKET}#package=test/{TIMESTAMP}"
 
-if not WRITE_URL:
+logging.info(f"WRITE_BUCKET: [{WRITE_BUCKET}]")
+if not WRITE_BUCKET:
     pytest.skip("no writeable bucket available", allow_module_level=True)
 
 
