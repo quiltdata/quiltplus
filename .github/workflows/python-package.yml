@@ -50,6 +50,6 @@ jobs:
       run: |
         pwd
         printenv
-        ls -R /home/runner/.local/share/Quilt
-        mkdir -p /home/runner/.local/share/Quilt/packages/.quilt/named_packages/examples/wellplates/latest
+        ls 
+        ls -R /home/runner/.local
         poetry run pytest
