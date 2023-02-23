@@ -49,7 +49,6 @@ async def test_qc_saved(qc: Generator[QuiltIdCache, None, None]):
 
 async def test_qc_reload(qc: Generator[QuiltIdCache, None, None]):
     with TemporaryDirectory() as tmpdirname:
-        print(tmpdirname)
         p = Path(tmpdirname)
         qc = QuiltIdCache(p)
         assert qc.size() == 0

@@ -48,7 +48,6 @@ def test_id_type(qid: QuiltID):
 def test_id_from_attrs(qid: QuiltID):
     assert qid.attrs
     url2 = QuiltID.FromAttrs(qid.attrs).source_uri()
-    print(url2)
     assert qid.source_uri() == url2
 
 

@@ -81,7 +81,6 @@ async def test_pkg_diff(pkg: QuiltPackage):
     TEST_FILE = "test.txt"
     pkg.write_text(TEST_FILE, TEST_FILE)
     diff3 = assert_diffs(await pkg.diff(), 1, 0, 0)
-    print(diff3)
     adds = diff3["added"]
     assert TEST_FILE in adds
 

@@ -21,7 +21,7 @@ async def test_push_unbrowsable_new(pkg: QuiltPackage):
 
 
 async def test_push(pkg: QuiltPackage):
-    print(WRITE_URL)
+    logging.debug(WRITE_URL)
     assert pkg is not None
 
     # Create new Package

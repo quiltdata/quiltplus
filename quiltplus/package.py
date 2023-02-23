@@ -126,13 +126,13 @@ class QuiltPackage:
         return list(q.keys())
 
     async def diff(self):
-        print(f"\ndiff.local_files\n{self.local_files()}")
+        logging.debug(f"\ndiff.local_files\n{self.local_files()}")
         q_remote = await self.remote()
-        print(f"diff.remote_keys {q_remote.keys()}")
+        logging.debug(f"diff.remote_keys {q_remote.keys()}")
         q_local = await self.local()
-        print(f"diff.local_keys {q_local.keys()}")
+        logging.debug(f"diff.local_keys {q_local.keys()}")
         diffs = q_remote.diff(q_local)
-        print(f"diff: {diffs}")
+        logging.debug(f"diff: {diffs}")
         return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[2]}
 
     async def get(self, key=None):
