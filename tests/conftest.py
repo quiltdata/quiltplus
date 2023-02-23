@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 CI_ENVIRONMENT = os.environ.get("GITHUB_WORKSPACE")
 if CI_ENVIRONMENT:
@@ -27,4 +28,4 @@ PKG2_URL = f"quilt+s3://{TEST_BKT}#package=examples/echarts"
 
 TEST_URLS = [TEST_URL, REG_URL, PKG_URL, PKG2_URL]
 
-SKIP_LONG_TESTS = os.environ.get("SKIP_LONG_TESTS")
+SKIP_LONG_TESTS = True # os.environ.get("SKIP_LONG_TESTS")

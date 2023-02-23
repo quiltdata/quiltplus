@@ -10,8 +10,7 @@ on:
     branches: [ "main" ]
 
 env:
-  LOCAL: /home/runner/.local
-  FAIL_PATH: /home/runner/.local/share/Quilt/packages/.quilt/named_packages/examples/wellplates/latest
+  QUILT_ROOT: /home/runner/.local/share/Quilt
 
 jobs:
   build:
@@ -50,6 +49,5 @@ jobs:
       run: |
         pwd
         printenv
-        ls 
-        ls -R /home/runner/.local
+        ls -l /home/runner/.local/share
         poetry run pytest

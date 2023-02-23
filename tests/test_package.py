@@ -2,6 +2,7 @@ from .conftest import *
 
 RM_LOCAL = os.path.join(QuiltPackage.CONFIG_FOLDER, QuiltPackage.REVISEME_FILE)
 
+ROOT = Path(os.environ.get("QUILT_ROOT") or "/var/tmp")
 
 def assert_diffs(diffs, a, m, d):
     assert len(diffs["added"]) == a
@@ -31,6 +32,10 @@ async def test_pkg_empty(pkg: QuiltPackage):
     assert l is not None
     q = await pkg.quilt()
     assert q is not None
+    print(ROOT)
+    # re-browse
+    q2 = await pkg.quilt()
+    assert q2 is not None
 
 
 async def test_pkg_write(pkg: QuiltPackage):
