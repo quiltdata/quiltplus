@@ -2,6 +2,12 @@ from .conftest import *
 
 RM_LOCAL = os.path.join(QuiltPackage.CONFIG_FOLDER, QuiltPackage.REVISEME_FILE)
 
+def assert_diffs(diffs, a, m, d):
+    assert len(diffs["added"]) == a
+    assert len(diffs["modified"]) == m
+    assert len(diffs["deleted"]) == d
+    return diffs
+
 
 @pytest.fixture
 def pkg():
@@ -58,18 +64,17 @@ async def test_pkg_local_files(pkg: QuiltPackage):
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_diff(pkg: QuiltPackage):
-    diffs = await pkg.diff()
-    assert diffs == {"added": [], "modified": [], "deleted": []}
+    # new remote package
+    assert_diffs(await pkg.diff(), 0, 0, 9)
 
+    # installed package
     await pkg.get()
-    diff2 = await pkg.diff()
-    assert diff2 == {"added": [], "modified": [], "deleted": []}
+    assert_diffs(await pkg.diff(), 0, 9, 0)
 
+    # added files
     pkg.save_config()
-    diff3 = await pkg.diff()
-    assert diff3 != {"added": [], "modified": [], "deleted": []}
+    diff3 = assert_diffs(await pkg.diff(), 2, 9, 0)
     adds = diff3["added"]
-    assert adds != []
     assert RM_LOCAL in adds
 
 
@@ -83,7 +88,7 @@ async def test_pkg_list(pkg: QuiltPackage):
 async def test_pkg_changed(pkg: QuiltPackage):
     dfiles = await pkg.list(True)
     print(dfiles)
-    assert len(dfiles) == 0
+    assert len(dfiles) == 9
 
     pkg.save_config()
     print(dfiles)

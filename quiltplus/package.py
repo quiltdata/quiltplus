@@ -4,6 +4,7 @@
 import logging
 import os
 import platform
+import shutil
 import subprocess
 
 from quilt3 import Package
@@ -56,7 +57,7 @@ class QuiltPackage:
         p.mkdir(parents=True, exist_ok=True)
         return p
 
-    def local_files(self, pattern="*"):
+    def local_files(self):
         root = self.local_path()
         return [
             os.path.relpath(os.path.join(dir, file), root)
@@ -88,23 +89,29 @@ class QuiltPackage:
 
     async def browse(self):
         try:
-            p = (
+            q = (
                 Package.browse(self.name)
                 if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
                 else Package.browse(self.name, self.registry)
             )
-            p.set_dir(".", path=self.dest())
-            return p
+            q.set_dir(".", path=self.dest())
+            # q.build(self.name)
+            return q
         except Exception as err:
             logging.error(err)
             return None
 
     async def local(self):
-        q3local = Package().set_dir(".", path=self.dest())
-        return q3local
+        q = Package().set_dir(".", path=self.dest())
+        # q.build(self.name)
+        return q
 
     async def quilt(self):
-        self._q3pkg = await self.browse()
+        if not self._q3pkg:
+            self._q3pkg = await self.browse()
+        else:
+            self._q3pkg.browse(self.name)
+        # self._q3pkg = await self.browse()
         return self._q3pkg or await self.local()
 
     async def list(self, changed_only=False):
@@ -118,7 +125,8 @@ class QuiltPackage:
         q_remote = await self.quilt()
         q_local = await self.local()
         diffs = q_remote.diff(q_local)
-        return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[0]}
+        print(f'diff: {diffs}')
+        return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[2]}
 
     async def get(self, key=None):
         dest = self.dest()
@@ -141,6 +149,10 @@ class QuiltPackage:
         q.set_dir(".", path=self.dest())
         q.build(self.name)
         result = q.push(self.name, registry=self.registry, message=msg)
+        return result
+
+    def delete(self):  # remove local cache
+        shutil.rmtree(self._local_path)
         return result
 
     async def getAll(self):
