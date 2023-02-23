@@ -159,8 +159,7 @@ class QuiltPackage:
         return result
 
     def delete(self):  # remove local cache
-        shutil.rmtree(self._local_path)
-        return result
+        return shutil.rmtree(self._local_path)
 
     async def getAll(self):
         await self.get()
