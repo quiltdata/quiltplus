@@ -15,11 +15,6 @@ def pkg():
     return QuiltPackage.FromURI(WRITE_URL)
 
 
-async def test_push_unbrowsable_new(pkg: QuiltPackage):
-    with pytest.raises(Exception) as e_info:
-        assert await pkg.quilt()
-
-
 async def test_push(pkg: QuiltPackage):
     print(WRITE_URL)
     assert pkg is not None

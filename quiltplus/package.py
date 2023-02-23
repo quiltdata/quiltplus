@@ -96,31 +96,28 @@ class QuiltPackage:
         return QuiltPackage.OpenLocally(self.dest())
 
     async def browse(self):
-        try:
-            q = (
-                Package.browse(self.name)
-                if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
-                else Package.browse(self.name, self.registry)
-            )
-            q.set_dir(".", path=self.dest())
-            # q.build(self.name)
-            return q
-        except Exception as err:
-            logging.error(err)
-            return None
+        q = (
+            Package.browse(self.name)
+            if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
+            else Package.browse(self.name, self.registry)
+        )
+        q.set_dir(".", path=self.dest())
+        return q
 
     async def local(self):
         q = Package().set_dir(".", path=self.dest())
-        # q.build(self.name)
         return q
 
     async def quilt(self):
-        if not self._q3pkg:
-            self._q3pkg = await self.browse()
-        else:
-            self._q3pkg.browse(self.name)
-        # self._q3pkg = await self.browse()
-        return self._q3pkg or await self.local()
+        try:
+            if not self._q3pkg:
+                self._q3pkg = await self.browse()
+            else:
+                self._q3pkg.browse(self.name)
+            return self._q3pkg
+        except Exception as err:
+            logging.error(err)
+        return self.local()
 
     async def list(self, changed_only=False):
         if changed_only:
