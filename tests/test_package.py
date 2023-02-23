@@ -2,6 +2,7 @@ from .conftest import *
 
 RM_LOCAL = os.path.join(QuiltPackage.CONFIG_FOLDER, QuiltPackage.REVISEME_FILE)
 
+
 def assert_diffs(diffs, a, m, d):
     assert len(diffs["added"]) == a
     assert len(diffs["modified"]) == m

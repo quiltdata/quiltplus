@@ -125,7 +125,7 @@ class QuiltPackage:
         q_remote = await self.quilt()
         q_local = await self.local()
         diffs = q_remote.diff(q_local)
-        print(f'diff: {diffs}')
+        print(f"diff: {diffs}")
         return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[2]}
 
     async def get(self, key=None):
