@@ -16,6 +16,7 @@ class QuiltPackage:
     CONFIG_FOLDER = ".quilt"
     REVISEME_FILE = "REVISEME.webloc"
     CATALOG_FILE = "CATALOG.webloc"
+    QUILTPLUS_URI = "QUILTPLUS.webloc"
 
     @staticmethod
     def FromURI(url_string: str):
@@ -41,7 +42,6 @@ class QuiltPackage:
 
         self._local_path = root / id.sub_path() if root else id.local_path()
         self._q3pkg = None
-        self._q3local = None
 
     def __repr__(self):
         return f"QuiltPackage[{self.id}]@{self.local_path()})"
@@ -68,11 +68,13 @@ class QuiltPackage:
     def dest(self):
         return str(self.local_path())  # + "/"
 
-    def webloc(self, suffix=""):
-        return f'{{ URL = "{self.id.catalog_uri()}{suffix}"; }}'
+    def webloc(self, suffix="", root=None):
+        uri = root or self.id.catalog_uri()
+        return f'{{ URL = "{uri}{suffix}"; }}'
 
-    def shortcut(self, suffix=""):
-        return f"[InternetShortcut]\nURL={self.id.catalog_uri()}{suffix}"
+    def shortcut(self, suffix="", root=None):
+        uri = root or self.id.catalog_uri()
+        return f"[InternetShortcut]\nURL={uri}{suffix}"
 
     def write_text(self, text: str, file: str, *paths: str):
         dir = self.local_path(*paths)
@@ -80,17 +82,20 @@ class QuiltPackage:
         p.write_text(text)
         return p
 
-    def save_webloc(self, file: str, suffix=""):
-        url_file = file.replace("webloc", ".URL")
+    def save_webloc(self, file: str, suffix="", root=None):
+        url_file = file.replace("webloc", "URL")
         path = self.write_text(
-            self.shortcut(suffix), url_file, QuiltPackage.CONFIG_FOLDER
+            self.shortcut(suffix, root), url_file, QuiltPackage.CONFIG_FOLDER
         )
-        path = self.write_text(self.webloc(suffix), file, QuiltPackage.CONFIG_FOLDER)
+        path = self.write_text(
+            self.webloc(suffix, root), file, QuiltPackage.CONFIG_FOLDER
+        )
         return path
 
     def save_config(self):
         self.save_webloc(QuiltPackage.CATALOG_FILE)
         self.save_webloc(QuiltPackage.REVISEME_FILE, "?action=revisePackage")
+        self.save_webloc(QuiltPackage.QUILTPLUS_URI, "", self.id.quilt_uri())
 
     def open(self):
         return QuiltPackage.OpenLocally(self.dest())
