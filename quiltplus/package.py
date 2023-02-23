@@ -41,7 +41,6 @@ class QuiltPackage:
         self.registry = id.registry()
 
         self._local_path = root / id.sub_path() if root else id.local_path()
-        self._q3pkg = None
 
     def __repr__(self):
         return f"QuiltPackage[{self.id}]@{self.local_path()})"
@@ -107,7 +106,6 @@ class QuiltPackage:
                 if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
                 else Package.browse(self.name, self.registry)
             )
-            q.set_dir(".", path=self.dest())
             return q
         except Exception as err:
             logging.error(err)
@@ -117,30 +115,29 @@ class QuiltPackage:
         q = Package().set_dir(".", path=self.dest())
         return q
 
-    async def quilt(self):
-        if not self._q3pkg:
-            self._q3pkg = await self.browse()
-        else:
-            self._q3pkg.browse(self.name)
-        return self._q3pkg
+    async def remote(self):
+        return await self.browse()
 
     async def list(self, changed_only=False):
         if changed_only:
             diffs = await self.diff()
             return [x for sub in diffs.values() for x in sub]
-        q = await self.quilt()
+        q = await self.remote()
         return list(q.keys())
 
     async def diff(self):
-        q_remote = await self.quilt()
+        print(f"\ndiff.local_files\n{self.local_files()}")
+        q_remote = await self.remote()
+        print(f"diff.remote_keys {q_remote.keys()}")
         q_local = await self.local()
+        print(f"diff.local_keys {q_local.keys()}")
         diffs = q_remote.diff(q_local)
         print(f"diff: {diffs}")
         return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[2]}
 
     async def get(self, key=None):
         dest = self.dest()
-        q = await self.quilt()
+        q = await self.remote()
         if key:
             q.fetch(key, dest=dest)
         else:
@@ -155,7 +152,7 @@ class QuiltPackage:
         return result
 
     async def post(self, msg=None):  # update existing package
-        q = await self.quilt()
+        q = await self.remote()
         q.set_dir(".", path=self.dest())
         q.build(self.name)
         result = q.push(self.name, registry=self.registry, message=msg)

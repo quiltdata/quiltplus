@@ -17,7 +17,7 @@ def pkg():
 
 async def test_push_unbrowsable_new(pkg: QuiltPackage):
     with pytest.raises(Exception) as e_info:
-        assert await pkg.quilt()
+        assert await pkg.remote()
 
 
 async def test_push(pkg: QuiltPackage):
