@@ -9,7 +9,7 @@ from .conftest import *
 # post() create Package (add to recents)
 
 
-@fixture
+@pytest.fixture
 def qc():
     with TemporaryDirectory() as tmpdirname:
         qc = QuiltIdCache(Path(tmpdirname))
@@ -23,12 +23,12 @@ async def setup_package(qc):
     return pkg
 
 
-def test_qc(qc):
+def test_qc(qc: Generator[QuiltIdCache, None, None]):
     assert qc
     assert qc.size() == 0
 
 
-async def test_qc_str(qc):
+async def test_qc_str(qc: Generator[QuiltIdCache, None, None]):
     with TemporaryDirectory() as tmpdirname:
         p = Path(tmpdirname)
         qc = QuiltIdCache(p)
@@ -36,7 +36,7 @@ async def test_qc_str(qc):
         qc.save_qids()
 
 
-async def test_qc_saved(qc):
+async def test_qc_saved(qc: Generator[QuiltIdCache, None, None]):
     with TemporaryDirectory() as tmpdirname:
         p = Path(tmpdirname)
         qc = QuiltIdCache(p)
@@ -47,9 +47,8 @@ async def test_qc_saved(qc):
         assert not qc.dirty
 
 
-async def test_qc_reload(qc):
+async def test_qc_reload(qc: Generator[QuiltIdCache, None, None]):
     with TemporaryDirectory() as tmpdirname:
-        print(tmpdirname)
         p = Path(tmpdirname)
         qc = QuiltIdCache(p)
         assert qc.size() == 0
@@ -68,7 +67,7 @@ async def test_qc_reload(qc):
         qc2.save_qids()
 
 
-async def test_qc_id_local_path(qc):
+async def test_qc_id_local_path(qc: Generator[QuiltIdCache, None, None]):
     orig = QuiltID(TEST_URL)
     qid = await qc.post(orig.attrs)
     cache = qid.local_path()
@@ -77,7 +76,7 @@ async def test_qc_id_local_path(qc):
     assert str(qid.sub_path()) in str(cache)
 
 
-async def test_qc_post(qc):
+async def test_qc_post(qc: Generator[QuiltIdCache, None, None]):
     orig = QuiltID(TEST_URL)
     attrs = orig.attrs
 
@@ -97,7 +96,7 @@ async def test_qc_post(qc):
     assert qc.size() == 0
 
 
-async def test_qc_put(qc):
+async def test_qc_put(qc: Generator[QuiltIdCache, None, None]):
     orig = QuiltID(TEST_URL)
     attrs = orig.attrs
 

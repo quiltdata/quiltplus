@@ -11,6 +11,7 @@ git clone https://github.com/quiltdata/quiltplus
 cd quiltplus
 poetry self update
 poetry install
+export WRITE_BUCKET=writeable_s3_bucket
 poetry run ptw --now .
 ```
 ## Pushing Changes

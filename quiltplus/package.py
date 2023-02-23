@@ -4,6 +4,7 @@
 import logging
 import os
 import platform
+import shutil
 import subprocess
 
 from quilt3 import Package
@@ -15,9 +16,16 @@ class QuiltPackage:
     CONFIG_FOLDER = ".quilt"
     REVISEME_FILE = "REVISEME.webloc"
     CATALOG_FILE = "CATALOG.webloc"
+    QUILTPLUS_URI = "QUILTPLUS.webloc"
 
     @staticmethod
-    def OpenLocally(dest):
+    def FromURI(url_string: str):
+        qid = QuiltID(url_string)
+        pkg = QuiltPackage(qid)
+        return pkg
+
+    @staticmethod
+    def OpenLocally(dest: str):
         if platform.system() == "Windows":
             os.startfile(dest)
         elif platform.system() == "Darwin":
@@ -26,74 +34,132 @@ class QuiltPackage:
             subprocess.Popen(["xdg-open", dest])
         return dest
 
-    def __init__(self, id, root=None):
+    def __init__(self, id: QuiltID, root=None):
         assert id.has_package
         self.id = id
         self.name = id.get(K_PKG)
         self.registry = id.registry()
 
         self._local_path = root / id.sub_path() if root else id.local_path()
-        # self._local_path.touch()
-        self._q3pkg = None
 
     def __repr__(self):
-        return f"QuiltPackage({self.id}, {self.root})"
+        return f"QuiltPackage[{self.id}]@{self.local_path()})"
 
     def __str__(self):
-        return f"QuiltPackage[{self.name}]@{self.local_path()})"
+        return self.__repr__()
 
-    def local_path(self):
+    def local_path(self, *paths: str):
         p = self._local_path
+        for path in paths:
+            p = p / path
+
         p.mkdir(parents=True, exist_ok=True)
         return p
 
-    def local_config(self):
-        p = self._local_path / QuiltPackage.CONFIG_FOLDER
-        p.mkdir(parents=True, exist_ok=True)
-        return p
+    def local_files(self):
+        root = self.local_path()
+        return [
+            os.path.relpath(os.path.join(dir, file), root)
+            for (dir, dirs, files) in os.walk(root)
+            for file in files
+        ]
 
     def dest(self):
-        return str(self._local_path)
+        return str(self.local_path())  # + "/"
 
-    def webloc(self, suffix=""):
-        return f'{{ URL = "{self.id.catalog_uri()}{suffix}"; }}'
+    def webloc(self, suffix="", root=None):
+        uri = root or self.id.catalog_uri()
+        return f'{{ URL = "{uri}{suffix}"; }}'
 
-    def save_webloc(self, path, suffix=""):
-        p = self.local_config() / path
-        p.write_text(self.webloc(suffix))
+    def shortcut(self, suffix="", root=None):
+        uri = root or self.id.catalog_uri()
+        return f"[InternetShortcut]\nURL={uri}{suffix}"
+
+    def write_text(self, text: str, file: str, *paths: str):
+        dir = self.local_path(*paths)
+        p = dir / file
+        p.write_text(text)
         return p
+
+    def save_webloc(self, file: str, suffix="", root=None):
+        url_file = file.replace("webloc", "URL")
+        path = self.write_text(
+            self.shortcut(suffix, root), url_file, QuiltPackage.CONFIG_FOLDER
+        )
+        path = self.write_text(
+            self.webloc(suffix, root), file, QuiltPackage.CONFIG_FOLDER
+        )
+        return path
 
     def save_config(self):
         self.save_webloc(QuiltPackage.CATALOG_FILE)
         self.save_webloc(QuiltPackage.REVISEME_FILE, "?action=revisePackage")
+        self.save_webloc(QuiltPackage.QUILTPLUS_URI, "", self.id.quilt_uri())
 
     def open(self):
         return QuiltPackage.OpenLocally(self.dest())
 
     async def browse(self):
-        return (
-            Package.browse(self.name)
-            if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
-            else Package.browse(self.name, self.registry)
-        )
+        try:
+            q = (
+                Package.browse(self.name)
+                if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
+                else Package.browse(self.name, self.registry)
+            )
+            return q
+        except Exception as err:
+            logging.error(err)
+        return None
 
-    async def quilt(self):
-        if not self._q3pkg:
-            self._q3pkg = await self.browse()
-        return self._q3pkg
+    async def local(self):
+        q = Package().set_dir(".", path=self.dest())
+        return q
 
-    async def list(self):
-        q = await self.quilt()
+    async def remote(self):
+        return await self.browse()
+
+    async def list(self, changed_only=False):
+        if changed_only:
+            diffs = await self.diff()
+            return [x for sub in diffs.values() for x in sub]
+        q = await self.remote()
         return list(q.keys())
+
+    async def diff(self):
+        logging.debug(f"\ndiff.local_files\n{self.local_files()}")
+        q_remote = await self.remote()
+        logging.debug(f"diff.remote_keys {q_remote.keys()}")
+        q_local = await self.local()
+        logging.debug(f"diff.local_keys {q_local.keys()}")
+        diffs = q_remote.diff(q_local)
+        logging.debug(f"diff: {diffs}")
+        return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[2]}
 
     async def get(self, key=None):
         dest = self.dest()
-        q = await self.quilt()
+        q = await self.remote()
         if key:
             q.fetch(key, dest=dest)
         else:
             q.fetch(dest=dest)
         return dest
+
+    async def put(self, msg=None):  # create new package from scratch
+        q = await self.local()
+        q.set_dir(".", path=self.dest())
+        q.build(self.name)
+        result = q.push(self.name, registry=self.registry, message=msg)
+        return result
+
+    async def post(self, msg=None):  # update existing package
+        q = await self.remote()
+        q.set_dir(".", path=self.dest())
+        q.build(self.name)
+        result = q.push(self.name, registry=self.registry, message=msg)
+        return result
+
+    def delete(self):  # remove local cache
+        return shutil.rmtree(self._local_path)
 
     async def getAll(self):
         await self.get()
