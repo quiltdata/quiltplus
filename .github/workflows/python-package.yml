@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
 env:
-  XDG_CACHE_HOME: $GITHUB_WORKSPACE
+  XDG_CACHE_HOME: .
 
 jobs:
   build:
