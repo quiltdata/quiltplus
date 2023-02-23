@@ -9,9 +9,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  XDG_CACHE_HOME: $HOME
-
 jobs:
   build:
 
@@ -45,4 +42,8 @@ jobs:
         poetry run flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
+        echo "GITHUB_WORKSPACE $(GITHUB_WORKSPACE)"
+        echo "XDG_CACHE_HOME $(XDG_CACHE_HOME)"
+        touch $GITHUB_WORKSPACE/quilt
+        ls $GITHUB_WORKSPACE
         poetry run pytest

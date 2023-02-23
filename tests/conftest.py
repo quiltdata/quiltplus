@@ -1,3 +1,10 @@
+import os
+
+CI_ENVIRONMENT = os.environ.get("GITHUB_WORKSPACE")
+if CI_ENVIRONMENT:
+    os.environ["XDG_CACHE_HOME"] = CI_ENVIRONMENT
+    import quilt3
+
 import logging
 import time
 from typing import Generator
