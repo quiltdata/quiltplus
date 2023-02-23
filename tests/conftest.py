@@ -1,8 +1,8 @@
 import os
 
 CI_ENVIRONMENT = os.environ.get("GITHUB_WORKSPACE")
-if CI_ENVIRONMEN
-    print('updating environment')
+if CI_ENVIRONMENT:
+    print("updating environment")
     print(os.environ)
     os.environ["XDG_CACHE_HOME"] = CI_ENVIRONMENT
     import quilt3
