@@ -117,7 +117,7 @@ class QuiltPackage:
             return self._q3pkg
         except Exception as err:
             logging.error(err)
-        return self.local()
+        return await self.local()
 
     async def list(self, changed_only=False):
         if changed_only:
