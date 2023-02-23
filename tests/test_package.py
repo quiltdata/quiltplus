@@ -74,7 +74,7 @@ async def test_pkg_diff(pkg: QuiltPackage):
 
     # added files
     pkg.save_config()
-    diff3 = assert_diffs(await pkg.diff(), 2, 9, 0)
+    diff3 = assert_diffs(await pkg.diff(), 4, 9, 0)
     adds = diff3["added"]
     assert RM_LOCAL in adds
 

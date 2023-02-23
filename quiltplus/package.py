@@ -71,6 +71,9 @@ class QuiltPackage:
     def webloc(self, suffix=""):
         return f'{{ URL = "{self.id.catalog_uri()}{suffix}"; }}'
 
+    def shortcut(self, suffix=""):
+        return f"[InternetShortcut]\nURL={self.id.catalog_uri()}{suffix}"
+
     def write_text(self, text: str, file: str, *paths: str):
         dir = self.local_path(*paths)
         p = dir / file
@@ -78,7 +81,12 @@ class QuiltPackage:
         return p
 
     def save_webloc(self, file: str, suffix=""):
-        return self.write_text(self.webloc(suffix), file, QuiltPackage.CONFIG_FOLDER)
+        url_file = file.replace("webloc", ".URL")
+        path = self.write_text(
+            self.shortcut(suffix), url_file, QuiltPackage.CONFIG_FOLDER
+        )
+        path = self.write_text(self.webloc(suffix), file, QuiltPackage.CONFIG_FOLDER)
+        return path
 
     def save_config(self):
         self.save_webloc(QuiltPackage.CATALOG_FILE)
