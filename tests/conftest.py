@@ -8,6 +8,14 @@ import pytest
 
 from quiltplus import *
 
+pytestmark = pytest.mark.anyio
+
+
+@pytest.fixture
+def anyio_backend():
+    return "trio"
+
+
 logging.basicConfig(level=logging.DEBUG)
 
 CATALOG_URL = "https://open.quiltdata.com/b/quilt-example/packages/examples/wellplates"
