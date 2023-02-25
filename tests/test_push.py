@@ -26,7 +26,7 @@ async def test_push(pkg: QuiltPackage):
 
     # Create new Package
     pkg.write_text(f"# Hello World!\n{TIMESTAMP}", "README.md")
-    qpkg = await pkg.put("README")
+    qpkg = await pkg.post("README")
     assert qpkg is not None
 
     # Read that Package
@@ -40,8 +40,8 @@ async def test_push(pkg: QuiltPackage):
     diffs = await pkg.diff()
     assert "WRITEME.md" in diffs["added"]
 
-    # Update Package
-    qpkg2 = await pkg.post("WRITEME")
+    # Update Whole Package
+    qpkg2 = await pkg.put("WRITEME")
     assert qpkg2 is not None
 
     # Verify Result using legacy quilt3 APIs

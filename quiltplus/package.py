@@ -120,19 +120,21 @@ class QuiltPackage:
             q.fetch(dest=dest)
         return dest
 
-    async def put(self, msg=None):  # create new package from scratch
+    async def post(self, msg=None):  # create new package from scratch
         q = await self.local()
         q.set_dir(".", path=self.dest())
         q.build(self.name)
         result = q.push(self.name, registry=self.registry, message=msg)
         return result
 
-    async def post(self, msg=None):  # update existing package
+    async def put(self, msg=None):  # update whole existing package
         q = await self.remote()
         q.set_dir(".", path=self.dest())
         q.build(self.name)
         result = q.push(self.name, registry=self.registry, message=msg)
         return result
+
+    # TODO: patch - update only selected keys
 
     def delete(self):  # remove local cache
         return shutil.rmtree(self._local_path)
