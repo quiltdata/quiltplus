@@ -5,20 +5,26 @@ import asyncclick as click
 
 @click.group()
 @click.pass_context
-@click.option("--name", prompt="Your name", help="The person to greet.")
-async def cli(ctx, name):
+@click.option("--uri", help="The Quilt+ URI to operate on.")
+@click.option(
+    "--uri_file",
+    type=click.Path(),
+    default=".quilt/QUILTPLUS.shortcut",
+    help="The file to read the Quilt+ URI from.",
+)
+async def cli(ctx, uri, uri_file):
     ctx.ensure_object(dict)
-    ctx.obj["NAME"] = name
-    click.echo(f"cli.context[{ctx}]")
+    ctx.obj["URI"] = uri
+    ctx.obj["URI_FILE"] = uri_file
+
     pass
 
 
 @cli.command()
 @click.pass_context
-async def greet(ctx):
-    """Simple program that greets NAME for a total of COUNT times."""
-    name = ctx.obj["NAME"]
-    click.echo(f"Hello, {name}!")
+async def echo(ctx):
+    """Simple program dump out whatever is inside the context."""
+    click.echo(f"ctx.obj[{ctx.obj}]")
 
 
 if __name__ == "__main__":

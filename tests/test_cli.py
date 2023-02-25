@@ -2,6 +2,8 @@ from asyncclick.testing import CliRunner
 
 from .conftest import *
 
+TEST_URI = "quilt+s3://quilt-example#package=example/echarts"
+
 
 async def test_cli_empty():
     runner = CliRunner()
@@ -21,15 +23,15 @@ async def test_cli_help():
 
 async def test_cli_no_command():
     runner = CliRunner()
-    result = await runner.invoke(cli, ["--name", "Peter"])
+    result = await runner.invoke(cli, ["--uri", TEST_URI])
     print(result)
     assert "Error: Missing command" in result.output
     assert result.exit_code == 2
 
 
-async def test_cli_greet():
+async def test_cli_echo():
     runner = CliRunner()
-    result = await runner.invoke(cli, ["--name", "Peter", "greet"])
+    result = await runner.invoke(cli, ["--uri", TEST_URI, "echo"])
     print(result)
-    assert "Hello, Peter!" in result.output
+    assert TEST_URI in result.output
     assert result.exit_code == 0
