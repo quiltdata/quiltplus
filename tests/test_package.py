@@ -1,7 +1,5 @@
 from .conftest import *
 
-RM_LOCAL = os.path.join(QuiltPackage.CONFIG_FOLDER, QuiltPackage.REVISEME_FILE)
-
 
 def assert_diffs(diffs, a, m, d):
     assert len(diffs["added"]) == a
@@ -65,7 +63,8 @@ async def test_pkg_local_files(pkg: QuiltPackage):
     assert pkg.local_files() != []
     assert "README.md" in pkg.local_files()
     pkg.save_config()
-    assert RM_LOCAL in pkg.local_files()
+    revise_me = os.path.join(QuiltConfig.CONFIG_FOLDER, QuiltConfig.REVISEME_FILE)
+    assert revise_me in pkg.local_files()
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")

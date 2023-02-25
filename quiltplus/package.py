@@ -9,15 +9,11 @@ import subprocess
 
 from quilt3 import Package
 
+from .config import QuiltConfig
 from .id import *
 
 
 class QuiltPackage:
-    CONFIG_FOLDER = ".quilt"
-    REVISEME_FILE = "REVISEME.webloc"
-    CATALOG_FILE = "CATALOG.webloc"
-    QUILTPLUS_URI = "QUILTPLUS.webloc"
-
     @staticmethod
     def FromURI(url_string: str):
         qid = QuiltID(url_string)
@@ -39,8 +35,8 @@ class QuiltPackage:
         self.id = id
         self.name = id.get(K_PKG)
         self.registry = id.registry()
-
         self._local_path = root / id.sub_path() if root else id.local_path()
+        self.config = QuiltConfig(self._local_path)
 
     def __repr__(self):
         return f"QuiltPackage[{self.id}]@{self.local_path()})"
@@ -67,34 +63,14 @@ class QuiltPackage:
     def dest(self):
         return str(self.local_path())  # + "/"
 
-    def webloc(self, suffix="", root=None):
-        uri = root or self.id.catalog_uri()
-        return f'{{ URL = "{uri}{suffix}"; }}'
-
-    def shortcut(self, suffix="", root=None):
-        uri = root or self.id.catalog_uri()
-        return f"[InternetShortcut]\nURL={uri}{suffix}"
-
     def write_text(self, text: str, file: str, *paths: str):
         dir = self.local_path(*paths)
         p = dir / file
         p.write_text(text)
         return p
 
-    def save_webloc(self, file: str, suffix="", root=None):
-        url_file = file.replace("webloc", "URL")
-        path = self.write_text(
-            self.shortcut(suffix, root), url_file, QuiltPackage.CONFIG_FOLDER
-        )
-        path = self.write_text(
-            self.webloc(suffix, root), file, QuiltPackage.CONFIG_FOLDER
-        )
-        return path
-
     def save_config(self):
-        self.save_webloc(QuiltPackage.CATALOG_FILE)
-        self.save_webloc(QuiltPackage.REVISEME_FILE, "?action=revisePackage")
-        self.save_webloc(QuiltPackage.QUILTPLUS_URI, "", self.id.quilt_uri())
+        self.config.save_config(self.id)
 
     def open(self):
         return QuiltPackage.OpenLocally(self.dest())
