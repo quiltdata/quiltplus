@@ -1,5 +1,6 @@
 import logging
 import os
+from datetime import datetime
 from pathlib import Path
 
 import yaml
@@ -12,6 +13,10 @@ class QuiltConfig:
     REVISEME_FILE = "REVISEME.webloc"
     CATALOG_FILE = "CATALOG.webloc"
     CONFIG_YAML = "config.yaml"
+
+    @staticmethod
+    def Now():
+        return datetime.now().astimezone().replace(microsecond=0).isoformat()
 
     @staticmethod
     def AsWebloc(uri):

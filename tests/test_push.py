@@ -2,7 +2,7 @@ from .conftest import *
 
 WRITE_URL = None
 WRITE_BUCKET = os.environ.get("WRITE_BUCKET")
-TIMESTAMP = int(round(time.time()))
+TIMESTAMP = QuiltConfig.Now()
 WRITE_URL = f"quilt+s3://{WRITE_BUCKET}#package=test/{TIMESTAMP}"
 
 logging.info(f"WRITE_BUCKET: [{WRITE_BUCKET}]")
