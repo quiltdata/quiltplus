@@ -3,33 +3,39 @@ from asyncclick.testing import CliRunner
 from .conftest import *
 
 
-async def test_cli_empty():
+async def cli_run(args, rc=0):
     runner = CliRunner()
-    result = await runner.invoke(cli, [])
-    print(result)
+    result = await runner.invoke(cli, args)
+    logging.debug(f"run[{args}]={result}")
+    assert result.exit_code == rc
+    return result
+
+
+async def test_cli_empty():
+    result = await cli_run([])
     assert "--help" in result.output
-    assert result.exit_code == 0
 
 
 async def test_cli_help():
     runner = CliRunner()
-    result = await runner.invoke(cli, ["---help"])
-    print(result)
+    result = await cli_run(["---help"], 2)
     assert "--help" in result.output
-    assert result.exit_code == 2
 
 
 async def test_cli_no_command():
-    runner = CliRunner()
-    result = await runner.invoke(cli, ["--uri", TEST_URL])
-    print(result)
+    result = await cli_run(["--uri", TEST_URL], 2)
     assert "Error: Missing command" in result.output
-    assert result.exit_code == 2
 
 
 async def test_cli_echo():
-    runner = CliRunner()
-    result = await runner.invoke(cli, ["--uri", TEST_URL, "echo"])
-    print(result)
+    result = await cli_run(["--uri", TEST_URL, "echo"])
     assert TEST_URL in result.output
-    assert result.exit_code == 0
+
+
+async def test_cli_uris():
+    obj = {}
+    obj["URI"] = TEST_URL
+    assert TEST_URL in cli_uris(obj)
+    # ctx.obj["CONFIG_FILE"] = config_file
+    # ctx.obj["CONFIG_FOLDER"] = config_folder
+    pass
