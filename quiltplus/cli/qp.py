@@ -2,7 +2,7 @@
 import anyio
 import asyncclick as click
 
-from .config import QuiltConfig
+from ..config import QuiltConfig
 
 
 @click.group()

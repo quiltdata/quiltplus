@@ -1,6 +1,6 @@
 from asyncclick.testing import CliRunner
 
-from .conftest import *
+from ..conftest import *
 
 
 async def cli_run(args, rc=0):

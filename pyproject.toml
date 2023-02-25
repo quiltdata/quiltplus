@@ -11,7 +11,7 @@ packages = [
 ]
 
 [tool.poetry.scripts]
-qp = "quiltplus.cli:cli"
+qp = "quiltplus.cli.qp:cli"
 
 [tool.poetry.dependencies]
 python = "^3.10"
