@@ -14,6 +14,16 @@ from .id import *
 
 
 class QuiltPackage:
+    METHOD_NAMES = "get list diff put post".split(" ")  # patch
+
+    @staticmethod
+    async def CallURI(url_string: str, method: str = "get", msg: str = None):
+        if not msg:
+            msg = f"{QuiltConfig.Now()} CallURI({url_string, method})"
+        pkg = QuiltPackage.FromURI(url_string)
+        attr_method = getattr(pkg, method)
+        return await attr_method(msg) if method[0] == "p" else await attr_method()
+
     @staticmethod
     def FromURI(url_string: str):
         qid = QuiltID(url_string)
@@ -36,7 +46,7 @@ class QuiltPackage:
         self.name = id.get(K_PKG)
         self.registry = id.registry()
         self._local_path = root / id.sub_path() if root else id.local_path()
-        self.config = QuiltConfig(self._local_path)
+        self.config = QuiltConfig.ForRoot(self._local_path)
 
     def __repr__(self):
         return f"QuiltPackage[{self.id}]@{self.local_path()})"
@@ -122,8 +132,10 @@ class QuiltPackage:
 
     async def post(self, msg=None):  # create new package from scratch
         q = await self.local()
+        logging.debug(f"post.q {q}")
         q.set_dir(".", path=self.dest())
         q.build(self.name)
+        logging.debug(f"post.build {q}")
         result = q.push(self.name, registry=self.registry, message=msg)
         return result
 

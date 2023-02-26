@@ -1,37 +1,54 @@
 #!/usr/bin/env python3
+import logging
+
 import anyio
 import asyncclick as click
 
-from ..config import QuiltConfig
+from quiltplus.config import QuiltConfig
+from quiltplus.package import QuiltPackage
 
 
 @click.group()
 @click.pass_context
-@click.option("--uri", help="The Quilt+ URI to operate on.")
+@click.option("-u", "--uri", help="The Quilt+ URI to operate on.")
 @click.option(
-    "--config_file",
+    "-f",
+    "--config-file",
     type=click.Path(),
-    default=".quilt/config.yaml",
+    default=QuiltConfig.CONFIG_FOLDER,
+    show_default=True,
     help="The file to read the Quilt+ URI from.",
 )
-@click.option(
-    "--config_folder",
-    type=click.Path(),
-    default=".quilt",
-    help="The folder containing the configurational YAML.",
-)
-async def cli(ctx, uri, config_file, config_folder):
+async def cli(ctx, uri, config_file):
     ctx.ensure_object(dict)
-    ctx.obj["URI"] = uri
-    ctx.obj["CONFIG_FILE"] = config_file
-    ctx.obj["CONFIG_FOLDER"] = config_folder
-    ctx.obj["URIS"] = cli_uris(ctx.obj)
+    ctx.obj["URI"] = uri if uri else cli_uri(config_file)
+    return ctx.obj
 
 
-def cli_uris(obj):
-    if "URI" in obj:
-        return [obj["URI"]]
-    return []
+def cli_uri(config_file):
+    cfg = QuiltConfig(config_file)
+    logging.debug(f"cli_uri.cfg: {cfg}")
+    return cfg.get_uri()
+
+
+@cli.command()
+@click.pass_context
+@click.option(
+    "-x",
+    "--method",
+    default="get",
+    show_default=True,
+    type=click.Choice(QuiltPackage.METHOD_NAMES, case_sensitive=False),
+)
+@click.option("-m", "--message", help="commit message")
+async def call(ctx, method, message):
+    """Call async methods on package object."""
+    uri = ctx.obj.get("URI")
+    if not uri:
+        click.echo(f"ERROR: NO_URI_FOUND\n{ctx.obj}")
+    logging.debug(f"call[{message}] {method} {uri}")
+    result = await QuiltPackage.CallURI(uri, method, message)
+    click.echo(result)
 
 
 @cli.command()

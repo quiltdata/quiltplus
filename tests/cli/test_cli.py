@@ -32,10 +32,6 @@ async def test_cli_echo():
     assert TEST_URL in result.output
 
 
-async def test_cli_uris():
-    obj = {}
-    obj["URI"] = TEST_URL
-    assert TEST_URL in cli_uris(obj)
-    # ctx.obj["CONFIG_FILE"] = config_file
-    # ctx.obj["CONFIG_FOLDER"] = config_folder
-    pass
+async def test_cli_call():
+    result = await cli_run(["--uri", TEST_URL, "call", "-x", "list"])
+    assert "README.md" in result.output

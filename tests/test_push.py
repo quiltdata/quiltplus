@@ -1,9 +1,9 @@
 from .conftest import *
 
+TIMESTAMP = QuiltConfig.Now()
 WRITE_URL = None
 WRITE_BUCKET = os.environ.get("WRITE_BUCKET")
-TIMESTAMP = QuiltConfig.Now()
-WRITE_URL = f"quilt+s3://{WRITE_BUCKET}#package=test/{TIMESTAMP}"
+WRITE_URL = f"quilt+s3://{WRITE_BUCKET}#package=test/{TIMESTAMP.replace(':','_')}"
 
 logging.info(f"WRITE_BUCKET: [{WRITE_BUCKET}]")
 if not WRITE_BUCKET:
@@ -15,9 +15,16 @@ def pkg():
     return QuiltPackage.FromURI(WRITE_URL)
 
 
-async def test_push_unbrowsable_new(pkg: QuiltPackage):
-    with pytest.raises(Exception) as e_info:
-        assert await pkg.remote()
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+async def test_push_calluri():
+    uri = WRITE_URL + "_call"
+    methods = QuiltPackage.METHOD_NAMES
+    rmethods = list(reversed(methods))
+    for method in rmethods:
+        msg = f"{method}: test_push_calluri {TIMESTAMP}"
+        logging.debug(msg)
+        await QuiltPackage.CallURI(uri, method, msg)
+    assert True
 
 
 async def test_push(pkg: QuiltPackage):
@@ -25,7 +32,9 @@ async def test_push(pkg: QuiltPackage):
     assert pkg is not None
 
     # Create new Package
-    pkg.write_text(f"# Hello World!\n{TIMESTAMP}", "README.md")
+    README = f"# Hello World!\n{TIMESTAMP}"
+    logging.debug(README)
+    pkg.write_text(README, "README.md")
     qpkg = await pkg.post("README")
     assert qpkg is not None
 
@@ -38,7 +47,9 @@ async def test_push(pkg: QuiltPackage):
 
     # Verify diff
     diffs = await pkg.diff()
+    logging.debug(diffs)
     assert "WRITEME.md" in diffs["added"]
+    logging.debug(pkg.local_files())
 
     # Update Whole Package
     qpkg2 = await pkg.put("WRITEME")

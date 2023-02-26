@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -9,30 +10,40 @@ from .id import QuiltID
 
 
 class QuiltConfig:
-    CONFIG_FOLDER = ".quilt"
-    REVISEME_FILE = "REVISEME.webloc"
     CATALOG_FILE = "CATALOG.webloc"
+    CONFIG_FOLDER = ".quilt"
     CONFIG_YAML = "config.yaml"
+    K_QC = "quiltconfig"
+    K_URI = "uri"
+    REVISEME_FILE = "REVISEME.webloc"
 
     @staticmethod
-    def Now():
-        return datetime.now().astimezone().replace(microsecond=0).isoformat()
-
-    @staticmethod
-    def AsWebloc(uri):
-        return f'{{ URL = "{uri}"; }}'
+    def AsConfig(uri):
+        obj = {QuiltConfig.K_QC: {QuiltConfig.K_URI: uri}}
+        return yaml.safe_dump(obj)
 
     @staticmethod
     def AsShortcut(uri):
         return f"[InternetShortcut]\nURL={uri}"
 
     @staticmethod
-    def AsPackages(*uris):
-        obj = {"packages": uris}
-        return yaml.safe_dump(obj)
+    def AsWebloc(uri):
+        return f'{{ URL = "{uri}"; }}'
 
-    def __init__(self, root: Path):
-        self.path = root / QuiltConfig.CONFIG_FOLDER
+    @staticmethod
+    def ForRoot(root: Path):
+        return QuiltConfig(str(root / QuiltConfig.CONFIG_FOLDER))
+
+    @staticmethod
+    def Now():
+        return datetime.now().astimezone().replace(microsecond=0).isoformat()
+
+    def __init__(self, config_location: str):
+        # determine if folder or file, then set both
+        loc = Path(config_location)
+        is_file = loc.is_file() if loc.exists() else re.match(r"y?ml", loc.suffix)
+        self.file = loc if is_file else loc / QuiltConfig.CONFIG_YAML
+        self.path = loc.parents[0] if is_file else loc
         self.path.mkdir(parents=True, exist_ok=True)
 
     def __repr__(self):
@@ -64,9 +75,23 @@ class QuiltConfig:
         cat_uri = id.catalog_uri()
         self.save_webloc(QuiltConfig.CATALOG_FILE, cat_uri)
         self.save_webloc(QuiltConfig.REVISEME_FILE, f"{cat_uri}?action=revisePackage")
-        self.write_config(QuiltConfig.CONFIG_YAML, QuiltConfig.AsPackages(pkg_uri))
+        self.write_config(QuiltConfig.CONFIG_YAML, QuiltConfig.AsConfig(pkg_uri))
         return [
             QuiltConfig.CATALOG_FILE,
             QuiltConfig.REVISEME_FILE,
             QuiltConfig.CONFIG_YAML,
         ]
+
+    def get_uri(self):
+        if not self.file.exists():
+            logging.info(f"NOT_FOUND QuiltConfig.get_uri({self.file})")
+            return None
+        cfg_yaml = self.file.read_text()
+        logging.debug(f"QuiltConfig.GetURI.cfg_yaml: {cfg_yaml}")
+        cfg = yaml.safe_load(cfg_yaml)
+        logging.debug(f"QuiltConfig.GetURI.cfg: {cfg}")
+        config = cfg.get(QuiltConfig.K_QC)
+        if not config:
+            logging.info(f"NOT_FOUND '{QuiltConfig.K_QC}' in {self.file}")
+            return None
+        return config.get(QuiltConfig.K_URI)

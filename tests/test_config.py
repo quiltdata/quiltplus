@@ -6,7 +6,7 @@ RM_LOCAL = os.path.join(QuiltConfig.CONFIG_FOLDER, QuiltConfig.REVISEME_FILE)
 @pytest.fixture
 def cfg():
     with TemporaryDirectory() as tmpdirname:
-        config = QuiltConfig(Path(tmpdirname))
+        config = QuiltConfig.ForRoot(Path(tmpdirname))
         logging.debug(config)
         yield config
 
@@ -14,7 +14,12 @@ def cfg():
 def test_cfg_as():
     assert f"]\nURL={TEST_URL}" in QuiltConfig.AsShortcut(TEST_URL)
     assert f'{{ URL = "{TEST_URL}"; }}' in QuiltConfig.AsWebloc(TEST_URL)
-    assert f"packages:\n- {TEST_URL}" in QuiltConfig.AsPackages(TEST_URL)
+
+    cfg_yaml = QuiltConfig.AsConfig(TEST_URL)
+    cfg = yaml.safe_load(cfg_yaml)
+    assert QuiltConfig.K_QC in cfg
+    assert QuiltConfig.K_URI in cfg[QuiltConfig.K_QC]
+    assert cfg[QuiltConfig.K_QC][QuiltConfig.K_URI] == TEST_URL
 
 
 def test_cfg_fixture(cfg: QuiltConfig):
@@ -48,4 +53,20 @@ def test_cfg_save_config(cfg: QuiltConfig):
         assert cf in files
 
     p = cfg.path / QuiltConfig.CONFIG_YAML
-    assert f"packages:\n- {TEST_URL}" in p.read_text()
+    assert TEST_URL in p.read_text()
+
+
+def test_cfg_get_uri(cfg: QuiltConfig):
+    assert not cfg.file.exists()
+    qid = QuiltID(TEST_URL)
+    cfg.save_config(qid)
+    assert cfg.file.exists()
+    assert TEST_URL == cfg.get_uri()
+
+
+def test_cfg_cli_uri(cfg: QuiltConfig):
+    qid = QuiltID(TEST_URL)
+    cfg.save_config(qid)
+    assert TEST_URL == cli_uri(cfg.file)
+    assert TEST_URL == cli_uri(cfg.path)
+    assert None == cli_uri("cfg.file")
