@@ -7,7 +7,7 @@ Stores configuration information in a folder that can be checked into source con
 
 This enables generic pipelines and automation that can transparently pull and create the right packages.
 
-# QuickStart
+## QuickStart
 
 ```bash
 pip install quiltplus
@@ -20,48 +20,59 @@ qp stage # displays staged files
 qp call -x patch # uploads staged files
 ```
 
-# qp commands
+## qp commands
 
 Currently must be specified explicitly
-## qp echo
+### qp echo
 
 Show configuration parameters
 
-## qp call
+### qp call
 
 Package commands: get list diff patch put post
 
 TBD: verify
 
-## qp stage
+### qp stage
 
 Pending edits: add rm status
 
-# Future Ideas
+## Future Ideas
 
-## qp config
+### qp config
 
 Configuration and dependencies: show dep deps 
 
-## qp catalog
+### qp catalog
 
 Call/open catalog: view revise registries
 
-# Configuration Files
+## Configuration File Formats
 
-Stored inside a `.quilt` folder.
+`config.yml` stored inside a `.quilt` folder.
 
-## config.yaml
+Includes potential keys not yet implemented.
+
+## 
 
 ```
-quilt_config:
+quiltconfig:
   version: 0.7.0
   uri: quilt+s3://_bucket_#package=_prefix/suffix_
-  catalog: dns
+  catalog: catalog.dns.name
   deps: []
   pipeline:
     inputs: [uri]
     outputs: [uri]
+  stage:
+    filename:
+      path: filename
+      action: add
+      created: timestamp
+      updated: timestamp
+      entered: timestamp
+      hash: base65
+      hash_type: enum
 ```
 
 ## stage.yaml
@@ -69,13 +80,5 @@ quilt_config:
 ```
 quilt_stage:
   version: 0.7.0
-  entries:
-  - path: p
-    action: add
-    created: timestamp
-    updated: timestamp
-    entered: timestamp
-    hash: base65
-    hash_type: enum
 
    

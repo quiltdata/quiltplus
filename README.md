@@ -1,21 +1,17 @@
 # quiltplus
 Resource-oriented API for Quilt's decentralized social knowledge platform
 
-# Command-Line Usage
+## Command-Line QuickStart
 
-## QuickStart
 ```bash
 pip install quiltplus
 qp get "quilt+s3://quilt-example#package=examples/echarts"
 qp list
 ```
 
-
-# Developmment
+## Developmment
 
 Uses the [trio](https://trio.readthedocs.io/en/stable/) version of Python's `async` I/O
-
-## Setup
 
 ```bash
 git clone https://github.com/quiltdata/quiltplus
