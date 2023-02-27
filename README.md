@@ -17,7 +17,7 @@ Uses the [trio](https://trio.readthedocs.io/en/stable/) version of Python's `asy
 
 ## Setup
 
-```
+```bash
 git clone https://github.com/quiltdata/quiltplus
 cd quiltplus
 poetry self update
@@ -27,7 +27,8 @@ poetry run ptw --now .
 ```
 ## Pushing Changes
 Be sure you to first set your [API token](https://pypi.org/manage/account/) using `poetry config pypi-token.pypi <pypi-api-token>`
-```
+
+```bash
 # merge PR
 poetry version patch # minor major
 poetry build
