@@ -9,6 +9,7 @@ from quiltplus.config import QuiltConfig
 
 from .call import call
 from .echo import echo
+from .stage import stage
 
 
 @click.group()
@@ -23,16 +24,13 @@ from .echo import echo
     help="The file to read the Quilt+ URI from.",
 )
 async def cli(ctx, uri, config_file):
-    ctx.ensure_object(dict)
-    ctx.obj["URI"] = uri if uri else cli_uri(config_file)
-    return ctx.obj
-
-
-def cli_uri(config_file):
     cfg = QuiltConfig(config_file)
-    logging.debug(f"cli_uri.cfg: {cfg}")
-    return cfg.get_uri()
+    ctx.ensure_object(dict)
+    ctx.obj["CONFIG"] = cfg
+    ctx.obj["URI"] = uri if uri else cfg.get_uri()
+    return ctx.obj
 
 
 cli.add_command(echo)
 cli.add_command(call)
+cli.add_command(stage)

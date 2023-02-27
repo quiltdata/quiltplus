@@ -62,7 +62,7 @@ async def test_pkg_local_files(pkg: QuiltPackage):
     await pkg.get()
     assert pkg.local_files() != []
     assert "README.md" in pkg.local_files()
-    pkg.save_config()
+    pkg.save_uri()
     revise_me = os.path.join(QuiltConfig.CONFIG_FOLDER, QuiltConfig.REVISEME_FILE)
     assert revise_me in pkg.local_files()
 
@@ -101,7 +101,7 @@ async def test_pkg_get(pkg: QuiltPackage):
 async def test_pkg_open(pkg: QuiltPackage):
     rc = await pkg.get()
     assert rc
-    pkg.save_config()
+    pkg.save_uri()
     pkg.open()
 
 

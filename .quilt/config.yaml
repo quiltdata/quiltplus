@@ -1,0 +1,17 @@
+quiltconfig:
+  stage:
+    LICENSE.md:
+      accessed: 1675998981.5573921
+      action: remove
+      created: 1672361797.2544975
+      name: LICENSE.md
+      size: 1067
+      updated: 1672361796.6935833
+    README.md:
+      accessed: 1677217292.886107
+      action: add
+      created: 1677217278.1647513
+      name: README.md
+      size: 804
+      updated: 1677217278.1647513
+  version: 0.7.0

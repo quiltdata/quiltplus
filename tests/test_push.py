@@ -27,6 +27,7 @@ async def test_push_calluri():
     assert True
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_push(pkg: QuiltPackage):
     logging.debug(WRITE_URL)
     assert pkg is not None

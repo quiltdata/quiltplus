@@ -2,11 +2,14 @@ import logging
 import os
 import re
 from datetime import datetime
+from importlib import metadata
 from pathlib import Path
 
 import yaml
 
 from .id import QuiltID
+
+__version__ = metadata.version(__package__)
 
 
 class QuiltConfig:
@@ -14,13 +17,10 @@ class QuiltConfig:
     CONFIG_FOLDER = ".quilt"
     CONFIG_YAML = "config.yaml"
     K_QC = "quiltconfig"
+    K_STG = "stage"
     K_URI = "uri"
+    K_VER = "version"
     REVISEME_FILE = "REVISEME.webloc"
-
-    @staticmethod
-    def AsConfig(uri):
-        obj = {QuiltConfig.K_QC: {QuiltConfig.K_URI: uri}}
-        return yaml.safe_dump(obj)
 
     @staticmethod
     def AsShortcut(uri):
@@ -29,6 +29,10 @@ class QuiltConfig:
     @staticmethod
     def AsWebloc(uri):
         return f'{{ URL = "{uri}"; }}'
+
+    @staticmethod
+    def BaseConfig():
+        return {QuiltConfig.K_VER: __version__}
 
     @staticmethod
     def ForRoot(root: Path):
@@ -47,7 +51,7 @@ class QuiltConfig:
         self.path.mkdir(parents=True, exist_ok=True)
 
     def __repr__(self):
-        return f"QuiltConfig[{self.path})"
+        return f"QuiltConfig['{self.path}')"
 
     def __str__(self):
         return self.__repr__()
@@ -59,23 +63,56 @@ class QuiltConfig:
             for file in files
         ]
 
-    def write_config(self, file: str, text: str):
+    def get_config(self):
+        if not self.file.exists():
+            return QuiltConfig.BaseConfig()
+
+        cfg_yaml = self.file.read_text()
+        logging.debug(f"QuiltConfig.GetURI.cfg_yaml: {cfg_yaml}")
+        cfg = yaml.safe_load(cfg_yaml)
+        logging.debug(f"QuiltConfig.GetURI.cfg: {cfg}")
+        config = cfg.get(QuiltConfig.K_QC)
+        if not config:
+            logging.error(
+                f"INVALID_FORMAT: {self.file} does not contain a '{QuiltConfig.K_QC}' dictionary"
+            )
+            return None
+        return config
+
+    def write_file(self, file: str, text: str):
         p = self.path / file
         p.write_text(text)
         return p
 
+    def update_config(self, uri: str = None, stage: dict = None):
+        config = self.get_config()
+        if uri:
+            config[QuiltConfig.K_URI] = uri
+        if stage:
+            stg = self.get_stage()
+            stg[stage["name"]] = stage
+            config[QuiltConfig.K_STG] = stg
+
+        self.save_config(config)
+        return config
+
+    def save_config(self, config):
+        root = {QuiltConfig.K_QC: config}
+        yaml_str = yaml.safe_dump(root)
+        self.file.write_text(yaml_str)
+
     def save_webloc(self, file: str, uri: str):
         shortcut_file = file.replace("webloc", "URL")
-        path = self.write_config(shortcut_file, QuiltConfig.AsShortcut(uri))
-        path = self.write_config(file, QuiltConfig.AsWebloc(uri))
+        path = self.write_file(shortcut_file, QuiltConfig.AsShortcut(uri))
+        path = self.write_file(file, QuiltConfig.AsWebloc(uri))
         return path
 
-    def save_config(self, id: QuiltID):
+    def save_uri(self, id: QuiltID):
         pkg_uri = id.quilt_uri()
         cat_uri = id.catalog_uri()
         self.save_webloc(QuiltConfig.CATALOG_FILE, cat_uri)
         self.save_webloc(QuiltConfig.REVISEME_FILE, f"{cat_uri}?action=revisePackage")
-        self.write_config(QuiltConfig.CONFIG_YAML, QuiltConfig.AsConfig(pkg_uri))
+        self.update_config(uri=pkg_uri)
         return [
             QuiltConfig.CATALOG_FILE,
             QuiltConfig.REVISEME_FILE,
@@ -83,15 +120,24 @@ class QuiltConfig:
         ]
 
     def get_uri(self):
-        if not self.file.exists():
-            logging.info(f"NOT_FOUND QuiltConfig.get_uri({self.file})")
+        return self.get_config().get(QuiltConfig.K_URI)
+
+    def get_stage(self):
+        return self.get_config().get(QuiltConfig.K_STG, {})
+
+    def stage(self, file: str, is_add: bool = True):
+        p = Path(file)
+        if not p.exists():
+            logging.error(f"MISSING_FILE: cannot stage file '{p}' that does not exist")
             return None
-        cfg_yaml = self.file.read_text()
-        logging.debug(f"QuiltConfig.GetURI.cfg_yaml: {cfg_yaml}")
-        cfg = yaml.safe_load(cfg_yaml)
-        logging.debug(f"QuiltConfig.GetURI.cfg: {cfg}")
-        config = cfg.get(QuiltConfig.K_QC)
-        if not config:
-            logging.info(f"NOT_FOUND '{QuiltConfig.K_QC}' in {self.file}")
-            return None
-        return config.get(QuiltConfig.K_URI)
+        stats = p.stat()
+        attrs = {
+            "name": file,
+            "action": "add" if is_add else "remove",
+            "size": stats.st_size,
+            "created": stats.st_ctime,
+            "updated": stats.st_mtime,
+            "accessed": stats.st_atime,
+        }
+        self.update_config(stage=attrs)
+        return attrs

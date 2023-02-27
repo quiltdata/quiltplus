@@ -79,8 +79,8 @@ class QuiltPackage:
         p.write_text(text)
         return p
 
-    def save_config(self):
-        self.config.save_config(self.id)
+    def save_uri(self):
+        self.config.save_uri(self.id)
 
     def open(self):
         return QuiltPackage.OpenLocally(self.dest())
@@ -153,5 +153,5 @@ class QuiltPackage:
 
     async def getAll(self):
         await self.get()
-        self.save_config()
+        self.save_uri()
         return self.open()
