@@ -41,7 +41,7 @@ Pending edits: add rm status
 
 ### qp config
 
-Configuration and dependencies: show dep deps 
+Configuration and dependencies: show dep deps
 
 ### qp catalog
 
@@ -53,9 +53,7 @@ Call/open catalog: view revise registries
 
 Includes potential keys not yet implemented.
 
-## 
-
-```
+```yaml
 quiltconfig:
   version: 0.7.0
   uri: quilt+s3://_bucket_#package=_prefix/suffix_
@@ -74,11 +72,3 @@ quiltconfig:
       hash: base65
       hash_type: enum
 ```
-
-## stage.yaml
-
-```
-quilt_stage:
-  version: 0.7.0
-
-   
