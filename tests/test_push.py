@@ -1,9 +1,9 @@
 from .conftest import *
 
+TIMESTAMP = QuiltConfig.Now()
 WRITE_URL = None
 WRITE_BUCKET = os.environ.get("WRITE_BUCKET")
-TIMESTAMP = int(round(time.time()))
-WRITE_URL = f"quilt+s3://{WRITE_BUCKET}#package=test/{TIMESTAMP}"
+WRITE_URL = f"quilt+s3://{WRITE_BUCKET}#package=test/{TIMESTAMP.replace(':','_')}"
 
 logging.info(f"WRITE_BUCKET: [{WRITE_BUCKET}]")
 if not WRITE_BUCKET:
@@ -15,18 +15,43 @@ def pkg():
     return QuiltPackage.FromURI(WRITE_URL)
 
 
-async def test_push_unbrowsable_new(pkg: QuiltPackage):
-    with pytest.raises(Exception) as e_info:
-        assert await pkg.remote()
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+async def test_push_call(pkg: QuiltPackage):
+    methods = QuiltPackage.METHOD_NAMES
+    rmethods = list(reversed(methods))
+    for method in rmethods:
+        msg = f"{method}: test_push_calluri {TIMESTAMP}"
+        logging.debug(msg)
+        await pkg.call(method, msg)
+    assert True
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+async def test_push_patch(pkg: QuiltPackage):
+    cfg = pkg.config
+    p = Path("test.txt")
+    p.write_text(TEST_URL)
+    filename = str(p)
+
+    assert len(cfg.get_stage()) == 0
+    cfg.stage(filename, True)
+    assert len(cfg.get_stage()) == 1
+    msg = f"test_push_patch {TIMESTAMP}"
+    await pkg.post(msg)
+    await pkg.patch(msg)
+    assert len(cfg.get_stage()) == 0
+
+
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_push(pkg: QuiltPackage):
     logging.debug(WRITE_URL)
     assert pkg is not None
 
     # Create new Package
-    pkg.write_text(f"# Hello World!\n{TIMESTAMP}", "README.md")
-    qpkg = await pkg.put("README")
+    README = f"# Hello World!\n{TIMESTAMP}"
+    logging.debug(README)
+    pkg.write_text(README, "README.md")
+    qpkg = await pkg.post("README")
     assert qpkg is not None
 
     # Read that Package
@@ -38,10 +63,12 @@ async def test_push(pkg: QuiltPackage):
 
     # Verify diff
     diffs = await pkg.diff()
+    logging.debug(diffs)
     assert "WRITEME.md" in diffs["added"]
+    logging.debug(pkg.local_files())
 
-    # Update Package
-    qpkg2 = await pkg.post("WRITEME")
+    # Update Whole Package
+    qpkg2 = await pkg.put("WRITEME")
     assert qpkg2 is not None
 
     # Verify Result using legacy quilt3 APIs

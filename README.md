@@ -1,9 +1,20 @@
 # quiltplus
 Resource-oriented API for Quilt's decentralized social knowledge platform
 
-As of v0.4.0 all Resources are fetched sing the [trio](https://trio.readthedocs.io/en/stable/) version of `async`
+# Command-Line Usage
+
+## QuickStart
+```bash
+pip install quiltplus
+qp get "quilt+s3://quilt-example#package=examples/echarts"
+qp list
+```
+
 
 # Developmment
+
+Uses the [trio](https://trio.readthedocs.io/en/stable/) version of Python's `async` I/O
+
 ## Setup
 
 ```

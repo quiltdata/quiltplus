@@ -1,12 +1,20 @@
 import logging
 import os
-import time
 from pathlib import Path
 from typing import Generator
 
 import pytest
+import yaml
 
 from quiltplus import *
+
+pytestmark = pytest.mark.anyio
+
+
+@pytest.fixture
+def anyio_backend():
+    return "trio"
+
 
 logging.basicConfig(level=logging.DEBUG)
 
