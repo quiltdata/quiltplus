@@ -9,9 +9,10 @@ quiltconfig:
       updated: 1672361796.6935833
     README.md:
       accessed: 1677217292.886107
-      action: add
+      action: remove
       created: 1677217278.1647513
       name: README.md
       size: 804
       updated: 1677217278.1647513
+  uri: quilt+s3://quilt-ernest-staging#package=test/patch
   version: 0.7.0
