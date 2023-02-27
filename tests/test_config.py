@@ -83,13 +83,21 @@ def test_cfg_get_uri(cfg: QuiltConfig):
     assert TEST_URL == cfg.get_uri()
 
 
-def test_cfg_get_staged(cfg: QuiltConfig):
+def test_cfg_get_stage(cfg: QuiltConfig):
     assert not cfg.file.exists()
     p = cfg.write_file("test.txt", TEST_URL)
     filename = str(p)
-    cfg.stage(filename)
+    cfg.stage(filename, True)
     assert cfg.file.exists()
     stg = cfg.get_stage()
     assert stg is not None
     assert stg.get(filename) is not None
     assert stg[filename]["name"] == filename
+    assert stg == cfg.get_stage(adds=True)
+    assert stg != cfg.get_stage(adds=False)
+
+    cfg.stage(filename, False)
+    stg_rm = cfg.get_stage()
+    assert stg_rm.get(filename) is not None
+    assert stg_rm != cfg.get_stage(adds=True)
+    assert stg_rm == cfg.get_stage(adds=False)

@@ -16,6 +16,8 @@ class QuiltConfig:
     CATALOG_FILE = "CATALOG.webloc"
     CONFIG_FOLDER = ".quilt"
     CONFIG_YAML = "config.yaml"
+    K_ACT = "action"
+    K_NAM = "name"
     K_QC = "quiltconfig"
     K_STG = "stage"
     K_URI = "uri"
@@ -84,14 +86,19 @@ class QuiltConfig:
         p.write_text(text)
         return p
 
-    def update_config(self, uri: str = None, stage: dict = None):
+    def update_config(
+        self, uri: str = None, stage: dict = None, reset_stage: bool = False
+    ):
         config = self.get_config()
         if uri:
             config[QuiltConfig.K_URI] = uri
         if stage:
             stg = self.get_stage()
-            stg[stage["name"]] = stage
+            name = stage[QuiltConfig.K_NAM]
+            stg[name] = stage
             config[QuiltConfig.K_STG] = stg
+        elif reset_stage:
+            config[QuiltConfig.K_STG] = {}
 
         self.save_config(config)
         return config
@@ -122,8 +129,14 @@ class QuiltConfig:
     def get_uri(self):
         return self.get_config().get(QuiltConfig.K_URI)
 
-    def get_stage(self):
-        return self.get_config().get(QuiltConfig.K_STG, {})
+    def get_stage(self, adds: bool = None):
+        stg = self.get_config().get(QuiltConfig.K_STG, {})
+        print(f"get_stage.stg: {stg}")
+        if adds:
+            return {k: v for (k, v) in stg.items() if v[QuiltConfig.K_ACT] == "add"}
+        elif adds == False:
+            return {k: v for (k, v) in stg.items() if v[QuiltConfig.K_ACT] != "add"}
+        return stg
 
     def stage(self, file: str, is_add: bool = True):
         p = Path(file)
@@ -132,8 +145,8 @@ class QuiltConfig:
             return None
         stats = p.stat()
         attrs = {
-            "name": file,
-            "action": "add" if is_add else "remove",
+            QuiltConfig.K_NAM: file,
+            QuiltConfig.K_ACT: "add" if is_add else "remove",
             "size": stats.st_size,
             "created": stats.st_ctime,
             "updated": stats.st_mtime,

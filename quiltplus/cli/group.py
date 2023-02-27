@@ -6,6 +6,7 @@ import anyio
 import asyncclick as click
 
 from quiltplus.config import QuiltConfig
+from quiltplus.package import QuiltPackage
 
 from .call import call
 from .echo import echo
@@ -14,7 +15,8 @@ from .stage import stage
 
 @click.group()
 @click.pass_context
-@click.option("-u", "--uri", help="The Quilt+ URI to operate on.")
+@click.option("-u", "--uri", help="Use this Quilt+ URI.")
+@click.option("-U", "--update-uri", help="Update config and use this Quilt+ URI.")
 @click.option(
     "-f",
     "--config-file",
@@ -23,11 +25,21 @@ from .stage import stage
     show_default=True,
     help="The file to read the Quilt+ URI from.",
 )
-async def cli(ctx, uri, config_file):
-    cfg = QuiltConfig(config_file)
+async def cli(ctx, uri, update_uri, config_file):
     ctx.ensure_object(dict)
+    cfg = QuiltConfig(config_file)
+
+    if update_uri:
+        cfg.update_config(uri=update_uri)
+    actual_uri = uri or cfg.get_uri()
+
+    if actual_uri:
+        pkg = QuiltPackage.FromURI(actual_uri)
+        pkg.config = cfg
+        ctx.obj["URI"] = actual_uri
+        ctx.obj["PKG"] = pkg
     ctx.obj["CONFIG"] = cfg
-    ctx.obj["URI"] = uri if uri else cfg.get_uri()
+
     return ctx.obj
 
 

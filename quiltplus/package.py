@@ -14,15 +14,7 @@ from .id import *
 
 
 class QuiltPackage:
-    METHOD_NAMES = "get list diff put post".split(" ")  # patch
-
-    @staticmethod
-    async def CallURI(url_string: str, method: str = "get", msg: str = None):
-        if not msg:
-            msg = f"{QuiltConfig.Now()} CallURI({url_string, method})"
-        pkg = QuiltPackage.FromURI(url_string)
-        attr_method = getattr(pkg, method)
-        return await attr_method(msg) if method[0] == "p" else await attr_method()
+    METHOD_NAMES = "get list diff patch put post".split(" ")
 
     @staticmethod
     def FromURI(url_string: str):
@@ -130,23 +122,28 @@ class QuiltPackage:
             q.fetch(dest=dest)
         return dest
 
-    async def post(self, msg=None):  # create new package from scratch
+    async def post(self, msg=None):  # create new empty package
         q = await self.local()
-        logging.debug(f"post.q {q}")
-        q.set_dir(".", path=self.dest())
         q.build(self.name)
-        logging.debug(f"post.build {q}")
         result = q.push(self.name, registry=self.registry, message=msg)
         return result
 
-    async def put(self, msg=None):  # update whole existing package
+    async def put(self, msg=None):  # update using all local files
         q = await self.remote()
         q.set_dir(".", path=self.dest())
         q.build(self.name)
         result = q.push(self.name, registry=self.registry, message=msg)
         return result
 
-    # TODO: patch - update only selected keys
+    async def patch(self, msg=None):  # update only staged files
+        q = await self.remote()
+        [q.set(f) for f in self.config.get_stage(adds=True)]
+        [q.delete(f) for f in self.config.get_stage(adds=False)]
+        q.build(self.name)
+        print(q)
+        result = q.push(self.name, registry=self.registry, message=msg)
+        self.config.update_config(reset_stage=True)
+        return result
 
     def delete(self):  # remove local cache
         return shutil.rmtree(self._local_path)
@@ -155,3 +152,9 @@ class QuiltPackage:
         await self.get()
         self.save_uri()
         return self.open()
+
+    async def call(self, method: str = "get", msg: str = None):
+        if not msg:
+            msg = f"{QuiltConfig.Now()} {method} {self})"
+        attr_method = getattr(self, method)
+        return await attr_method(msg) if method[0] == "p" else await attr_method()

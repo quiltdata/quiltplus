@@ -16,15 +16,30 @@ def pkg():
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-async def test_push_calluri():
-    uri = WRITE_URL + "_call"
+async def test_push_call(pkg: QuiltPackage):
     methods = QuiltPackage.METHOD_NAMES
     rmethods = list(reversed(methods))
     for method in rmethods:
         msg = f"{method}: test_push_calluri {TIMESTAMP}"
         logging.debug(msg)
-        await QuiltPackage.CallURI(uri, method, msg)
+        await pkg.call(method, msg)
     assert True
+
+
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+async def test_push_patch(pkg: QuiltPackage):
+    cfg = pkg.config
+    p = Path("test.txt")
+    p.write_text(TEST_URL)
+    filename = str(p)
+
+    assert len(cfg.get_stage()) == 0
+    cfg.stage(filename, True)
+    assert len(cfg.get_stage()) == 1
+    msg = f"test_push_patch {TIMESTAMP}"
+    await pkg.post(msg)
+    await pkg.patch(msg)
+    assert len(cfg.get_stage()) == 0
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
