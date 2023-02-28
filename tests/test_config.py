@@ -71,6 +71,8 @@ def test_cfg_save_uri(cfg: QuiltConfig):
 
     p = cfg.path / QuiltConfig.CONFIG_YAML
     assert TEST_URL in p.read_text()
+    assert TEST_URL == cfg.get_uri()
+    assert QuiltID.DEFAULT_CATALOG in cfg.get_uri(QuiltConfig.K_CAT)
 
 
 def test_cfg_get_config(cfg: QuiltConfig):

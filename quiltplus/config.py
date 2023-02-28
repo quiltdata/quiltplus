@@ -145,8 +145,10 @@ class QuiltConfig:
             QuiltConfig.CONFIG_YAML,
         ]
 
-    def get_uri(self):
-        return self.get_config().get(QuiltConfig.K_URI)
+    def get_uri(self, key=None):
+        if not key:
+            key = QuiltConfig.K_URI
+        return self.get_config().get(key)
 
     def get_stage(self, adds: bool = None):
         stg = self.get_config().get(QuiltConfig.K_STG, {})

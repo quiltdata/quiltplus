@@ -8,7 +8,9 @@ import asyncclick as click
 from quiltplus.config import QuiltConfig
 from quiltplus.package import QuiltPackage
 
+from .catalog import catalog
 from .context import context
+from .depend import depend
 from .pkg import pkg
 from .stage import stage
 
@@ -43,6 +45,8 @@ async def cli(ctx, uri, update_uri, config_file):
     return ctx.obj
 
 
-cli.add_command(context)
 cli.add_command(pkg)
 cli.add_command(stage)
+cli.add_command(depend)
+cli.add_command(catalog)
+cli.add_command(context)
