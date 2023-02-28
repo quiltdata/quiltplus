@@ -43,6 +43,6 @@ async def cli(ctx, uri, update_uri, config_file):
     return ctx.obj
 
 
-cli.add_command(echo)
+cli.add_command(echo)  # no default_command=True, so we print out help instead
 cli.add_command(call)
 cli.add_command(stage)

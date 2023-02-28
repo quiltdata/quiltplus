@@ -12,8 +12,8 @@ This enables generic pipelines and automation that can transparently pull and cr
 ```bash
 pip install quiltplus
 export WRITE_BUCKET=writeable_s3_bucket
-qp -U "quilt+s3://$(WRITE_BUCKET)#package=test/quiltplus"
-qp call -x post # create empty package
+# create empty package and save to config
+qp -U "quilt+s3://$(WRITE_BUCKET)#package=test/quiltplus" call -x post
 time > README.md
 qp stage -a README.md
 qp stage # displays staged files
