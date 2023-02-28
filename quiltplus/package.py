@@ -153,8 +153,8 @@ class QuiltPackage:
         self.save_uri()
         return self.open()
 
-    async def call(self, method: str = "get", msg: str = None):
-        if not msg:
+    async def call(self, method: str = "get", msg: str = ""):
+        if msg == "":
             msg = f"{QuiltConfig.Now()} {method} {self})"
         attr_method = getattr(self, method)
         return await attr_method(msg) if method[0] == "p" else await attr_method()

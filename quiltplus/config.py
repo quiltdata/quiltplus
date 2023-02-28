@@ -78,10 +78,8 @@ class QuiltConfig:
         logging.debug(f"QuiltConfig.GetURI.cfg: {cfg}")
         config = cfg.get(QuiltConfig.K_QC)
         if not config:
-            logging.error(
-                f"INVALID_FORMAT: {self.file} does not contain a '{QuiltConfig.K_QC}' dictionary"
-            )
-            return None
+            logging.error(f"{self.file}: needs yaml key '{QuiltConfig.K_QC}'")
+            return {}
         return config
 
     def write_file(self, file: str, text: str):
@@ -150,7 +148,7 @@ class QuiltConfig:
             key = QuiltConfig.K_URI
         return self.get_config().get(key)
 
-    def get_stage(self, adds: bool = None):
+    def get_stage(self, adds=None):
         stg = self.get_config().get(QuiltConfig.K_STG, {})
         print(f"get_stage.stg: {stg}")
         if adds:
