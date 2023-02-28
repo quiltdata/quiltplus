@@ -10,6 +10,18 @@ qp list
 qp --help
 ```
 
+### Detailed Command-Line
+
+```bash
+export WRITE_BUCKET=writeable_s3_bucket
+# create empty package and save to config
+qp -U "quilt+s3://$(WRITE_BUCKET)#package=test/quiltplus" pkg -x post
+time > README.md
+qp stage -a README.md
+qp stage # displays staged files
+qp pkg -x patch # uploads staged files
+```
+
 ## Developmment
 
 Uses the [trio](https://trio.readthedocs.io/en/stable/) version of Python's `async` I/O

@@ -17,6 +17,7 @@ class QuiltConfig:
     CONFIG_FOLDER = ".quilt"
     CONFIG_YAML = "config.yaml"
     K_ACT = "action"
+    K_DEP = "depend"
     K_NAM = "name"
     K_QC = "quiltconfig"
     K_STG = "stage"
@@ -87,11 +88,18 @@ class QuiltConfig:
         return p
 
     def update_config(
-        self, uri: str = None, stage: dict = None, reset_stage: bool = False
+        self, uri: str = None,  depend: str = None, stage: dict = None, reset_stage: bool = False
     ):
         config = self.get_config()
         if uri:
             config[QuiltConfig.K_URI] = uri
+        if depend:
+            deps = self.get_depend()
+            if depend[0] == "+":
+                deps.add(depend[1:])
+            else:
+                deps.remove(depend[1:])                                
+            config[QuiltConfig.K_DEP] = list(deps)
         if stage:
             stg = self.get_stage()
             name = stage[QuiltConfig.K_NAM]
@@ -154,3 +162,11 @@ class QuiltConfig:
         }
         self.update_config(stage=attrs)
         return attrs
+
+    def get_depend(self):
+        deps = self.get_config().get(QuiltConfig.K_DEP, [])
+        return set(deps)
+
+    def depend(self, uri: str, is_add: bool = True):
+        key = f'+{uri}' if is_add else f'-{uri}'
+        return self.update_config(depend=key)

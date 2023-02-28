@@ -41,6 +41,22 @@ def test_cfg_update_stage(cfg: QuiltConfig):
     assert entry["filename"] == staged
 
 
+def test_cfg_update_depend(cfg: QuiltConfig):
+    uri = "s3//sample-uri"
+    cf = cfg.update_config(depend=f"+{uri}")
+    assert uri in cf[QuiltConfig.K_DEP]
+    
+    cf = cfg.update_config(depend=f"-{uri}")
+    assert uri not in cf[QuiltConfig.K_DEP]
+
+def test_cfg_depend(cfg: QuiltConfig):
+    uri = "s3//sample-uri"
+    cf = cfg.depend(uri)
+    assert uri in cf[QuiltConfig.K_DEP]
+    
+    cf = cfg.depend(uri, False)
+    assert uri not in cf[QuiltConfig.K_DEP]
+
 def test_cfg_save_webloc(cfg: QuiltConfig):
     p = cfg.save_webloc("test2.webloc", TEST_URL)
     assert QuiltConfig.CONFIG_FOLDER in str(p)
