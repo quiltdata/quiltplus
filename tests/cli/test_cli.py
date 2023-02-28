@@ -27,11 +27,11 @@ async def test_cli_no_command():
     assert "Error: Missing command" in result.output
 
 
-async def test_cli_echo():
-    result = await cli_run(["--uri", TEST_URL, "echo"])
+async def test_cli_context():
+    result = await cli_run(["--uri", TEST_URL, "context"])
     assert TEST_URL in result.output
 
 
-async def test_cli_call():
-    result = await cli_run(["--uri", TEST_URL, "call", "-x", "list"])
+async def test_cli_pkg():
+    result = await cli_run(["--uri", TEST_URL, "pkg", "-x", "list"])
     assert "README.md" in result.output

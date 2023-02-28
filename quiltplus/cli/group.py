@@ -8,8 +8,8 @@ import asyncclick as click
 from quiltplus.config import QuiltConfig
 from quiltplus.package import QuiltPackage
 
-from .call import call
 from .context import context
+from .pkg import pkg
 from .stage import stage
 
 
@@ -43,6 +43,6 @@ async def cli(ctx, uri, update_uri, config_file):
     return ctx.obj
 
 
-cli.add_command(context)  # no default_command=True, so we print out help instead
-cli.add_command(call)
+cli.add_command(context)
+cli.add_command(pkg)
 cli.add_command(stage)

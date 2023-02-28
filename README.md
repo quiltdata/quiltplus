@@ -5,8 +5,9 @@ Resource-oriented API for Quilt's decentralized social knowledge platform
 
 ```bash
 pip install quiltplus
-qp get "quilt+s3://quilt-example#package=examples/echarts"
+qp -U "quilt+s3://quilt-example#package=examples/echarts" pkg # get
 qp list
+qp --help
 ```
 
 ## Developmment
