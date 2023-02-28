@@ -1,6 +1,6 @@
 from asyncclick.testing import CliRunner
 
-from ..conftest import *
+from ..conftest import TEST_URL, cli, logging, pytestmark
 
 
 async def cli_run(args, rc=0):
@@ -17,7 +17,6 @@ async def test_cli_empty():
 
 
 async def test_cli_help():
-    runner = CliRunner()
     result = await cli_run(["---help"], 2)
     assert "--help" in result.output
 

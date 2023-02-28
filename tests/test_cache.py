@@ -1,6 +1,7 @@
 from tempfile import TemporaryDirectory
 
-from .conftest import *
+from .conftest import (TEST_URL, Generator, Path, QuiltID, QuiltIdCache,
+                       TemporaryDirectory, pytest, pytestmark)
 
 # get() returns recent QuiltID by numerical index
 # delete(index) removes QuiltID with that index from recents

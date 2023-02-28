@@ -1,6 +1,5 @@
 # Manage GitIgnore
 
-import logging
 from pathlib import Path
 
 IGNORE_FILE = ".gitignore"

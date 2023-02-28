@@ -1,2 +1,1 @@
-from .group import *
-from .qp import *
+from .group import cli

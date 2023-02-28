@@ -155,7 +155,7 @@ class QuiltConfig:
         print(f"get_stage.stg: {stg}")
         if adds:
             return {k: v for (k, v) in stg.items() if v[QuiltConfig.K_ACT] == "add"}
-        elif adds == False:
+        elif adds is False:
             return {k: v for (k, v) in stg.items() if v[QuiltConfig.K_ACT] != "add"}
         return stg
 

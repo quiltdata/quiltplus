@@ -1,6 +1,8 @@
 from urllib.parse import urlencode, urlunparse
 
-from .conftest import *
+from .conftest import (CATALOG_URL, K_BKT, K_HSH, K_PKG, K_PTH, K_STR, REG_URL,
+                       TEST_BKT, TEST_PKG, TEST_URL, Path, QuiltID, pytest,
+                       pytestmark)
 
 
 @pytest.fixture

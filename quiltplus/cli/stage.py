@@ -1,6 +1,3 @@
-import logging
-from pathlib import Path
-
 import asyncclick as click
 import yaml
 

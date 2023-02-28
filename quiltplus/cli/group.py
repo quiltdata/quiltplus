@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import logging
-
 import anyio
 import asyncclick as click
 
