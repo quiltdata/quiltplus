@@ -142,7 +142,7 @@ class QuiltPackage:
         q.build(self.name)
         print(q)
         result = q.push(self.name, registry=self.registry, message=msg)
-        self.config.update_config(reset_stage=True)
+        self.config.update_config({}, reset_stage=True)
         return result
 
     def delete(self):  # remove local cache

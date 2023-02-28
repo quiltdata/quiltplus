@@ -1,9 +1,11 @@
 import logging
 from pathlib import Path
-from quiltplus.package import QuiltPackage
 
 import asyncclick as click
 import yaml
+
+from quiltplus.package import QuiltPackage
+
 
 @click.command()
 @click.pass_context
@@ -16,7 +18,7 @@ import yaml
 )
 @click.option(
     "-r",
-    "--remove-package]",
+    "--remove-package",
     type=click.Path(),
     multiple=True,
     help="Remove dependency on the URI of a package",
@@ -34,6 +36,6 @@ async def depend(ctx, add_package, remove_package, get_package):
     [cfg.depend(uri, False) for uri in remove_package]
     if get_package:
         [await QuiltPackage.FromURI(uri).get() for uri in add_package]
-        
+
     status = cfg.get_depend()
     click.echo(yaml.safe_dump(status))

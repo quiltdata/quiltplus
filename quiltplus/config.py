@@ -20,9 +20,11 @@ class QuiltConfig:
     K_DEP = "depend"
     K_NAM = "name"
     K_QC = "quiltconfig"
+    K_REV = "revise"
     K_STG = "stage"
     K_URI = "uri"
     K_VER = "version"
+    K_CAT = "view"
     REVISEME_FILE = "REVISEME.webloc"
 
     @staticmethod
@@ -87,20 +89,23 @@ class QuiltConfig:
         p.write_text(text)
         return p
 
-    def update_config(
-        self, uri: str = None,  depend: str = None, stage: dict = None, reset_stage: bool = False
-    ):
+    def update_config(self, options: dict, reset_stage: bool = False):
         config = self.get_config()
-        if uri:
-            config[QuiltConfig.K_URI] = uri
-        if depend:
+        for key in [QuiltConfig.K_URI, QuiltConfig.K_CAT, QuiltConfig.K_REV]:
+            if key in options:
+                config[key] = options[key]
+
+        if QuiltConfig.K_DEP in options:
+            depend = options[QuiltConfig.K_DEP]
             deps = self.get_depend()
             if depend[0] == "+":
                 deps.add(depend[1:])
             else:
-                deps.remove(depend[1:])                                
+                deps.remove(depend[1:])
             config[QuiltConfig.K_DEP] = list(deps)
-        if stage:
+
+        if QuiltConfig.K_STG in options:
+            stage = options[QuiltConfig.K_STG]
             stg = self.get_stage()
             name = stage[QuiltConfig.K_NAM]
             stg[name] = stage
@@ -125,9 +130,15 @@ class QuiltConfig:
     def save_uri(self, id: QuiltID):
         pkg_uri = id.quilt_uri()
         cat_uri = id.catalog_uri()
+        rev_uri = f"{cat_uri}?action=revisePackage"
         self.save_webloc(QuiltConfig.CATALOG_FILE, cat_uri)
-        self.save_webloc(QuiltConfig.REVISEME_FILE, f"{cat_uri}?action=revisePackage")
-        self.update_config(uri=pkg_uri)
+        self.save_webloc(QuiltConfig.REVISEME_FILE, rev_uri)
+        options = {
+            QuiltConfig.K_URI: pkg_uri,
+            QuiltConfig.K_CAT: cat_uri,
+            QuiltConfig.K_REV: rev_uri,
+        }
+        self.update_config(options)
         return [
             QuiltConfig.CATALOG_FILE,
             QuiltConfig.REVISEME_FILE,
@@ -160,7 +171,7 @@ class QuiltConfig:
             "updated": stats.st_mtime,
             "accessed": stats.st_atime,
         }
-        self.update_config(stage=attrs)
+        self.update_config({QuiltConfig.K_STG: attrs})
         return attrs
 
     def get_depend(self):
@@ -168,5 +179,5 @@ class QuiltConfig:
         return set(deps)
 
     def depend(self, uri: str, is_add: bool = True):
-        key = f'+{uri}' if is_add else f'-{uri}'
-        return self.update_config(depend=key)
+        key = f"+{uri}" if is_add else f"-{uri}"
+        return self.update_config({QuiltConfig.K_DEP: key})

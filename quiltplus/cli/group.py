@@ -30,7 +30,7 @@ async def cli(ctx, uri, update_uri, config_file):
     cfg = QuiltConfig(config_file)
 
     if update_uri:
-        cfg.update_config(uri=update_uri)
+        cfg.update_config({QuiltConfig.K_URI: update_uri})
     actual_uri = uri or cfg.get_uri()
 
     if actual_uri:
