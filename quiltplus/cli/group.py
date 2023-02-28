@@ -28,17 +28,16 @@ from .stage import stage
 async def cli(ctx, uri, update_uri, config_file):
     ctx.ensure_object(dict)
     cfg = QuiltConfig(config_file)
+    ctx.obj["CONFIG"] = cfg
 
-    if update_uri:
-        cfg.update_config({QuiltConfig.K_URI: update_uri})
-    actual_uri = uri or cfg.get_uri()
-
+    actual_uri = uri or update_uri or cfg.get_uri()
     if actual_uri:
         pkg = QuiltPackage.FromURI(actual_uri)
         pkg.config = cfg
+        if update_uri:
+            pkg.save_uri()
         ctx.obj["URI"] = actual_uri
         ctx.obj["PKG"] = pkg
-    ctx.obj["CONFIG"] = cfg
 
     return ctx.obj
 
