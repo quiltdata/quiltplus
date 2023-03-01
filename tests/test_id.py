@@ -1,5 +1,4 @@
 from pathlib import Path
-from urllib.parse import urlencode, urlunparse
 
 from .conftest import (
     CATALOG_URL,
@@ -14,7 +13,6 @@ from .conftest import (
     TEST_URL,
     QuiltID,
     pytest,
-    pytestmark,
 )
 
 

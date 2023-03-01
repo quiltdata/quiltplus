@@ -5,11 +5,9 @@ from .conftest import (
     TEST_URL,
     QuiltConfig,
     QuiltID,
-    QuiltPackage,
     logging,
     os,
     pytest,
-    pytestmark,
 )
 
 RM_LOCAL = os.path.join(QuiltConfig.CONFIG_FOLDER, QuiltConfig.REVISEME_FILE)

@@ -1,1 +1,1 @@
-from .group import cli
+from .group import cli  # NOQA F401

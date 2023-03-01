@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import anyio
 import asyncclick as click
 from quiltplus.config import QuiltConfig
 from quiltplus.package import QuiltPackage

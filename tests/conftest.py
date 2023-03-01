@@ -17,7 +17,7 @@ from quiltplus import (
     QuiltIdCache,
     QuiltPackage,
     cli,
-)
+)  # NOQA F401
 
 pytestmark = pytest.mark.anyio
 
@@ -27,10 +27,13 @@ def anyio_backend():
     return "trio"
 
 
-CATALOG_URL = "https://open.quiltdata.com/b/quilt-example/packages/examples/wellplates"
+CATALOG_URL = "https://open.quiltdata.com/b/quilt-example/"+\
+              "packages/examples/wellplates"
 TEST_BKT = "quilt-example"
 TEST_PKG = "examples/wellplates"
-TEST_URL = f"quilt+s3://{TEST_BKT}#package={TEST_PKG}@fb5f3dc1b814246548dfe1492c8d00309a36e00c65b4774cbae97c5addb6359c&path=README.md&catalog=open.quiltdata.com"
+TEST_URL = f"quilt+s3://{TEST_BKT}#package={TEST_PKG}"+\
+           "@fb5f3dc1b814246548dfe1492c8d00309a36e00c65b4774cbae97c5addb6359c"+\
+            "&path=README.md&catalog=open.quiltdata.com"
 REG_URL = f"quilt+s3://{TEST_BKT}"
 PKG_URL = f"quilt+s3://{TEST_BKT}#package={TEST_PKG}"
 PKG2_URL = f"quilt+s3://{TEST_BKT}#package=examples/echarts"

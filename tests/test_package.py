@@ -6,7 +6,7 @@ from .conftest import (
     logging,
     os,
     pytest,
-    pytestmark,
+    pytestmark,  # NOQA F402
 )
 
 
@@ -34,10 +34,10 @@ def test_pkg_str(pkg: QuiltPackage):
 
 async def test_pkg_empty(pkg: QuiltPackage):
     assert pkg is not None
-    l = await pkg.local()
-    assert l is not None
-    l2 = await pkg.local()
-    assert l2 is not None
+    loc = await pkg.local()
+    assert loc is not None
+    loc2 = await pkg.local()
+    assert loc2 is not None
 
     q = await pkg.remote()
     assert q is not None
