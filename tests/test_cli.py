@@ -38,7 +38,7 @@ async def test_cli_context():
 
 async def test_cli_depend():
     result = await cli_run(["--uri", TEST_URL, "depend"])
-    pass
+    assert result
 
 
 async def test_cli_pkg():

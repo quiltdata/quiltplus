@@ -1,8 +1,17 @@
 # Create URL from attributes
-import logging
 from urllib.parse import urlencode, urlunparse
 
-from .parse import *
+from .parse import (
+    FRAG_KEYS,
+    K_BKT,
+    K_HSH,
+    K_PKG,
+    K_PKG_FULL,
+    K_QRY,
+    K_STR,
+    K_TAG,
+    PREFIX,
+)
 
 
 class QuiltUnparse:
@@ -33,7 +42,6 @@ class QuiltUnparse:
         encoded = urlencode(frags)
         return encoded.replace(K_PKG_FULL, K_PKG)
 
-    # (scheme='', netloc='www.cwi.nl:80', path='/%7Eguido/Python.html', params='', query='', fragment='')
     def unparse(self):
         args = (
             PREFIX + self.get(K_STR),

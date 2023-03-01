@@ -1,7 +1,4 @@
 # Create Immutable Identifier from a Quilt+ URI
-import logging
-from pathlib import Path
-from socket import gethostname
 from urllib.parse import parse_qs, urlparse
 
 PREFIX = "quilt+"

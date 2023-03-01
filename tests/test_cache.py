@@ -9,7 +9,7 @@ from .conftest import (
     QuiltID,
     QuiltIdCache,
     pytest,
-    pytestmark,
+    pytestmark,  # NOQA F401
 )
 
 # get() returns recent QuiltID by numerical index

@@ -1,17 +1,13 @@
 # Create Immutable Identifier from a Quilt+ URI
 import logging
-import os
 from pathlib import Path
 from socket import gethostname
 from tempfile import TemporaryDirectory
-from urllib.parse import parse_qs, urlparse
 
 from .parse import (
     K_BKT,
     K_CAT,
-    K_HSH,
     K_PKG,
-    K_PTH,
     K_STR,
     K_STR_DEFAULT,
     PREFIX,

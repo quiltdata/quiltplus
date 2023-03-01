@@ -11,7 +11,7 @@ from .conftest import (
     logging,
     os,
     pytest,
-    pytestmark,
+    pytestmark,  # NOQA F401
 )
 
 TIMESTAMP = QuiltConfig.Now()
