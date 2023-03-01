@@ -1,4 +1,8 @@
-# Proposed Git-Centric Workflow
+# Proposed Git-Friendly Workflow
+
+* create/manage local configuration file that can be checked into git
+* explicitly manage status of local registry
+* do it all via the command-line
 
 ## quilt new
 ```bash
@@ -27,8 +31,8 @@ quilt add [$FILES | -a | -s ]
 ```
 * add files from local filesystem to local package (error if no config.yaml)
 * if -a, instead add all files from current directory
-* if -s, sync: add new/modified files, remove deleted files
-* (from current directory)
+* if -s, sync directory: add new/modified files, remove deleted files
+* MAYBE: if -p, immediately push to remote
 
 ## quilt push
 ```bash
@@ -39,10 +43,10 @@ quilt push [-u $NEW_URI]
 
 ## quilt remote
 ```bash
-quilt remote [-u $NEW_URI]
+quilt remote [-u $OLD_URI]
 ```
 * lists files currently in remote package 
-* (or NEW_URI if -u, else error if no config.yaml)
+* (or OLD_URI if -u, else error if no config.yaml)
 
 ## quilt local
 ```bash
@@ -53,10 +57,10 @@ quilt local
 
 ## quilt status
 ```bash
-quilt status [-u $NEW_URI]
+quilt status [-u $OLD_URI]
 ```
 * lists files that differ between local and remote package
-* (or NEW_URI instead of remote, if -u)
+* (or OLD_URI instead of remote, if -u)
 * (previews `push`)
 * (error if no config.yaml or -u)
 
