@@ -4,6 +4,7 @@
 * explicitly manage and track status of local registry
 * do it all via the command-line (without worrying about browse, et al)
 * use Quilt+ URIs as the common currency
+* optimize for the one-package one-folder one-git-repo use case ("sync")
 
 ## QuickStart
 ```bash
@@ -31,9 +32,9 @@ quilt init $NEW_URI
 
 ## quilt get: existing package for this repository
 ```bash
-quilt get $OLD_URI  [-r | -t | -d]
+quilt get $OLD_URI  [-r | -t | -d | -b]
 ```
-* downloads package from remote registry to local directory
+* downloads package from remote registry to local directory (unless '-b' browse-only)
 * caches package in local registry
 * creates .quilt/config.yaml configuration file (unless -t temporary)
 * (error if already exists)
