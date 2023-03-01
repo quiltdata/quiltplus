@@ -5,13 +5,12 @@ _Draft 2_
 ## Objectives
 
 1. Create and use a local `quilt.yaml` file that can be checked into git
-> Can we make it a requirement for the code to allow files of any name?
 > Should we consider a more neutral name like `data.yaml` or dependencies.yaml?
 2. Do it all via the command-line (without worrying about browse, etc.)
 3. Extend semantics of existing `quilt3` operations
    1. `browse`, `install`, `push`
    2. Do NOT change existing semantics of any operation
-   > Specfically all commands should be backwards-compatible without new flags
+   > Specifically all commands should be backwards-compatible without new flags
 4. Address urgent use cases now while enabling richer functionality later
    1. Support creating configurations for both old and new packages
    2. Enable creating configurations without having to install
@@ -86,21 +85,13 @@ quilt3 [browse | install | push] --from-config [<config-file>]
 Each package is associated with a particular folder.
 Use Quilt+ URIs as the canonical format for fully-qualified packages.
 
-```yaml
-quilt_config:
-  version: 0.2.0
-  packages:
-    "quilt+s3://reg/pkg/new": "data"
-    "quilt+s3://reg/pkg/exist": "exist_data"
-
-```
 > The children of packages should be dicts not strings, so we have
 *a lot* more flexibility.
 
 ```yaml
 # last time we looked at this version works better at the top
 version: 0.2.1 
-dependencies:
+packages:
   # prefer canonical URI; Sergey put a lot of thought into its correctness
   - uri: quilt+s3://bucket#package=foo/bar 
     local_folder: ./data
