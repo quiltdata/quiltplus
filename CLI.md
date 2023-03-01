@@ -3,10 +3,25 @@
 * create/manage local configuration file that can be checked into git
 * explicitly manage status of local registry
 * do it all via the command-line
+* use Quilt+ URIs as the common currency
+
+## QuickStart
+```bash
+# From a working local pipeline
+quilt init "quilt+s3://ml-demos#package=ml-demo/first-test"
+quilt add data/* --push
+git add *
+git commmit -m "Ready to run"
+
+# In a production workflow
+git pull https://github.com/ml-demo/first-test
+quilt pull
+poetry run main.py # or equivalent
+```
 
 ## quilt new
 ```bash
-quilt new $NEW_URI
+quilt init $NEW_URI
 ```
 * creates .quilt/config.yaml configuration file (error if already exists)
 * creates empty package on the remote registry (error if already exists)
@@ -37,9 +52,10 @@ quilt pull [-n]
 
 ## quilt add
 ```bash
-quilt add [$FILES | -a | -s ]
+quilt add [$FILES | -a | -s ] [-p]
 ```
 * add files from local filesystem to local package (error if no config.yaml)
+* automatically updates .gitignore
 * if -a, instead add all files from current directory
 * if -s, sync directory: add new/modified files, remove deleted files
 * MAYBE: if -p, immediately push to remote
@@ -50,13 +66,6 @@ quilt push [-u $NEW_URI]
 ```
 * sync local package to remote 
 * (or NEW_URI if -u, else error if no config.yaml)
-
-## quilt remote
-```bash
-quilt remote [-u $OLD_URI]
-```
-* lists files currently in remote package 
-* (or OLD_URI if -u, else error if no config.yaml)
 
 ## quilt config
 ```bash
@@ -69,34 +78,39 @@ quilt config [-d]
 
 ## quilt stat
 ```bash
-quilt stat [-r* | -l | -i | -R | -L | -I]
+quilt stat [-r* | -R | -l | -L | -i -I]
 ```
 * "stat" current files
+* returns list of files, with status:
+    * A: added
+    * D: deleted
+    * M: modified
+    * X: unknown/missing
 * (error if no config.yaml)
 
-### -r: --remote-diff
+### -r, --remote-diff (default)
 
-* (default): lists files that differ between local and remote package
+* lists only files that differ between local and remote package
 * (previews `push`)
 
-### -R: --remote-all
+### -R, --remote-all
 
-* lists files currently in remote package 
+* lists all files currently in remote package, by local status
 
-### -l: --local-diff
+### -l, --local-diff
 
-* lists files that differ between current directory and local package 
+* lists only files that differ between current directory and local package 
 * (previews `add -s`)
 
-### -L: --local-all
-* lists files currently in local package 
+### -L, --local-all
+* lists all files currently in local package 
 * (error if no config.yaml)
 
-### -i: --ignored-diff
+### -i, --ignored-diff
 
-* lists files in local package that are NOT in .gitignore 
+* lists only files in local package that are NOT in .gitignore 
 
-### -I: --ignored-all
-* lists all files in local package, by .gitignore status 
+### -I, --ignored-all
+* lists all files in local package, by .gitignore status: 
 * I: ignored, U: un-ignored
 
