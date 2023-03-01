@@ -32,6 +32,7 @@ cd quiltplus
 poetry self update
 poetry install
 export WRITE_BUCKET=writeable_s3_bucket
+poetry run pytest --cov-report html && open htmlcov/index.html
 poetry run ptw --now .
 ```
 ## Pushing Changes
