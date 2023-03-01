@@ -16,15 +16,24 @@ quilt new $NEW_URI
 
 ## quilt get
 ```bash
-quilt get [-r | -t | -d] [$OLD_URI]
+quilt get [-r | -t | -d] $OLD_URI
 ```
 * downloads package from remote registry to local directory
 * caches package in local registry
-* if OLD_URI not specified, use uri from config.yaml (error if not exists)
-* creates/updates .quilt/config.yaml configuration file (unless -t temporary)
+* creates .quilt/config.yaml configuration file (unless -t temporary)
+* (error if already exists)
 * if '-r', recursively gets 'deps' from local configuration file 
 * (warn if file/deps don't exists)
-* if -d, add as 'deps' to config.yaml (error if OLD_URI not specified)
+* if -d, add as 'deps' to config.yaml 
+
+## quilt pull
+```bash
+quilt pull [-n]
+```
+* downloads package from remote registry to local directory
+* (error if config.yaml does not exist)
+* caches package in local registry
+* recursively gets 'deps' from local configuration file (unless -n)
 
 ## quilt add
 ```bash
@@ -49,12 +58,14 @@ quilt remote [-u $OLD_URI]
 * lists files currently in remote package 
 * (or OLD_URI if -u, else error if no config.yaml)
 
-## quilt local
+## quilt local [-i]
 ```bash
 quilt local
 ```
 * lists files currently in local package 
 * (error if no config.yaml)
+* if -i, show whether file is in .gitignore
+* I: ignored, U: un-ignored
 
 ## quilt status
 ```bash
