@@ -1,6 +1,5 @@
 import asyncclick as click
 import yaml
-
 from quiltplus.ignore import GitIgnore
 
 
@@ -27,12 +26,12 @@ from quiltplus.ignore import GitIgnore
     help="Add staged file(s) to gitignore if not present (reverse if removed)",
 )
 # NOTE: Should we git-ignore files by default? Then unignore them too?
-async def stage(ctx, add_file, remove_file, ignore_files):
+async def stage(ctx, add_file, remove_file, ignore_file):
     """Stage file"""
     cfg = ctx.obj.get("CONFIG")
     [cfg.stage(file) for file in add_file]
     [cfg.stage(file, False) for file in remove_file]
-    if ignore_files:
+    if ignore_file:
         gi = GitIgnore()
         gi.ignore(add_file)
         gi.unignore(remove_file)

@@ -3,8 +3,16 @@ from tempfile import TemporaryDirectory
 
 from quilt3 import Package
 
-from .conftest import (SKIP_LONG_TESTS, TEST_URL, QuiltConfig, QuiltPackage,
-                       logging, os, pytest, pytestmark)
+from .conftest import (
+    SKIP_LONG_TESTS,
+    TEST_URL,
+    QuiltConfig,
+    QuiltPackage,
+    logging,
+    os,
+    pytest,
+    pytestmark,
+)
 
 TIMESTAMP = QuiltConfig.Now()
 WRITE_URL = None

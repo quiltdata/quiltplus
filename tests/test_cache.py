@@ -2,8 +2,15 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Generator
 
-from .conftest import (K_PKG, TEST_PKG, TEST_URL, QuiltID, QuiltIdCache,
-                       pytest, pytestmark)
+from .conftest import (
+    K_PKG,
+    TEST_PKG,
+    TEST_URL,
+    QuiltID,
+    QuiltIdCache,
+    pytest,
+    pytestmark,
+)
 
 # get() returns recent QuiltID by numerical index
 # delete(index) removes QuiltID with that index from recents

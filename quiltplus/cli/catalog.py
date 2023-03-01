@@ -1,7 +1,6 @@
 import webbrowser
 
 import asyncclick as click
-
 from quiltplus.config import QuiltConfig
 
 

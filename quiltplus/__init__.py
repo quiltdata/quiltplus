@@ -1,5 +1,4 @@
 import yaml
-
 from quiltplus.cache import QuiltIdCache
 from quiltplus.cli import cli
 from quiltplus.config import QuiltConfig

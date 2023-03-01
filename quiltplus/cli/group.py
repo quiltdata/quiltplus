@@ -2,7 +2,6 @@
 
 import anyio
 import asyncclick as click
-
 from quiltplus.config import QuiltConfig
 from quiltplus.package import QuiltPackage
 

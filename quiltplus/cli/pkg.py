@@ -1,7 +1,6 @@
 import logging
 
 import asyncclick as click
-
 from quiltplus.package import QuiltPackage
 
 

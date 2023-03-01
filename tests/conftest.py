@@ -5,9 +5,19 @@ logging.basicConfig(level=logging.DEBUG)
 import os
 
 import pytest
-
-from quiltplus import (K_BKT, K_HSH, K_PKG, K_PTH, K_STR, GitIgnore,
-                       QuiltConfig, QuiltID, QuiltIdCache, QuiltPackage, cli)
+from quiltplus import (
+    K_BKT,
+    K_HSH,
+    K_PKG,
+    K_PTH,
+    K_STR,
+    GitIgnore,
+    QuiltConfig,
+    QuiltID,
+    QuiltIdCache,
+    QuiltPackage,
+    cli,
+)
 
 pytestmark = pytest.mark.anyio
 
