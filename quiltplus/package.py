@@ -10,7 +10,7 @@ import subprocess
 from quilt3 import Package
 
 from .config import QuiltConfig
-from .id import *
+from .id import K_PKG, QuiltID
 
 
 class QuiltPackage:
@@ -142,7 +142,7 @@ class QuiltPackage:
         q.build(self.name)
         print(q)
         result = q.push(self.name, registry=self.registry, message=msg)
-        self.config.update_config(reset_stage=True)
+        self.config.update_config({}, reset_stage=True)
         return result
 
     def delete(self):  # remove local cache
@@ -153,8 +153,8 @@ class QuiltPackage:
         self.save_uri()
         return self.open()
 
-    async def call(self, method: str = "get", msg: str = None):
-        if not msg:
+    async def call(self, method: str = "get", msg: str = ""):
+        if msg == "":
             msg = f"{QuiltConfig.Now()} {method} {self})"
         attr_method = getattr(self, method)
         return await attr_method(msg) if method[0] == "p" else await attr_method()

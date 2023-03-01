@@ -1,22 +1,38 @@
-from .conftest import *
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+from quilt3 import Package
+
+from .conftest import (
+    SKIP_LONG_TESTS,
+    TEST_URL,
+    QuiltConfig,
+    QuiltPackage,
+    logging,
+    os,
+    pytest,
+    pytestmark,  # NOQA F401
+)
 
 TIMESTAMP = QuiltConfig.Now()
 WRITE_URL = None
 WRITE_BUCKET = os.environ.get("WRITE_BUCKET")
-WRITE_URL = f"quilt+s3://{WRITE_BUCKET}#package=test/{TIMESTAMP.replace(':','_')}"
 
 logging.info(f"WRITE_BUCKET: [{WRITE_BUCKET}]")
 if not WRITE_BUCKET:
     pytest.skip("no writeable bucket available", allow_module_level=True)
 
 
-@pytest.fixture
-def pkg():
+def get_pkg(prefix: str):
+    WRITE_URL = (
+        f"quilt+s3://{WRITE_BUCKET}#package=test/{prefix}_{TIMESTAMP.replace(':','_')}"
+    )
     return QuiltPackage.FromURI(WRITE_URL)
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-async def test_push_call(pkg: QuiltPackage):
+async def test_push_call():
+    pkg = get_pkg("test_push_call")
     methods = QuiltPackage.METHOD_NAMES
     rmethods = list(reversed(methods))
     for method in rmethods:
@@ -26,25 +42,29 @@ async def test_push_call(pkg: QuiltPackage):
     assert True
 
 
-@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-async def test_push_patch(pkg: QuiltPackage):
+# @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+async def test_push_patch():
+    pkg = get_pkg("test_push_patch")
     cfg = pkg.config
-    p = Path("test.txt")
-    p.write_text(TEST_URL)
-    filename = str(p)
+    with TemporaryDirectory() as tmpdirname:
+        os.chdir(tmpdirname)
+        key = "test.txt"
+        p = Path(key)
+        p.write_text(TEST_URL)
+        filename = str(p)
 
-    assert len(cfg.get_stage()) == 0
-    cfg.stage(filename, True)
-    assert len(cfg.get_stage()) == 1
-    msg = f"test_push_patch {TIMESTAMP}"
-    await pkg.post(msg)
-    await pkg.patch(msg)
-    assert len(cfg.get_stage()) == 0
+        assert len(cfg.get_stage()) == 0
+        cfg.stage(filename, True)
+        assert len(cfg.get_stage()) == 1
+        msg = f"test_push_patch {TIMESTAMP}"
+        await pkg.post(msg)
+        await pkg.patch(msg)
+        assert len(cfg.get_stage()) == 0
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-async def test_push(pkg: QuiltPackage):
-    logging.debug(WRITE_URL)
+async def test_push():
+    pkg = get_pkg("test_push")
     assert pkg is not None
 
     # Create new Package

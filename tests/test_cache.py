@@ -1,6 +1,16 @@
+from pathlib import Path
 from tempfile import TemporaryDirectory
+from typing import Generator
 
-from .conftest import *
+from .conftest import (
+    K_PKG,
+    TEST_PKG,
+    TEST_URL,
+    QuiltID,
+    QuiltIdCache,
+    pytest,
+    pytestmark,  # NOQA F401
+)
 
 # get() returns recent QuiltID by numerical index
 # delete(index) removes QuiltID with that index from recents
@@ -40,7 +50,7 @@ async def test_qc_saved(qc: Generator[QuiltIdCache, None, None]):
     with TemporaryDirectory() as tmpdirname:
         p = Path(tmpdirname)
         qc = QuiltIdCache(p)
-        assert qc.cache_file.exists() == True
+        assert qc.cache_file.exists()
         assert not qc.dirty
 
         qc.save_qids()

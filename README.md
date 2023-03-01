@@ -5,8 +5,21 @@ Resource-oriented API for Quilt's decentralized social knowledge platform
 
 ```bash
 pip install quiltplus
-qp get "quilt+s3://quilt-example#package=examples/echarts"
+qp -U "quilt+s3://quilt-example#package=examples/echarts" pkg # get
 qp list
+qp --help
+```
+
+### Detailed Command-Line
+
+```bash
+export WRITE_BUCKET=writeable_s3_bucket
+# create empty package and save to config
+qp -U "quilt+s3://$(WRITE_BUCKET)#package=test/quiltplus" pkg -x post
+time > README.md
+qp stage -a README.md
+qp stage # displays staged files
+qp pkg -x patch # uploads staged files
 ```
 
 ## Developmment
@@ -19,6 +32,7 @@ cd quiltplus
 poetry self update
 poetry install
 export WRITE_BUCKET=writeable_s3_bucket
+poetry run pytest --cov-report html && open htmlcov/index.html
 poetry run ptw --now .
 ```
 ## Pushing Changes

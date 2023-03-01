@@ -1,7 +1,4 @@
 # Create Immutable Identifier from a Quilt+ URI
-import logging
-from pathlib import Path
-from socket import gethostname
 from urllib.parse import parse_qs, urlparse
 
 PREFIX = "quilt+"
@@ -42,7 +39,7 @@ class QuiltParse:
         return scalars
 
     def parse_id(self, host):
-        if not PREFIX in self.uri.scheme:
+        if PREFIX not in self.uri.scheme:
             raise ValueError(f"Error: invalid URI scheme {self.uri.scheme}: {self.uri}")
         self.attrs[K_STR] = self.uri.scheme.replace(PREFIX, "")
         self.attrs[K_BKT] = host

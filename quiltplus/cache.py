@@ -11,11 +11,9 @@
 import logging
 from pathlib import Path
 
-from quilt3 import list_packages
-from yaml import Loader, dump, load, safe_load
+from yaml import Loader, dump, load
 
 from .id import QuiltID
-from .package import QuiltPackage
 
 ROOT = Path.home() / "Documents" / "QuiltData"
 RECENTS = "recents.yaml"
@@ -32,9 +30,8 @@ class IdCache:
 
     def save_qids(self):
         recents = [qid.attrs for qid in self.qids]
-        logging.debug(
-            f"{__class__.__name__}.save_qids[{self.cache_file}] {self.size()} / {len(recents)}"
-        )
+        name = f"{__class__.__name__}.save_qids[{self.cache_file}]"
+        logging.debug(f"{name} {self.size()} / {len(recents)}")
         with self.cache_file.open("w+") as f:
             dump(recents, f)
         self.dirty = False
