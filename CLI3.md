@@ -5,10 +5,13 @@ _Draft 2_
 ## Objectives
 
 1. Create and use a local `quilt.yaml` file that can be checked into git
+> Can we make it a requirement for the code to allow files of any name?
+> Should we consider a more neutral name like `data.yaml` or dependencies.yaml?
 2. Do it all via the command-line (without worrying about browse, etc.)
 3. Extend semantics of existing `quilt3` operations
    1. `browse`, `install`, `push`
    2. Do NOT change existing semantics of any operation
+   > Specfically all commands should be backwards-compatible without new flags
 4. Address urgent use cases now while enabling richer functionality later
    1. Support creating configurations for both old and new packages
    2. Enable creating configurations without having to install
@@ -23,11 +26,11 @@ Creating repo from a working local pipeline:
 
 ```bash
 git init
-quilt3 push pkg/new --registry reg -dir data --to-config # new package
-quilt3 install pkg/exist --registry reg -dir exist_data --to-config # existing package
+quilt3 push pkg/new --registry reg --dir data --to-config # new package
+quilt3 install pkg/exist --registry reg --dir exist_data --to-config # existing package
 git add *
-quilt3 browse pkg/out --registry reg -dir data/out --to-config output.yaml
-quilt3 browse pkg/dbout --registry reg -dir database/db1 --to-config output.yaml
+quilt3 browse pkg/out --registry reg --dir data/out --to-config output.yaml
+quilt3 browse pkg/dbout --registry reg --dir database/db1 --to-config output.yaml
 git add output.yaml .gitignore 
 git commmit -m "Ready to run"
 ```
@@ -56,11 +59,15 @@ quilt3 [browse | install | push] --to-config [<config-file>]
   * or other name, if specified as an argument
   * or extends it, if exists
 * stores directory AND the fully-qualified Quilt+ URI for that package and registry
+> Isn't it more correc to say the URI is a pure function of what's in the file?
+> I don't see any reason to be redundant and also include the URI
   * key-value pairs of "uri: path"
   * may use the short form URI: `quilt+s3://reg/package/name`
 * creates/updates `.quiltignore` with the configuration file
-* automatially adds package files to `.gitignore` (create if it does not exist)
+* automatically adds package files to `.gitignore` (create if it does not exist)
 
+> specifically how does `browse`, if it only copies the manifest, 
+> know how to patch local-only files into the existing package tree?
 
 ### --from-config: get package data from configuration file
 
@@ -72,7 +79,7 @@ quilt3 [browse | install | push] --from-config [<config-file>]
 * error if user also specifies a package name
 * creates `./quilt.yaml` configuration file by default [else config-file]
   * error if config file malformed or does not exist
-* automatially adds package files to `.gitignore` (create if it does not exist)
+* automatically adds package files to `.gitignore` (create if it does not exist)
 
 ### quilt.yaml configuration file formal
 
@@ -86,4 +93,17 @@ quilt_config:
     "quilt+s3://reg/pkg/new": "data"
     "quilt+s3://reg/pkg/exist": "exist_data"
 
+```
+> The children of packages should be dicts not strings, so we have
+*a lot* more flexibility.
+
+```yaml
+# last time we looked at this version works better at the top
+version: 0.2.1 
+dependencies:
+  # prefer canonical URI; Sergey put a lot of thought into its correctness
+  - uri: quilt+s3://bucket#package=foo/bar 
+    local_folder: ./data
+  - uri: quilt+s3://bucket#package=foo/bar
+    local_folder: ./exist_data
 ```
