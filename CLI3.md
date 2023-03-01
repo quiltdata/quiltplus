@@ -5,6 +5,9 @@
 * do it all via the command-line (without worrying about browse, et al)
 * build on top of `quilt3` install and push
 * do NOT change existing semantics of any operation
+* address urgent customer use cases now while enabling richer functionality later
+
+Inspired by [this gist](https://gist.github.com/akarve/db4b8d5c032030df30b371127bc82e15)
 
 ## QuickStart
 ```bash
