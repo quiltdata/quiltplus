@@ -16,7 +16,7 @@ quilt new $NEW_URI
 
 ## quilt get
 ```bash
-quilt get [-r | -t] [$OLD_URI]
+quilt get [-r | -t | -d] [$OLD_URI]
 ```
 * downloads package from remote registry to local directory
 * caches package in local registry
@@ -24,6 +24,7 @@ quilt get [-r | -t] [$OLD_URI]
 * creates/updates .quilt/config.yaml configuration file (unless -t temporary)
 * if '-r', recursively gets 'deps' from local configuration file 
 * (warn if file/deps don't exists)
+* if -d, add as 'deps' to config.yaml (error if OLD_URI not specified)
 
 ## quilt add
 ```bash
