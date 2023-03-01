@@ -95,6 +95,6 @@ packages:
   # prefer canonical URI; Sergey put a lot of thought into its correctness
   - uri: quilt+s3://bucket#package=foo/bar 
     local_folder: ./data
-  - uri: quilt+s3://bucket#package=foo/bar
+  - uri: quilt+s3://bucket#package=foo/baz
     local_folder: ./exist_data
 ```
