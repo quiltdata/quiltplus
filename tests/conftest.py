@@ -1,10 +1,7 @@
 import logging
-
-logging.basicConfig(level=logging.DEBUG)
-
 import os
-
 import pytest
+
 from quiltplus import (  # NOQA F401
     K_BKT,
     K_HSH,
@@ -19,8 +16,8 @@ from quiltplus import (  # NOQA F401
     cli,
 )
 
+logging.basicConfig(level=logging.DEBUG)
 pytestmark = pytest.mark.anyio
-
 
 @pytest.fixture
 def anyio_backend():
