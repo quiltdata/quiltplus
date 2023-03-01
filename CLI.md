@@ -37,9 +37,9 @@ quilt get [-r | -t | -d] $OLD_URI
 * caches package in local registry
 * creates .quilt/config.yaml configuration file (unless -t temporary)
 * (error if already exists)
-* if '-r', recursively gets 'deps' from local configuration file 
+* if '-r', recursively gets 'deps' from local configuration file
 * (warn if file/deps don't exists)
-* if -d, add as 'deps' to config.yaml 
+* if -d, add as 'deps' to config.yaml
 
 ## quilt pull
 ```bash
@@ -64,14 +64,14 @@ quilt add [$FILES | -a | -s ] [-p]
 ```bash
 quilt push [-u $NEW_URI]
 ```
-* sync local package to remote 
+* sync local package to remote
 * (or NEW_URI if -u, else error if no config.yaml)
 
 ## quilt config
 ```bash
 quilt config [-d]
 ```
-* print local configuration file 
+* print local configuration file
 * delete if -d
 * (warn if no config.yaml)
 
@@ -82,10 +82,10 @@ quilt stat [-r* | -R | -l | -L | -i -I]
 ```
 * "stat" current files
 * returns list of files, with status:
-    * A: added
-    * D: deleted
-    * M: modified
-    * X: unknown/missing
+  * A: added
+  * D: deleted
+  * M: modified
+  * X: unknown/missing
 * (error if no config.yaml)
 
 ### -r, --remote-diff (default)
@@ -99,7 +99,7 @@ quilt stat [-r* | -R | -l | -L | -i -I]
 
 ### -l, --local-diff
 
-* lists only files that differ between current directory and local package 
+* lists only files that differ between current directory and local package
 * (previews `add -s`)
 
 ### -L, --local-all
@@ -107,9 +107,9 @@ quilt stat [-r* | -R | -l | -L | -i -I]
 
 ### -i, --ignored-diff
 
-* lists only files in local package that are NOT in .gitignore 
+* lists only files in local package that are NOT in .gitignore
 
 ### -I, --ignored-all
-* lists all files in local package, by .gitignore status: 
+* lists all files in local package, by .gitignore status:
 * I: ignored, U: un-ignored
 
