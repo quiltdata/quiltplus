@@ -103,8 +103,7 @@ quilt stat [-r* | -R | -l | -L | -i -I]
 * (previews `add -s`)
 
 ### -L, --local-all
-* lists all files currently in local package 
-* (error if no config.yaml)
+* lists all files currently in local package, by diff status
 
 ### -i, --ignored-diff
 
