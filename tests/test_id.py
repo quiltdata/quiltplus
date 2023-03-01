@@ -13,6 +13,7 @@ from .conftest import (
     TEST_URL,
     QuiltID,
     pytest,
+    pytestmark,  # NOQA F401
 )
 
 

@@ -1,14 +1,7 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from .conftest import (
-    TEST_URL,
-    QuiltConfig,
-    QuiltID,
-    logging,
-    os,
-    pytest,
-)
+from .conftest import TEST_URL, QuiltConfig, QuiltID, logging, os, pytest
 
 RM_LOCAL = os.path.join(QuiltConfig.CONFIG_FOLDER, QuiltConfig.REVISEME_FILE)
 

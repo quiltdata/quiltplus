@@ -1,3 +1,4 @@
+from .conftest import pytestmark  # NOQA F402
 from .conftest import (
     SKIP_LONG_TESTS,
     TEST_URL,
@@ -6,7 +7,6 @@ from .conftest import (
     logging,
     os,
     pytest,
-    pytestmark,  # NOQA F402
 )
 
 

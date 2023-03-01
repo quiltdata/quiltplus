@@ -1,6 +1,6 @@
 from asyncclick.testing import CliRunner
 
-from .conftest import TEST_URL, cli, logging
+from .conftest import TEST_URL, cli, logging, pytestmark  # NOQA F401
 
 
 async def cli_run(args, rc=0):

@@ -10,7 +10,7 @@ import subprocess
 from quilt3 import Package
 
 from .config import QuiltConfig
-from .id import QuiltID, K_PKG
+from .id import K_PKG, QuiltID
 
 
 class QuiltPackage:
