@@ -58,39 +58,45 @@ quilt remote [-u $OLD_URI]
 * lists files currently in remote package 
 * (or OLD_URI if -u, else error if no config.yaml)
 
-## quilt local [-i]
-```bash
-quilt local
-```
-* lists files currently in local package 
-* (error if no config.yaml)
-* if -i, show whether file is in .gitignore
-* I: ignored, U: un-ignored
-
-## quilt status
-```bash
-quilt status [-u $OLD_URI]
-```
-* lists files that differ between local and remote package
-* (or OLD_URI instead of remote, if -u)
-* (previews `push`)
-* (error if no config.yaml or -u)
-
-## quilt diff
-```bash
-quilt diff
-```
-* lists files that differ between current directory and local package 
-* (previews `add -s`)
-* (error if no config.yaml)
-
 ## quilt config
 ```bash
 quilt config [-d]
 ```
 * print local configuration file 
 * delete if -d
+* (warn if no config.yaml)
 
 
+## quilt stat
+```bash
+quilt stat [-r* | -l | -i | -R | -L | -I]
+```
+* "stat" current files
+* (error if no config.yaml)
 
+### -r: --remote-diff
+
+* (default): lists files that differ between local and remote package
+* (previews `push`)
+
+### -R: --remote-all
+
+* lists files currently in remote package 
+
+### -l: --local-diff
+
+* lists files that differ between current directory and local package 
+* (previews `add -s`)
+
+### -L: --local-all
+* lists files currently in local package 
+* (error if no config.yaml)
+
+### -i: --ignored-diff
+
+* lists files in local package that are NOT in .gitignore 
+
+### -I: --ignored-all
+* lists all files in local package, by .gitignore status 
+* I: ignored, U: un-ignored
 
