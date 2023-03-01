@@ -34,12 +34,14 @@ async def test_push_call():
     assert True
 
 
-@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+# @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_push_patch():
     pkg = get_pkg("test_push_patch")
     cfg = pkg.config
     with TemporaryDirectory() as tmpdirname:
-        p = Path(tmpdirname) / "test.txt"
+        os.chdir(tmpdirname)
+        key = "test.txt"
+        p = Path(key)
         p.write_text(TEST_URL)
         filename = str(p)
 
