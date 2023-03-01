@@ -1,13 +1,13 @@
 import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
 import os
-from pathlib import Path
-from tempfile import TemporaryDirectory
-from typing import Generator
 
 import pytest
-import yaml
 
-from quiltplus import *
+from quiltplus import (K_BKT, K_HSH, K_PKG, K_PTH, K_STR, GitIgnore,
+                       QuiltConfig, QuiltID, QuiltIdCache, QuiltPackage, cli)
 
 pytestmark = pytest.mark.anyio
 
@@ -16,8 +16,6 @@ pytestmark = pytest.mark.anyio
 def anyio_backend():
     return "trio"
 
-
-logging.basicConfig(level=logging.DEBUG)
 
 CATALOG_URL = "https://open.quiltdata.com/b/quilt-example/packages/examples/wellplates"
 TEST_BKT = "quilt-example"

@@ -1,4 +1,5 @@
-from .conftest import *
+from .conftest import (SKIP_LONG_TESTS, TEST_URL, QuiltConfig, QuiltPackage,
+                       logging, os, pytest, pytestmark)
 
 
 def assert_diffs(diffs, a, m, d):

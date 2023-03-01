@@ -1,7 +1,8 @@
+from pathlib import Path
 from urllib.parse import urlencode, urlunparse
 
 from .conftest import (CATALOG_URL, K_BKT, K_HSH, K_PKG, K_PTH, K_STR, REG_URL,
-                       TEST_BKT, TEST_PKG, TEST_URL, Path, QuiltID, pytest,
+                       TEST_BKT, TEST_PKG, TEST_URL, QuiltID, pytest,
                        pytestmark)
 
 

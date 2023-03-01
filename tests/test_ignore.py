@@ -1,4 +1,4 @@
-from .conftest import *
+from .conftest import GitIgnore, pytest
 
 TEST_FILE = "foobar.$$$"
 
