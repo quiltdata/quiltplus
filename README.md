@@ -1,4 +1,5 @@
 # quiltplus
+
 Resource-oriented API for Quilt's decentralized social knowledge platform
 
 ## Command-Line QuickStart
@@ -35,7 +36,9 @@ export WRITE_BUCKET=writeable_s3_bucket
 poetry run pytest --cov-report html && open htmlcov/index.html
 poetry run ptw --now .
 ```
+
 ## Pushing Changes
+
 Be sure you to first set your [API token](https://pypi.org/manage/account/) using `poetry config pypi-token.pypi <pypi-api-token>`
 
 ```bash
