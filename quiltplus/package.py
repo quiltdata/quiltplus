@@ -35,7 +35,7 @@ class QuiltPackage:
     def __init__(self, id: QuiltID, root=None):
         assert id.has_package
         self.id = id
-        self.name = id.get(K_PKG)
+        self.name = id.pkg()
         self.registry = id.registry()
         self._local_path = root / id.sub_path() if root else id.local_path()
         self.config = QuiltConfig.ForRoot(self._local_path)
@@ -80,9 +80,9 @@ class QuiltPackage:
     async def browse(self):
         try:
             q = (
-                Package.browse(self.name)
+                Package.browse(self.name, top_hash=self.id.hash())
                 if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
-                else Package.browse(self.name, self.registry)
+                else Package.browse(self.name, self.registry, top_hash=self.id.hash())
             )
             return q
         except Exception as err:
