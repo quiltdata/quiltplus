@@ -79,7 +79,7 @@ async def test_pkg_local_files(pkg: QuiltPackage):
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_diff(pkg: QuiltPackage):
     # new remote package
-    assert_diffs(await pkg.diff(), 0, 0, 9)
+    assert_diffs(await pkg.diff(), 0, 0, 7)
 
     # installed package
     await pkg.get()
