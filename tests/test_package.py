@@ -98,6 +98,7 @@ async def test_pkg_list(pkg: QuiltPackage):
     assert files
     assert len(files) > 3
     assert "README.md" in files
+    assert "render.html" not in files
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")

@@ -38,7 +38,7 @@ def test_id_get(qid: QuiltID):
     assert qid.get(K_PKG) == TEST_PKG
     assert (
         qid.get(K_HSH)
-        == "fb5f3dc1b814246548dfe1492c8d00309a36e00c65b4774cbae97c5addb6359c"
+        == "e1f83ce3dc7b9487e5732d58effabad64065d2e7401996fa5afccd0ceb92645c"
     )
     assert qid.get(K_PTH) == "README.md"
 
