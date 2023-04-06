@@ -31,7 +31,7 @@ TEST_BKT = "quilt-example"
 TEST_PKG = "examples/wellplates"
 TEST_URL = (
     f"quilt+s3://{TEST_BKT}#package={TEST_PKG}"
-    + "@fb5f3dc1b814246548dfe1492c8d00309a36e00c65b4774cbae97c5addb6359c"
+    + "@e1f83ce3dc7b9487e5732d58effabad64065d2e7401996fa5afccd0ceb92645c"
     + "&path=README.md&catalog=open.quiltdata.com"
 )
 REG_URL = f"quilt+s3://{TEST_BKT}"

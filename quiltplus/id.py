@@ -4,7 +4,7 @@ from pathlib import Path
 from socket import gethostname
 from tempfile import TemporaryDirectory
 
-from .parse import K_BKT, K_CAT, K_PKG, K_STR, K_STR_DEFAULT, PREFIX, TYPES, QuiltParse
+from .parse import K_BKT, K_CAT, K_HSH, K_PKG, K_STR, K_STR_DEFAULT, PREFIX, TYPES, QuiltParse
 from .unparse import QuiltUnparse
 
 
@@ -67,6 +67,12 @@ class QuiltID(QuiltParse):
 
     def local_path(self):
         return self.root() / self.sub_path()
+
+    def pkg(self):
+        return self.get(K_PKG)
+
+    def hash(self):
+        return self.get(K_HSH)
 
     def registry(self):
         return f"{self.get(K_STR)}://{self.get(K_BKT)}"
