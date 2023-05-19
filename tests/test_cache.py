@@ -5,7 +5,7 @@ from typing import Generator
 from .conftest import (
     K_PKG,
     TEST_PKG,
-    TEST_URL,
+    TEST_URI,
     QuiltID,
     QuiltIdCache,
     pytest,
@@ -28,7 +28,7 @@ def qc():
 
 
 async def setup_package(qc):
-    qid = QuiltID(TEST_URL)
+    qid = QuiltID(TEST_URI)
     pkg = await qc.get(qid, K_PKG)
     return pkg
 
@@ -63,7 +63,7 @@ async def test_qc_reload(qc: Generator[QuiltIdCache, None, None]):
         qc = QuiltIdCache(p)
         assert qc.size() == 0
 
-        orig = QuiltID(TEST_URL)
+        orig = QuiltID(TEST_URI)
         qid = await qc.post(orig.attrs)
         assert qc.size() == 1
 
@@ -78,7 +78,7 @@ async def test_qc_reload(qc: Generator[QuiltIdCache, None, None]):
 
 
 async def test_qc_id_local_path(qc: Generator[QuiltIdCache, None, None]):
-    orig = QuiltID(TEST_URL)
+    orig = QuiltID(TEST_URI)
     qid = await qc.post(orig.attrs)
     cache = qid.local_path()
     assert cache
@@ -87,7 +87,7 @@ async def test_qc_id_local_path(qc: Generator[QuiltIdCache, None, None]):
 
 
 async def test_qc_post(qc: Generator[QuiltIdCache, None, None]):
-    orig = QuiltID(TEST_URL)
+    orig = QuiltID(TEST_URI)
     attrs = orig.attrs
 
     qid = await qc.post(attrs)
@@ -107,7 +107,7 @@ async def test_qc_post(qc: Generator[QuiltIdCache, None, None]):
 
 
 async def test_qc_put(qc: Generator[QuiltIdCache, None, None]):
-    orig = QuiltID(TEST_URL)
+    orig = QuiltID(TEST_URI)
     attrs = orig.attrs
 
     qid = await qc.post(attrs)

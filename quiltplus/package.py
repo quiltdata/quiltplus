@@ -9,7 +9,7 @@ import subprocess
 from quilt3 import Package
 from typing_extensions import Self
 
-from ..config import QuiltConfig
+from .config import QuiltConfig
 from .id import QuiltID
 
 
