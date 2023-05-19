@@ -14,7 +14,7 @@ packages = [
 qp = "quiltplus.cli.qp:cli"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.9"
 quilt3 = "^5.1.0"
 trio = "^0.22.0"
 isort = "^5.12.0"
