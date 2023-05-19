@@ -4,7 +4,17 @@ from pathlib import Path
 from socket import gethostname
 from tempfile import TemporaryDirectory
 
-from .parse import K_BKT, K_CAT, K_HSH, K_PKG, K_STR, K_STR_DEFAULT, PREFIX, TYPES, QuiltParse
+from .parse import (
+    K_BKT,
+    K_CAT,
+    K_HSH,
+    K_PKG,
+    K_PTH,
+    K_STR,
+    K_STR_DEFAULT,
+    PREFIX,
+    QuiltParse,
+)
 from .unparse import QuiltUnparse
 
 
@@ -84,6 +94,11 @@ class QuiltID(QuiltParse):
         uri_string = QuiltUnparse(self.attrs).unparse()
         return uri_string
 
+    def path_uri(self, path: str):
+        attrs = {**self.attrs, K_PTH: path}
+        uri_string = QuiltUnparse(attrs).unparse()
+        return uri_string
+
     def catalog_uri(self):
         catalog = self.get(K_CAT, QuiltID.DEFAULT_CATALOG)
         uri_string = f"https://{catalog}/b/{self.get(K_BKT)}"
@@ -99,11 +114,7 @@ class QuiltID(QuiltParse):
         }
 
     def type(self):
-        for index, key in enumerate(TYPES):
-            next_key = TYPES[index + 1]
-            if next_key not in self.attrs:
-                return key
-        return False
+        return self._type
 
     def __del__(self):
         if self._cleanup:

@@ -1,7 +1,7 @@
 from .conftest import pytestmark  # NOQA F402
 from .conftest import (
     SKIP_LONG_TESTS,
-    TEST_URL,
+    TEST_URI,
     QuiltConfig,
     QuiltPackage,
     logging,
@@ -19,7 +19,7 @@ def assert_diffs(diffs, a, m, d):
 
 @pytest.fixture
 def pkg():
-    return QuiltPackage.FromURI(TEST_URL)
+    return QuiltPackage.FromURI(TEST_URI)
 
 
 def test_pkg_fixture(pkg: QuiltPackage):
@@ -93,12 +93,19 @@ async def test_pkg_diff(pkg: QuiltPackage):
     assert TEST_FILE in adds
 
 
-async def test_pkg_list(pkg: QuiltPackage):
-    files = await pkg.list()
+async def test_pkg_child(pkg: QuiltPackage):
+    files = await pkg.child()
     assert files
     assert len(files) > 3
     assert "README.md" in files
     assert "render.html" not in files
+
+
+async def test_pkg_list(pkg: QuiltPackage):
+    files = await pkg.list()
+    assert files
+    assert len(files) > 3
+    assert pkg.name in files[0]
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
@@ -107,7 +114,7 @@ async def test_pkg_get(pkg: QuiltPackage):
     assert rc
 
 
-@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+@pytest.mark.skip(reason="Used for desktop app")
 async def test_pkg_open(pkg: QuiltPackage):
     rc = await pkg.get()
     assert rc
@@ -115,7 +122,7 @@ async def test_pkg_open(pkg: QuiltPackage):
     pkg.open()
 
 
-@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+@pytest.mark.skip(reason="Used for desktop app")
 async def test_pkg_getAll(pkg: QuiltPackage):
     rc = await pkg.getAll()
     assert rc

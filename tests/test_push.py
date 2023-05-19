@@ -3,19 +3,19 @@ from tempfile import TemporaryDirectory
 
 from quilt3 import Package
 
+from .conftest import pytestmark  # NOQA F401
 from .conftest import (
     SKIP_LONG_TESTS,
-    TEST_URL,
+    TEST_URI,
     QuiltConfig,
     QuiltPackage,
     logging,
     os,
     pytest,
-    pytestmark,  # NOQA F401
 )
 
 TIMESTAMP = QuiltConfig.Now()
-WRITE_URL = None
+WRITE_URI = None
 WRITE_BUCKET = os.environ.get("WRITE_BUCKET")
 
 logging.info(f"WRITE_BUCKET: [{WRITE_BUCKET}]")
@@ -24,10 +24,10 @@ if not WRITE_BUCKET:
 
 
 def get_pkg(prefix: str):
-    WRITE_URL = (
+    WRITE_URI = (
         f"quilt+s3://{WRITE_BUCKET}#package=test/{prefix}_{TIMESTAMP.replace(':','_')}"
     )
-    return QuiltPackage.FromURI(WRITE_URL)
+    return QuiltPackage.FromURI(WRITE_URI)
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
@@ -50,7 +50,7 @@ async def test_push_patch():
         os.chdir(tmpdirname)
         key = "test.txt"
         p = Path(key)
-        p.write_text(TEST_URL)
+        p.write_text(TEST_URI)
         filename = str(p)
 
         assert len(cfg.get_stage()) == 0

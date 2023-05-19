@@ -1,5 +1,4 @@
 # Resource-oriented version of a Quilt Package
-# (must already exist, at least for now)
 
 import logging
 import os
@@ -8,9 +7,10 @@ import shutil
 import subprocess
 
 from quilt3 import Package
+from typing_extensions import Self
 
-from .config import QuiltConfig
-from .id import K_PKG, QuiltID
+from ..config import QuiltConfig
+from .id import QuiltID
 
 
 class QuiltPackage:
@@ -42,6 +42,9 @@ class QuiltPackage:
 
     def __repr__(self):
         return f"QuiltPackage[{self.id}]@{self.local_path()})"
+
+    def __eq__(self, other: Self):
+        return self.registry == other.registry
 
     def __str__(self):
         return self.__repr__()
@@ -96,12 +99,15 @@ class QuiltPackage:
     async def remote(self):
         return await self.browse()
 
-    async def list(self, changed_only=False):
+    async def child(self, changed_only=False):
         if changed_only:
             diffs = await self.diff()
             return [x for sub in diffs.values() for x in sub]
         q = await self.remote()
         return list(q.keys())
+
+    async def list(self, changed_only=False):
+        return [self.id.path_uri(k) for k in await self.child(changed_only)]
 
     async def diff(self):
         logging.debug(f"\ndiff.local_files\n{self.local_files()}")
