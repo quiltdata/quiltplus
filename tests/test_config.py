@@ -1,7 +1,7 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from .conftest import TEST_URL, QuiltConfig, QuiltID, logging, os, pytest
+from .conftest import TEST_URI, QuiltConfig, QuiltID, logging, os, pytest
 
 RM_LOCAL = os.path.join(QuiltConfig.CONFIG_FOLDER, QuiltConfig.REVISEME_FILE)
 
@@ -15,8 +15,8 @@ def cfg():
 
 
 def test_cfg_as():
-    assert f"]\nURL={TEST_URL}" in QuiltConfig.AsShortcut(TEST_URL)
-    assert f'{{ URL = "{TEST_URL}"; }}' in QuiltConfig.AsWebloc(TEST_URL)
+    assert f"]\nURL={TEST_URI}" in QuiltConfig.AsShortcut(TEST_URI)
+    assert f'{{ URL = "{TEST_URI}"; }}' in QuiltConfig.AsWebloc(TEST_URI)
 
 
 def test_cfg_fixture(cfg: QuiltConfig):
@@ -24,16 +24,16 @@ def test_cfg_fixture(cfg: QuiltConfig):
 
 
 def test_cfg_write(cfg: QuiltConfig):
-    p = cfg.write_file("test.txt", TEST_URL)
+    p = cfg.write_file("test.txt", TEST_URI)
     assert QuiltConfig.CONFIG_FOLDER in str(p)
     assert "test.txt" in str(p)
-    assert TEST_URL == p.read_text()
+    assert TEST_URI == p.read_text()
 
 
 def test_cfg_update_uri(cfg: QuiltConfig):
-    cf = cfg.update_config({QuiltConfig.K_URI: TEST_URL})
-    assert TEST_URL == cf[QuiltConfig.K_URI]
-    assert TEST_URL == cfg.get_uri()
+    cf = cfg.update_config({QuiltConfig.K_URI: TEST_URI})
+    assert TEST_URI == cf[QuiltConfig.K_URI]
+    assert TEST_URI == cfg.get_uri()
 
 
 def test_cfg_update_stage(cfg: QuiltConfig):
@@ -54,10 +54,10 @@ def test_cfg_depend(cfg: QuiltConfig):
 
 
 def test_cfg_save_webloc(cfg: QuiltConfig):
-    p = cfg.save_webloc("test2.webloc", TEST_URL)
+    p = cfg.save_webloc("test2.webloc", TEST_URI)
     assert QuiltConfig.CONFIG_FOLDER in str(p)
     assert "test2.webloc" in str(p)
-    assert f'{{ URL = "{TEST_URL}"; }}' in p.read_text()
+    assert f'{{ URL = "{TEST_URI}"; }}' in p.read_text()
 
     files = cfg.list_config()
     assert "test2.webloc" in files
@@ -65,7 +65,7 @@ def test_cfg_save_webloc(cfg: QuiltConfig):
 
 
 def test_cfg_save_uri(cfg: QuiltConfig):
-    qid = QuiltID(TEST_URL)
+    qid = QuiltID(TEST_URI)
     configs = cfg.save_uri(qid)
     assert QuiltConfig.CONFIG_YAML in configs
     files = cfg.list_config()
@@ -73,8 +73,8 @@ def test_cfg_save_uri(cfg: QuiltConfig):
         assert cf in files
 
     p = cfg.path / QuiltConfig.CONFIG_YAML
-    assert TEST_URL in p.read_text()
-    assert TEST_URL == cfg.get_uri()
+    assert TEST_URI in p.read_text()
+    assert TEST_URI == cfg.get_uri()
     assert QuiltID.DEFAULT_CATALOG in cfg.get_uri(QuiltConfig.K_CAT)
 
 
@@ -82,24 +82,24 @@ def test_cfg_get_config(cfg: QuiltConfig):
     config = cfg.get_config()
     assert config.get("version") is not None
     assert config.get(QuiltConfig.K_URI) is None
-    qid = QuiltID(TEST_URL)
+    qid = QuiltID(TEST_URI)
     cfg.save_uri(qid)
     config = cfg.get_config()
     assert config
-    assert TEST_URL == config[QuiltConfig.K_URI]
+    assert TEST_URI == config[QuiltConfig.K_URI]
 
 
 def test_cfg_get_uri(cfg: QuiltConfig):
     assert not cfg.file.exists()
-    qid = QuiltID(TEST_URL)
+    qid = QuiltID(TEST_URI)
     cfg.save_uri(qid)
     assert cfg.file.exists()
-    assert TEST_URL == cfg.get_uri()
+    assert TEST_URI == cfg.get_uri()
 
 
 def test_cfg_get_stage(cfg: QuiltConfig):
     assert not cfg.file.exists()
-    p = cfg.write_file("test.txt", TEST_URL)
+    p = cfg.write_file("test.txt", TEST_URI)
     filename = str(p)
     cfg.stage(filename, True)
     assert cfg.file.exists()

@@ -1,6 +1,6 @@
 from asyncclick.testing import CliRunner
 
-from .conftest import TEST_URL, cli, logging, pytestmark  # NOQA F401
+from .conftest import TEST_URI, cli, logging, pytestmark  # NOQA F401
 
 
 async def cli_run(args, rc=0):
@@ -22,30 +22,30 @@ async def test_cli_help():
 
 
 async def test_cli_no_command():
-    result = await cli_run(["--uri", TEST_URL], 2)
+    result = await cli_run(["--uri", TEST_URI], 2)
     assert "Error: Missing command" in result.output
 
 
 async def test_cli_catalog():
-    result = await cli_run(["-U", TEST_URL, "catalog"])
+    result = await cli_run(["-U", TEST_URI, "catalog"])
     assert "http" in result.output
 
 
 async def test_cli_context():
-    result = await cli_run(["--uri", TEST_URL, "context"])
-    assert TEST_URL in result.output
+    result = await cli_run(["--uri", TEST_URI, "context"])
+    assert TEST_URI in result.output
 
 
 async def test_cli_depend():
-    result = await cli_run(["--uri", TEST_URL, "depend"])
+    result = await cli_run(["--uri", TEST_URI, "depend"])
     assert result
 
 
 async def test_cli_pkg():
-    result = await cli_run(["--uri", TEST_URL, "pkg", "-x", "list"])
+    result = await cli_run(["--uri", TEST_URI, "pkg", "-x", "list"])
     assert "README.md" in result.output
 
 
 async def test_cli_stage():
-    result = await cli_run(["--uri", TEST_URL, "stage"])
+    result = await cli_run(["--uri", TEST_URI, "stage"])
     assert "stage" in result.output
