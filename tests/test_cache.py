@@ -2,15 +2,8 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Generator
 
-from .conftest import (
-    K_PKG,
-    TEST_PKG,
-    TEST_URI,
-    QuiltID,
-    QuiltIdCache,
-    pytest,
-    pytestmark,  # NOQA F401
-)
+from .conftest import pytestmark  # NOQA F401
+from .conftest import K_PKG, TEST_URI, QuiltID, QuiltIdCache, pytest
 
 # get() returns recent QuiltID by numerical index
 # delete(index) removes QuiltID with that index from recents
@@ -76,6 +69,7 @@ async def test_qc_reload(qc: Generator[QuiltIdCache, None, None]):
         assert qc2.size() == 1
         qc2.save_qids()
 
+
 @pytest.mark.skip(reason="Not implemented")
 async def test_qc_id_local_path(qc: Generator[QuiltIdCache, None, None]):
     orig = QuiltID(TEST_URI)
@@ -123,4 +117,3 @@ async def test_qc_put(qc: Generator[QuiltIdCache, None, None]):
     qdel = await qc.delete(qid.index)
     assert qdel == qput
     assert qc.size() == 0
-

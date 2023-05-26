@@ -53,7 +53,6 @@ class QuiltID(QuiltParse):
         self.attrs["sub_path"] = self.sub_path()
         self.attrs["local_path"] = self.local_path()
 
-
     def __repr__(self):
         return f"QuiltID({self.quilt_uri()}, {self.index})"
 

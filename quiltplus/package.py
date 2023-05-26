@@ -7,12 +7,12 @@ import shutil
 import subprocess
 
 from quilt3 import Package
-from typing_extensions import Self
 
 from .config import QuiltConfig
 from .id import QuiltID
 from .parse import K_HSH
 from .root import QuiltRoot
+
 
 class QuiltPackage(QuiltRoot):
     METHOD_NAMES = "get list diff patch put".split(" ")
@@ -47,7 +47,7 @@ class QuiltPackage(QuiltRoot):
 
     def path_uri(self, path: str):
         return self.pkg_uri() + "#path=" + path
-    
+
     def local_path(self, *paths: str):
         p = self._local_path
         for path in paths:
@@ -131,7 +131,7 @@ class QuiltPackage(QuiltRoot):
         return result
 
     async def put(self, msg=None):
-        """create a new remote revision whether or not package exists or matches local version"""
+        """create a new remote revision whether or not package exists / is current"""
         q = await self.remote()
         q.set_dir(".", path=self.dest())
         q.build(self.pkg())

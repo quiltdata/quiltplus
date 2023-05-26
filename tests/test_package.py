@@ -2,7 +2,6 @@ from .conftest import pytestmark  # NOQA F402
 from .conftest import (
     SKIP_LONG_TESTS,
     TEST_URI,
-    QuiltConfig,
     QuiltPackage,
     logging,
     os,

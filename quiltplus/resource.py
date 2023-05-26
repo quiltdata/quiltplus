@@ -1,8 +1,9 @@
 from .id import QuiltID
 from .package import QuiltPackage
+from .parse import K_BKT, K_PKG, K_PTH, K_VER
 from .registry import QuiltRegistry
 from .versions import QuiltVersions
-from .parse import K_BKT, K_PKG, K_PTH, K_VER
+
 
 def QuiltResource(uri: str):
     id = QuiltID(uri)

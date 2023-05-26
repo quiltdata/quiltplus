@@ -1,5 +1,14 @@
 from .conftest import pytestmark  # NOQA F401
-from .conftest import PKG_URI, REG_URI, SKIP_LONG_TESTS, VER_URI, pytest, QuiltPackage, QuiltRegistry, QuiltResource
+from .conftest import (
+    PKG_URI,
+    REG_URI,
+    SKIP_LONG_TESTS,
+    VER_URI,
+    QuiltPackage,
+    QuiltRegistry,
+    QuiltResource,
+    pytest,
+)
 
 
 async def test_res_types():
