@@ -10,9 +10,6 @@ packages = [
    { include = "quiltplus" }
 ]
 
-[tool.poetry.scripts]
-qp = "quiltplus.cli.qp:cli"
-
 [tool.poetry.dependencies]
 python = "^3.9"
 urllib3 = "<2"

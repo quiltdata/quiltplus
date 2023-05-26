@@ -1,7 +1,6 @@
 import yaml
 
 from .cache import QuiltIdCache  # NOQA F401
-from .cli import cli  # NOQA F401
 from .config import QuiltConfig  # NOQA F401
 from .id import QuiltID  # NOQA F401
 from .ignore import GitIgnore  # NOQA F401
