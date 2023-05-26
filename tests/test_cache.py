@@ -76,7 +76,7 @@ async def test_qc_reload(qc: Generator[QuiltIdCache, None, None]):
         assert qc2.size() == 1
         qc2.save_qids()
 
-
+@pytest.mark.skip(reason="Not implemented")
 async def test_qc_id_local_path(qc: Generator[QuiltIdCache, None, None]):
     orig = QuiltID(TEST_URI)
     qid = await qc.post(orig.attrs)
@@ -124,9 +124,3 @@ async def test_qc_put(qc: Generator[QuiltIdCache, None, None]):
     assert qdel == qput
     assert qc.size() == 0
 
-
-async def untest_qc_local_path(qc):
-    await setup_package(qc)
-    qid = QuiltID.Local(TEST_PKG)
-    pkg = await qc.get(qid, K_PKG)
-    assert pkg

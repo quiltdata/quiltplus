@@ -28,7 +28,7 @@ def test_pkg_fixture(pkg: QuiltPackage):
 
 def test_pkg_str(pkg: QuiltPackage):
     s = str(pkg)
-    assert pkg.name in s
+    assert pkg.pkg() in s
     logging.debug(pkg)
 
 
@@ -71,9 +71,6 @@ async def test_pkg_local_files(pkg: QuiltPackage):
     await pkg.get()
     assert pkg.local_files() != []
     assert "README.md" in pkg.local_files()
-    pkg.save_uri()
-    revise_me = os.path.join(QuiltConfig.CONFIG_FOLDER, QuiltConfig.REVISEME_FILE)
-    assert revise_me in pkg.local_files()
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
@@ -105,24 +102,10 @@ async def test_pkg_list(pkg: QuiltPackage):
     files = await pkg.list()
     assert files
     assert len(files) > 3
-    assert pkg.name in files[0]
+    assert pkg.pkg() in files[0]
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_get(pkg: QuiltPackage):
     rc = await pkg.get()
-    assert rc
-
-
-@pytest.mark.skip(reason="Used for desktop app")
-async def test_pkg_open(pkg: QuiltPackage):
-    rc = await pkg.get()
-    assert rc
-    pkg.save_uri()
-    pkg.open()
-
-
-@pytest.mark.skip(reason="Used for desktop app")
-async def test_pkg_getAll(pkg: QuiltPackage):
-    rc = await pkg.getAll()
     assert rc

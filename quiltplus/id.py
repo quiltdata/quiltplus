@@ -50,6 +50,9 @@ class QuiltID(QuiltParse):
         else:
             QuiltID.INDEX += 1
             self.index = QuiltID.INDEX
+        self.attrs["sub_path"] = self.sub_path()
+        self.attrs["local_path"] = self.local_path()
+
 
     def __repr__(self):
         return f"QuiltID({self.quilt_uri()}, {self.index})"
@@ -75,7 +78,7 @@ class QuiltID(QuiltParse):
         self._cleanup = False  # "PYTEST_CURRENT_TEST" not in os.environ
         return Path(self._tempDir.name)
 
-    def local_path(self):
+    def local_path(self) -> Path:
         return self.root() / self.sub_path()
 
     def pkg(self):

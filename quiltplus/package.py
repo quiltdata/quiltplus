@@ -11,15 +11,16 @@ from typing_extensions import Self
 
 from .config import QuiltConfig
 from .id import QuiltID
+from .parse import K_HSH
+from .root import QuiltRoot
 
-
-class QuiltPackage:
-    METHOD_NAMES = "get list diff patch put post".split(" ")
+class QuiltPackage(QuiltRoot):
+    METHOD_NAMES = "get list diff patch put".split(" ")
 
     @staticmethod
     def FromURI(url_string: str):
         qid = QuiltID(url_string)
-        pkg = QuiltPackage(qid)
+        pkg = QuiltPackage(qid.attrs)
         return pkg
 
     @staticmethod
@@ -32,23 +33,21 @@ class QuiltPackage:
             subprocess.Popen(["xdg-open", dest])
         return dest
 
-    def __init__(self, id: QuiltID, root=None):
-        assert id.has_package
-        self.id = id
-        self.name = id.pkg()
-        self.registry = id.registry()
-        self._local_path = root / id.sub_path() if root else id.local_path()
+    def __init__(self, attrs: dict, root=None):
+        super().__init__(attrs)
+        self._local_path = root / attrs["sub_path"] if root else attrs["local_path"]
         self.config = QuiltConfig.ForRoot(self._local_path)
+        self.hash = self.attrs[K_HSH]
 
     def __repr__(self):
-        return f"QuiltPackage[{self.id}]@{self.local_path()})"
+        return f"QuiltPackage[{self.attrs}]@{self.local_path()})"
 
-    def __eq__(self, other: Self):
-        return self.registry == other.registry
+    def __eq__(self, other: QuiltRoot):
+        return self.pkg_uri() == other.pkg_uri()
 
-    def __str__(self):
-        return self.__repr__()
-
+    def path_uri(self, path: str):
+        return self.pkg_uri() + "#path=" + path
+    
     def local_path(self, *paths: str):
         p = self._local_path
         for path in paths:
@@ -74,18 +73,15 @@ class QuiltPackage:
         p.write_text(text)
         return p
 
-    def save_uri(self):
-        self.config.save_uri(self.id)
-
     def open(self):
         return QuiltPackage.OpenLocally(self.dest())
 
     async def browse(self):
         try:
             q = (
-                Package.browse(self.name, top_hash=self.id.hash())
-                if (self.registry.startswith(QuiltID.LOCAL_SCHEME))
-                else Package.browse(self.name, self.registry, top_hash=self.id.hash())
+                Package.browse(self.pkg(), top_hash=self.hash)
+                if (self.registry().startswith(QuiltID.LOCAL_SCHEME))
+                else Package.browse(self.pkg(), self.registry(), top_hash=self.hash)
             )
             return q
         except Exception as err:
@@ -107,7 +103,7 @@ class QuiltPackage:
         return list(q.keys())
 
     async def list(self, changed_only=False):
-        return [self.id.path_uri(k) for k in await self.child(changed_only)]
+        return [self.path_uri(k) for k in await self.child(changed_only)]
 
     async def diff(self):
         logging.debug(f"\ndiff.local_files\n{self.local_files()}")
@@ -130,34 +126,31 @@ class QuiltPackage:
 
     async def post(self, msg=None):  # create new empty package
         q = await self.local()
-        q.build(self.name)
-        result = q.push(self.name, registry=self.registry, message=msg)
+        q.build(self.pkg())
+        result = q.push(self.pkg(), registry=self.registry(), message=msg)
         return result
 
-    async def put(self, msg=None):  # update using all local files
+    async def put(self, msg=None):
+        """create a new remote revision whether or not package exists or matches local version"""
         q = await self.remote()
         q.set_dir(".", path=self.dest())
-        q.build(self.name)
-        result = q.push(self.name, registry=self.registry, message=msg)
+        q.build(self.pkg())
+        result = q.push(self.pkg(), registry=self.registry(), message=msg)
         return result
 
-    async def patch(self, msg=None):  # update only staged files
+    async def patch(self, msg=None):
+        """Update the latest version of the remote package with the staged files"""
         q = await self.remote()
         [q.set(f) for f in self.config.get_stage(adds=True)]
         [q.delete(f) for f in self.config.get_stage(adds=False)]
-        q.build(self.name)
+        q.build(self.pkg())
         print(q)
-        result = q.push(self.name, registry=self.registry, message=msg)
+        result = q.push(self.pkg(), registry=self.registry(), message=msg)
         self.config.update_config({}, reset_stage=True)
         return result
 
     def delete(self):  # remove local cache
         return shutil.rmtree(self._local_path)
-
-    async def getAll(self):
-        await self.get()
-        self.save_uri()
-        return self.open()
 
     async def call(self, method: str = "get", msg: str = ""):
         if msg == "":

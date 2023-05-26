@@ -7,12 +7,13 @@ from .parse import K_BKT, K_PKG, K_PTH, K_VER
 def QuiltResource(uri: str):
     id = QuiltID(uri)
     t = id.type()
+    attrs = id.attrs
     if t == K_PTH:
-        return QuiltPackage(id)
+        return QuiltPackage(attrs)
     elif t == K_VER:
         return QuiltVersions(id)
     elif t == K_PKG:
-        return QuiltPackage(id)
+        return QuiltPackage(attrs)
     elif t == K_BKT:
         return QuiltRegistry(id)
     else:

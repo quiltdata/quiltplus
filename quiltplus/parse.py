@@ -10,10 +10,17 @@ K_BKT = "bucket"
 K_PKG = "package"
 K_PTH = "path"
 K_PRP = "property"
-K_QRY = "query"
 K_TAG = "tag"
 K_VER = "versions"
 K_CAT = "catalog"
+
+SEP = "+"
+K_HOST = "_hostname"
+K_PROT = "_protocol"
+K_QRY = "_query"
+K_TOOL = "_tool"
+K_URI = "_uri"
+K_ID = "_id"
 
 K_PKG_FULL = "__package__"
 K_STR_DEFAULT = "s3"
@@ -25,7 +32,10 @@ class QuiltParse:
         self.uri = urlparse(uri_string)
         self.attrs = self.parse_fragments(self.uri.fragment)
         self.parse_id(self.uri.netloc)
+        self.parse_scheme(self.uri.scheme)
+        self.attrs[K_HOST] = self.uri.hostname
         self.attrs[K_QRY] = self.uri.query
+        self.attrs[K_URI] = uri_string
 
     def __str__(self):
         return self.__repr__()
@@ -37,6 +47,15 @@ class QuiltParse:
         list_dict = parse_qs(fragment)
         scalars = {k: v[0] for k, v in list_dict.items()}
         return scalars
+
+    def parse_scheme(self, scheme: str):
+        schemes = scheme.split(SEP)
+        if len(schemes) != 2:
+            raise ValueError(
+                f"Error: URI scheme `{self.uri.scheme}` does not contain '{SEP}'"
+            )
+        self.attrs[K_TOOL] = schemes[0]
+        self.attrs[K_PROT] = schemes[1]
 
     def parse_id(self, host):
         if PREFIX not in self.uri.scheme:
