@@ -29,6 +29,7 @@ async def test_res_reg():
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_res_reg_list():
     qreg = QuiltResource(REG_URI)
+    assert isinstance(qreg, QuiltRegistry)
     result = await qreg.list()
     assert len(result) > 0
     first = result[0]

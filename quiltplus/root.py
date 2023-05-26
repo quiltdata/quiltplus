@@ -15,5 +15,8 @@ class QuiltRoot:
     def registry(self):
         return f"{self.attrs[K_PROT]}://{self.attrs[K_HOST]}"
 
-    def pkg_uri(self):
-        return f"quilt+{self.registry()}#package={self.pkg()}"
+    def base_uri(self):
+        return f"quilt+{self.registry()}"
+
+    def pkg_uri(self, pkg=None):
+        return f"quilt+{self.registry()}#package={pkg or self.pkg()}"

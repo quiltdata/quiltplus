@@ -16,6 +16,6 @@ def QuiltResource(uri: str):
     elif t == K_PKG:
         return QuiltPackage(attrs)
     elif t == K_BKT:
-        return QuiltRegistry(id)
+        return QuiltRegistry(attrs)
     else:
         raise ValueError(f"Unknown resource type: {t}")
