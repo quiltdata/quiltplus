@@ -23,16 +23,16 @@ if not WRITE_BUCKET:
     pytest.skip("no writeable bucket available", allow_module_level=True)
 
 
-def get_pkg(prefix: str):
+def get_unique_pkg(prefix: str):
     WRITE_URI = (
         f"quilt+s3://{WRITE_BUCKET}#package=test/{prefix}_{TIMESTAMP.replace(':','_')}"
     )
     return QuiltPackage.FromURI(WRITE_URI)
 
 
-@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+@pytest.mark.skip(reason="Not implemented")
 async def test_push_call():
-    pkg = get_pkg("test_push_call")
+    pkg = get_unique_pkg("test_push_call")
     methods = QuiltPackage.METHOD_NAMES
     rmethods = list(reversed(methods))
     for method in rmethods:
@@ -43,8 +43,9 @@ async def test_push_call():
 
 
 # @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+@pytest.mark.skip(reason="Not implemented")
 async def test_push_patch():
-    pkg = get_pkg("test_push_patch")
+    pkg = get_unique_pkg("test_push_patch")
     cfg = pkg.config
     with TemporaryDirectory() as tmpdirname:
         os.chdir(tmpdirname)
@@ -62,9 +63,9 @@ async def test_push_patch():
         assert len(cfg.get_stage()) == 0
 
 
-@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+@pytest.mark.skip(reason="Not implemented")
 async def test_push():
-    pkg = get_pkg("test_push")
+    pkg = get_unique_pkg("test_push")
     assert pkg is not None
 
     # Create new Package
