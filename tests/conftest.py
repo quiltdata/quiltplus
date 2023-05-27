@@ -4,7 +4,8 @@ import os
 import pytest
 from quiltplus import (K_BKT, K_HSH, K_PKG, K_PRP, K_PTH, K_STR,  # NOQA F401
                        K_VER, GitIgnore, QuiltConfig, QuiltID, QuiltIdCache,
-                       QuiltPackage, QuiltRegistry, QuiltResource)
+                       QuiltPackage, QuiltRegistry, QuiltResourceURI, QuiltType, 
+                       QuiltVersions)
 
 logging.basicConfig(level=logging.DEBUG)
 pytestmark = pytest.mark.anyio

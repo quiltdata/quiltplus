@@ -2,9 +2,10 @@ from quilt3 import list_package_versions
 from typing_extensions import Self
 
 from .id import QuiltID
+from .root import QuiltRoot
 
 
-class QuiltVersions:
+class QuiltVersions(QuiltRoot):
     """Creates versions manager for a package."""
 
     def __init__(self, id: QuiltID):
