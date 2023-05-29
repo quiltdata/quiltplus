@@ -10,6 +10,7 @@ from .parse import (K_BKT, K_HSH, K_PKG, K_PRP, K_PTH,  # NOQA F401
 from .registry import QuiltRegistry  # NOQA F401
 from .resource import QuiltResourceURI, QuiltType  # NOQA F401
 from .unparse import QuiltUnparse  # NOQA F401
+from .uri import QuiltUri  # NOQA F401
 from .versions import QuiltVersions  # NOQA F401
 
 

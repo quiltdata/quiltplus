@@ -37,7 +37,7 @@ class QuiltPackage(QuiltRoot):
         super().__init__(attrs)
         self._local_path = root / attrs["sub_path"] if root else attrs["local_path"]
         self.config = QuiltConfig.ForRoot(self._local_path)
-        self.hash = self.attrs[K_HSH]
+        self.hash = self.attrs.get(K_HSH)
 
     def __repr__(self):
         return f"QuiltPackage[{self.attrs}]@{self.local_path()})"
