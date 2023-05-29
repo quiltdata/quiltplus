@@ -35,18 +35,17 @@ class QuiltUri(QuiltType):
     def __eq__(self, other: Self):
         return self.registry == other.registry and self.package == other.package and self.__class__ == other.__class__
 
-    #def get(self, key): return self.attrs.get(key)
-
     def full_package(self):
         return self.attrs.get(QuiltUri.K_PKG)
 
     def split_package(self, key):
+        sep = QuiltUri.SEP.get(key)
         pkg = self.full_package()
-        if not pkg or not key in pkg:
+        if not pkg or not sep in pkg:
             return None
-        s = pkg.split(key)
+        s = pkg.split(sep)
         self.attrs[key] = s[1]
         return s[0]
 
     def parse_package(self):
-        return self.split_package(QuiltUri.SEP_HASH) or self.split_package(QuiltUri.SEP_TAG) or self.full_package()
+        return self.split_package(QuiltUri.K_HASH) or self.split_package(QuiltUri.K_TAG) or self.full_package()

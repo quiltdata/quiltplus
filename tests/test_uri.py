@@ -30,3 +30,6 @@ def test_uri_null():
     un = QuiltUri({})
     assert un
     assert un.uri == None
+
+def test_uri_split(uri):
+    pass

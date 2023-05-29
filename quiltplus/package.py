@@ -20,12 +20,13 @@ class QuiltPackage(QuiltLocal):
 
     def __init__(self, attrs: dict):
         super().__init__(attrs)
-        self.hash = self.attrs.get(QuiltUri.K_HSH)
+        self.hash = self.attrs.get(QuiltUri.K_HASH)
 
     def path_uri(self, sub_path: str):
         return self.pkg_uri() + "#path=" + sub_path
 
     async def browse(self):
+        print(f"browse {self.package} {self.registry} {self.hash}")
         try:
             q = (
                 Package.browse(self.package, self.registry, top_hash=self.hash)

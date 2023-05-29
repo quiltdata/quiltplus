@@ -15,9 +15,13 @@ class QuiltType:
     # Decomposed Package Name
     SEP_HASH = "@"
     SEP_TAG = ":"
-    K_HSH = "_hash"
+    K_HASH = "_hash"
     K_TAG = "_tag"
     K_VER = "_version"
+    SEP = {
+        K_HASH: SEP_HASH,
+        K_TAG: SEP_TAG,
+    }
 
     @staticmethod
     def BaseType(attrs: dict) -> str:
