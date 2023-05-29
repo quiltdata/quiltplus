@@ -1,22 +1,15 @@
-from .parse import K_HOST, K_PKG, K_PROT, K_URI
+from .uri import QuiltUri
 
 
-class QuiltRoot:
+class QuiltRoot(QuiltUri):
     def __init__(self, attrs: dict):
-        self.attrs = attrs
-        self.root_uri = attrs[K_URI]
+        super().__init__(attrs)
 
     def __repr__(self):
-        return f"QuiltRoot({self.attrs})"
-
-    def pkg(self):
-        return self.attrs.get(K_PKG)
-
-    def registry(self):
-        return f"{self.attrs[K_PROT]}://{self.attrs[K_HOST]}"
+        return f"{__class__}({self.attrs})"
 
     def base_uri(self):
-        return f"quilt+{self.registry()}"
+        return f"quilt+{self.registry}"
 
     def pkg_uri(self, pkg=None):
-        return f"quilt+{self.registry()}#package={pkg or self.pkg()}"
+        return self.base_uri()+ f"#package={pkg or self.package}"

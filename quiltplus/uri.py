@@ -1,45 +1,41 @@
 # Create Quilt URI from UnURI attributes
 
-from udc import UnUri, K_HOST, K_PROT, K_URI
+from typing_extensions import Self
 
-class QuiltUri:
-    PREFIX = "quilt+"
-    K_BKT = K_HOST
+from udc import K_HOST, K_PROT, K_URI, UnUri
 
-    ## Fragments
+from .type import QuiltType
 
-    K_PKG = "package"
-    K_PTH = "path"
-    K_PRP = "property"
-    K_CAT = "catalog"
 
-    FRAG_KEYS = [K_PKG, K_PTH, K_PRP]
-
-    ## Decomponsed Package Name
-
-    SEP_HASH = "@"
-    SEP_TAG = ":"
-    K_HSH = "_hash"
-    K_TAG = "_tag"
-    K_VER = "_version"
+class QuiltUri(QuiltType):
 
     @staticmethod
-    def BaseType(attrs: dict):
-        for key in QuiltUri.FRAG_KEYS:
-            if key in attrs:
-                return key
-        return UnUri.K_HOST
-
+    def FromUnUri(un: UnUri) -> Self:
+        return QuiltUri(un.attrs)
+    
+    @staticmethod
+    def FromUri(uri: str) -> Self:
+        un = UnUri(uri)
+        return QuiltUri.FromUnUri(un)
+    
+    @staticmethod
+    def AttrsFromUri(uri: str) -> dict:
+        un = UnUri(uri)
+        return un.attrs
+    
     def __init__(self, attrs: dict):
         self.attrs = attrs
         self.uri = attrs.get(K_URI)
         self.registry = f"{attrs.get(K_PROT)}://{attrs.get(K_HOST)}"
-        self.pkg = self.parse_package()
-        self.type = self.parse_type()
+        self.package = self.parse_package()
       
     def __repr__(self):
         return f"QuiltUri({self.uri})"
-    
+
+    def __eq__(self, other: Self):
+        return self.registry == other.registry and self.package == other.package and self.__class__ == other.__class__
+
+
     def get(self, key):
         return self.attrs.get(key)
     
@@ -57,9 +53,3 @@ class QuiltUri:
                 or self.get(QuiltUri.K_PKG)
         )
 
-    def parse_type(self):
-        type = QuiltUri.BaseType(self.attrs)
-        if type == QuiltUri.K_PKG and self.pkg == self.get(QuiltUri.K_PKG):
-            return QuiltUri.K_VER
-        return type
-        

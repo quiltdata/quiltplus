@@ -1,29 +1,18 @@
-from pathlib import Path
 from udc import UnUri
 
 from .conftest import pytestmark  # NOQA F401
-from .conftest import (
-    TEST_BKT,
-    TEST_PKG,
-    PKG_URI,
-    PRP_URI,
-    PTH_URI,
-    BKT_URI,
-    TEST_URI,
-    VER_URI,
-    QuiltUri,
-    pytest,
-)
+from .conftest import (BKT_URI, PKG_URI, PRP_URI, PTH_URI, TEST_BKT, TEST_PKG,
+                       TEST_URI, VER_URI, QuiltUri, pytest)
+
 
 @pytest.fixture
 def uri():
-    un = UnUri(TEST_URI)
-    return QuiltUri(un.attrs)
+    return QuiltUri.FromUri(TEST_URI)
 
 def test_uri(uri: QuiltUri):
     assert uri.uri == TEST_URI
     assert uri.registry == f"s3://{TEST_BKT}"
-    assert uri.pkg == TEST_PKG
+    assert uri.package == TEST_PKG
 
 TYPE_URIS = {
     QuiltUri.K_PKG: PKG_URI,
@@ -32,3 +21,8 @@ TYPE_URIS = {
     QuiltUri.K_BKT: BKT_URI,
     QuiltUri.K_VER: VER_URI,
 }
+
+def test_uri_types():
+    for key, uri in TYPE_URIS.items():
+        un = UnUri(uri)
+        assert QuiltUri.Type(un.attrs) == key

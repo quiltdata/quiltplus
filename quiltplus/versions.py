@@ -1,31 +1,22 @@
 from quilt3 import list_package_versions
 from typing_extensions import Self
 
-from .id import QuiltID
 from .root import QuiltRoot
 
 
 class QuiltVersions(QuiltRoot):
     """Creates versions manager for a package."""
 
-    def __init__(self, id: QuiltID):
-        self.id = id
-        self.registry = id.registry()
-        self.pkg = id.pkg()
-
-    def __repr__(self):
-        return f"QuiltVersions({self.registry})"
-
-    def __eq__(self, other: Self):
-        return self.registry == other.registry
+    def __init__(self, attrs: dict):
+        super().__init__(attrs)
 
     def url(self, hash: str):
-        """Convert package name to URL."""
-        return self.id.quilt_uri() + f"@{hash}"
+        """Pin package name to specific version."""
+        return self.pkg_uri() + f"@{hash}"
 
     async def list(self):
         """List version URIs in package."""
         return [
             self.url(hash)
-            for pkg, hash in list_package_versions(self.pkg, self.registry)
+            for _pkg, hash in list_package_versions(self.package, self.registry)
         ]

@@ -22,7 +22,6 @@ pytest-cov = "^4.0.0"
 # anyio = {git = "https://github.com/agronholm/anyio.git"}
 anyio = "^3.6.2"
 typing-extensions = "^4.5.0"
-strenum = "^0.4.10"
 udc = "^0.2.3"
 
 [tool.poetry.group.dev.dependencies]

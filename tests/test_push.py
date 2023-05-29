@@ -92,7 +92,7 @@ async def test_push():
     assert qpkg2 is not None
 
     # Verify Result using legacy quilt3 APIs
-    q3 = Package.browse(pkg.pkg(), pkg.registry())
+    q3 = Package.browse(pkg.package, pkg.registry)
     files3 = list(q3.keys())
     assert "README.md" in files3
     assert "WRITEME.md" in files3

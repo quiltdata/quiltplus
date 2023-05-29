@@ -27,7 +27,7 @@ def test_pkg_fixture(pkg: QuiltPackage):
 
 def test_pkg_str(pkg: QuiltPackage):
     s = str(pkg)
-    assert pkg.pkg() in s
+    assert pkg.package in s
     logging.debug(pkg)
 
 
@@ -101,7 +101,7 @@ async def test_pkg_list(pkg: QuiltPackage):
     files = await pkg.list()
     assert files
     assert len(files) > 3
-    assert pkg.pkg() in files[0]
+    assert pkg.package in files[0]
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")

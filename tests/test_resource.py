@@ -1,7 +1,7 @@
 from .conftest import pytestmark  # NOQA F401
 from .conftest import (
     PKG_URI,
-    REG_URI,
+    BKT_URI,
     SKIP_LONG_TESTS,
     VER_URI,
     QuiltPackage,
@@ -17,13 +17,13 @@ async def test_res_pkg():
 
 
 async def test_res_reg():
-    qreg = QuiltResourceURI(REG_URI)
+    qreg = QuiltResourceURI(BKT_URI)
     assert isinstance(qreg, QuiltRegistry)
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_res_reg_list():
-    qreg = QuiltResourceURI(REG_URI)
+    qreg = QuiltResourceURI(BKT_URI)
     assert isinstance(qreg, QuiltRegistry)
     result = await qreg.list()
     assert len(result) > 0

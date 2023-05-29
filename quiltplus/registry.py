@@ -12,10 +12,7 @@ class QuiltRegistry(QuiltRoot):
         self.attrs = attrs
 
     def __repr__(self):
-        return f"QuiltRegistry({self.registry()})"
-
-    def __eq__(self, other: Self):
-        return self.registry() == other.registry()
+        return f"QuiltRegistry({self.registry})"
 
     def url(self, pkg: str):
         """Convert package name to URL."""
@@ -23,4 +20,4 @@ class QuiltRegistry(QuiltRoot):
 
     async def list(self):
         """List package URIs in registry."""
-        return [self.url(pkg) for pkg in list_packages(self.registry())]
+        return [self.url(pkg) for pkg in list_packages(self.registry)]
