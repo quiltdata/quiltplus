@@ -23,8 +23,8 @@ PKG2_URI = f"quilt+s3://{TEST_BKT}#{QuiltType.K_PKG}=examples/echarts:latest"
 PTH_URI = (
     f"quilt+s3://{TEST_BKT}#{QuiltType.K_PKG}={TEST_PKG}&{QuiltType.K_PTH}=README.md"
 )
-PRP_URI = f"quilt+s3://{TEST_BKT}#{QuiltType.K_PKG}={TEST_PKG}&{QuiltType.K_PTH}=README.md&{QuiltType.K_PRP}=*"
 VER_URI = f"quilt+s3://{TEST_BKT}#{QuiltType.K_PKG}={TEST_PKG}"
+PRP_URI = f"{VER_URI}&{QuiltType.K_PTH}=README.md&{QuiltType.K_PRP}=*"
 
 TEST_URIS = [TEST_URI, BKT_URI, PKG_URI, PKG2_URI, PTH_URI, PRP_URI, VER_URI]
 
