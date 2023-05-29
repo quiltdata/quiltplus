@@ -3,11 +3,20 @@ import logging
 import platform
 import subprocess
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from collections.abc import Generator
 
 from .root import QuiltRoot
 
 
 class QuiltLocal(QuiltRoot):
+
+    @staticmethod
+    def TempDir() -> Generator[Path, None, None]:
+        with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
+            tmpdir = Path(tmpdirname)
+            os.chdir(tmpdir)
+            yield(tmpdir)
 
     @staticmethod
     def OpenDesktop(dest: str):
@@ -21,11 +30,13 @@ class QuiltLocal(QuiltRoot):
 
     def __init__(self, attrs: dict):
         super().__init__(attrs)
-        self.check_dir(Path.cwd())
+        for tmp in QuiltLocal.TempDir():
+            self.last_path = tmp
 
-    def check_dir(self, path: Path):
+    def check_dir(self, path: Path = None):
         if not path:
-            return self.last_path
+            return self.last_path 
+
         self.last_path = path
         if not path.exists():
             logging.warn(f"Path does not exist: {path}")
@@ -35,7 +46,7 @@ class QuiltLocal(QuiltRoot):
         return path
 
     def local_path(self, *paths: str):
-        p = self.last_path
+        p = self.check_dir()
         for path in paths:
             p = p / path
 

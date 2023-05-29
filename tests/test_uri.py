@@ -1,7 +1,5 @@
-from udc import UnUri
 from quiltplus import QuiltUri
 
-from .conftest import pytestmark  # NOQA F401
 from .conftest import (BKT_URI, PKG_URI, PRP_URI, PTH_URI, TEST_BKT, TEST_PKG,
                        TEST_URI, VER_URI, pytest)
 
@@ -25,5 +23,10 @@ TYPE_URIS = {
 
 def test_uri_types():
     for key, uri in TYPE_URIS.items():
-        un = UnUri(uri)
-        assert QuiltUri.Type(un.attrs) == key
+        attrs = QuiltUri.AttrsFromUri(uri)
+        assert QuiltUri.Type(attrs) == key
+
+def test_uri_null():
+    un = QuiltUri({})
+    assert un
+    assert un.uri == None

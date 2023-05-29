@@ -1,6 +1,7 @@
 import yaml
 
 from .ignore import GitIgnore  # NOQA F401
+from .local import QuiltLocal  # NOQA F401
 from .package import QuiltPackage  # NOQA F401
 from .registry import QuiltRegistry  # NOQA F401
 from .resource import QuiltResource, QuiltResourceURI  # NOQA F401

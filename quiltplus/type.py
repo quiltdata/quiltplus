@@ -10,7 +10,7 @@ class QuiltType:
     K_PTH = "path"
     K_PRP = "property"
     K_CAT = "catalog"
-    FRAG_KEYS = [K_PKG, K_PTH, K_PRP]
+    FRAG_KEYS = [K_PRP, K_PTH, K_PKG]
 
     # Decomposed Package Name
     SEP_HASH = "@"
@@ -21,10 +21,10 @@ class QuiltType:
 
     @staticmethod
     def BaseType(attrs: dict) -> str:
-        for key in QuiltType.FRAG_KEYS.reverse():
+        for key in QuiltType.FRAG_KEYS:
             if key in attrs:
                 return key
-        return UnUri.K_HOST
+        return K_HOST
 
     @staticmethod
     def Type(attrs: dict) -> str:
