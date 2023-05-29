@@ -1,8 +1,8 @@
-from .uri import QuiltUri
-from .property import QuiltProperty
-from .path import QuiltPath
 from .package import QuiltPackage
+from .path import QuiltPath
+from .property import QuiltProperty
 from .registry import QuiltRegistry
+from .uri import QuiltUri
 from .versions import QuiltVersions
 
 KLASS_MAP = {
@@ -13,10 +13,12 @@ KLASS_MAP = {
     QuiltUri.K_VER: QuiltVersions,
 }
 
+
 def QuiltResource(attrs: dict):
     type = QuiltUri.Type(attrs)
     klass = KLASS_MAP[type]
     return klass(attrs)
+
 
 def QuiltResourceURI(uri: str):
     attrs = QuiltUri.AttrsFromUri(uri)

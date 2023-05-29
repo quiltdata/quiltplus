@@ -1,14 +1,12 @@
 # Create Quilt URI from UnURI attributes
 
 from typing_extensions import Self
-
 from udc import K_HOST, K_PROT, K_URI, UnUri
 
 from .type import QuiltType
 
 
 class QuiltUri(QuiltType):
-
     @staticmethod
     def FromUnUri(un: UnUri) -> Self:
         return QuiltUri(un.attrs)
@@ -33,7 +31,11 @@ class QuiltUri(QuiltType):
         return f"QuiltUri({self.uri})"
 
     def __eq__(self, other: Self):
-        return self.registry == other.registry and self.package == other.package and self.__class__ == other.__class__
+        return (
+            self.registry == other.registry
+            and self.package == other.package
+            and self.__class__ == other.__class__
+        )
 
     def full_package(self):
         return self.attrs.get(QuiltUri.K_PKG)
@@ -41,11 +43,15 @@ class QuiltUri(QuiltType):
     def split_package(self, key):
         sep = QuiltUri.SEP.get(key)
         pkg = self.full_package()
-        if not pkg or not sep in pkg:
+        if not pkg or sep not in pkg:
             return None
         s = pkg.split(sep)
         self.attrs[key] = s[1]
         return s[0]
 
     def parse_package(self):
-        return self.split_package(QuiltUri.K_HASH) or self.split_package(QuiltUri.K_TAG) or self.full_package()
+        return (
+            self.split_package(QuiltUri.K_HASH)
+            or self.split_package(QuiltUri.K_TAG)
+            or self.full_package()
+        )

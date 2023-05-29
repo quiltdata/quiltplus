@@ -1,18 +1,8 @@
-from quiltplus import (
-    QuiltPackage,
-    QuiltRegistry,
-    QuiltResourceURI,
-    QuiltVersions,
-)
+from quiltplus import QuiltPackage, QuiltRegistry, QuiltResourceURI, QuiltVersions
 
 from .conftest import pytestmark  # NOQA F401
-from .conftest import (
-    PKG_URI,
-    BKT_URI,
-    SKIP_LONG_TESTS,
-    VER_URI,
-    pytest,
-)
+from .conftest import BKT_URI, PKG_URI, SKIP_LONG_TESTS, VER_URI, pytest
+
 
 async def test_res_pkg():
     qpkg = QuiltResourceURI(PKG_URI)

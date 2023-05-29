@@ -20,7 +20,9 @@ TEST_URI = (
 BKT_URI = f"quilt+s3://{TEST_BKT}"
 PKG_URI = f"quilt+s3://{TEST_BKT}#{QuiltType.K_PKG}={TEST_PKG}@e1f83ce3dc7b"
 PKG2_URI = f"quilt+s3://{TEST_BKT}#{QuiltType.K_PKG}=examples/echarts:latest"
-PTH_URI = f"quilt+s3://{TEST_BKT}#{QuiltType.K_PKG}={TEST_PKG}&{QuiltType.K_PTH}=README.md"
+PTH_URI = (
+    f"quilt+s3://{TEST_BKT}#{QuiltType.K_PKG}={TEST_PKG}&{QuiltType.K_PTH}=README.md"
+)
 PRP_URI = f"quilt+s3://{TEST_BKT}#{QuiltType.K_PKG}={TEST_PKG}&{QuiltType.K_PTH}=README.md&{QuiltType.K_PRP}=*"
 VER_URI = f"quilt+s3://{TEST_BKT}#{QuiltType.K_PKG}={TEST_PKG}"
 

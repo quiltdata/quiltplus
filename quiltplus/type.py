@@ -1,5 +1,7 @@
-from udc import K_HOST, UnUri
 from datetime import datetime
+
+from udc import K_HOST
+
 
 class QuiltType:
     PREFIX = "quilt+"

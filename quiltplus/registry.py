@@ -1,5 +1,4 @@
 from quilt3 import list_packages
-from typing_extensions import Self
 
 from .root import QuiltRoot
 

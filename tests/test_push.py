@@ -4,7 +4,6 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from quilt3 import Package
-
 from quiltplus import QuiltPackage
 
 from .conftest import pytestmark  # NOQA F401

@@ -1,5 +1,4 @@
 import pytest
-
 from quiltplus import GitIgnore
 
 TEST_FILE = "foobar.$$$"

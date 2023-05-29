@@ -2,13 +2,14 @@
 
 import logging
 import shutil
+from pathlib import Path
 
 from quilt3 import Package
-from pathlib import Path
 from typing_extensions import Self
 
-from .uri import QuiltUri
 from .local import QuiltLocal
+from .uri import QuiltUri
+
 
 class QuiltPackage(QuiltLocal):
     METHOD_NAMES = "get list diff patch put".split(" ")
@@ -28,9 +29,7 @@ class QuiltPackage(QuiltLocal):
     async def browse(self):
         print(f"browse {self.package} {self.registry} {self.hash}")
         try:
-            q = (
-                Package.browse(self.package, self.registry, top_hash=self.hash)
-            )
+            q = Package.browse(self.package, self.registry, top_hash=self.hash)
             return q
         except Exception as err:
             logging.error(err)
@@ -62,10 +61,8 @@ class QuiltPackage(QuiltLocal):
         diffs = q_remote.diff(q_local)
         logging.debug(f"diff: {diffs}")
         return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[2]}
-    
 
     async def get(self, path: Path = None, key=None):
-
         dest = self.dest()
         q = await self.remote_pkg()
         if key:

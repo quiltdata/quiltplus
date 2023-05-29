@@ -12,4 +12,4 @@ class QuiltRoot(QuiltUri):
         return f"quilt+{self.registry}"
 
     def pkg_uri(self, pkg=None):
-        return self.base_uri()+ f"#package={pkg or self.package}"
+        return self.base_uri() + f"#package={pkg or self.package}"
