@@ -5,12 +5,18 @@ import shutil
 
 from quilt3 import Package
 from pathlib import Path
+from typing_extensions import Self
 
 from .uri import QuiltUri
 from .local import QuiltLocal
 
 class QuiltPackage(QuiltLocal):
     METHOD_NAMES = "get list diff patch put".split(" ")
+
+    @classmethod
+    def FromURI(cls: Self, uri: str):
+        attrs = QuiltUri.AttrsFromUri(uri)
+        return cls(attrs)
 
     def __init__(self, attrs: dict):
         super().__init__(attrs)

@@ -1,13 +1,16 @@
+from quiltplus import (
+    QuiltPackage,
+    QuiltRegistry,
+    QuiltResourceURI,
+    QuiltVersions,
+)
+
 from .conftest import pytestmark  # NOQA F401
 from .conftest import (
     PKG_URI,
     BKT_URI,
     SKIP_LONG_TESTS,
     VER_URI,
-    QuiltPackage,
-    QuiltRegistry,
-    QuiltVersions,
-    QuiltResourceURI,
     pytest,
 )
 

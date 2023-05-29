@@ -18,3 +18,6 @@ def QuiltResource(attrs: dict):
     klass = KLASS_MAP[type]
     return klass(attrs)
 
+def QuiltResourceURI(uri: str):
+    attrs = QuiltUri.AttrsFromUri(uri)
+    return QuiltResource(attrs)

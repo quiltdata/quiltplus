@@ -1,19 +1,16 @@
+import logging
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from quilt3 import Package
 
-from .conftest import pytestmark  # NOQA F401
-from .conftest import (
-    TEST_URI,
-    QuiltConfig,
-    QuiltPackage,
-    logging,
-    os,
-    pytest,
-)
+from quiltplus import QuiltPackage
 
-TIMESTAMP = QuiltConfig.Now()
+from .conftest import pytestmark  # NOQA F401
+from .conftest import TEST_URI, pytest
+
+TIMESTAMP = QuiltPackage.Now()
 WRITE_URI = None
 WRITE_BUCKET = os.environ.get("WRITE_BUCKET")
 

@@ -1,12 +1,10 @@
+import logging
+import os
+
+from quiltplus import QuiltPackage
+
 from .conftest import pytestmark  # NOQA F402
-from .conftest import (
-    SKIP_LONG_TESTS,
-    TEST_URI,
-    QuiltPackage,
-    logging,
-    os,
-    pytest,
-)
+from .conftest import SKIP_LONG_TESTS, TEST_URI, pytest
 
 
 def assert_diffs(diffs, a, m, d):

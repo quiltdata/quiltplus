@@ -1,4 +1,6 @@
-from .conftest import GitIgnore, pytest
+import pytest
+
+from quiltplus import GitIgnore
 
 TEST_FILE = "foobar.$$$"
 

@@ -1,8 +1,9 @@
 from udc import UnUri
+from quiltplus import QuiltUri
 
 from .conftest import pytestmark  # NOQA F401
 from .conftest import (BKT_URI, PKG_URI, PRP_URI, PTH_URI, TEST_BKT, TEST_PKG,
-                       TEST_URI, VER_URI, QuiltUri, pytest)
+                       TEST_URI, VER_URI, pytest)
 
 
 @pytest.fixture

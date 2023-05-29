@@ -1,9 +1,7 @@
-from enum import Enum
-
 from udc import K_HOST, UnUri
+from datetime import datetime
 
-
-class QuiltType(Enum):
+class QuiltType:
     PREFIX = "quilt+"
     K_BKT = K_HOST
 
@@ -37,3 +35,7 @@ class QuiltType(Enum):
         if QuiltType.SEP_HASH in pkg or QuiltType.SEP_TAG in pkg:
             return QuiltType.K_PKG
         return QuiltType.K_VER
+
+    @staticmethod
+    def Now() -> str:
+        return datetime.now().isoformat()
