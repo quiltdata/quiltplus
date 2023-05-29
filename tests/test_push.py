@@ -42,7 +42,7 @@ async def test_push_call():
 async def test_push_patch():
     pkg = get_unique_pkg("test_push_patch")
     cfg = pkg.config
-    with TemporaryDirectory() as tmpdirname:
+    with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
         os.chdir(tmpdirname)
         key = "test.txt"
         p = Path(key)
