@@ -22,6 +22,7 @@ anyio = "^3.7.0"
 typing-extensions = "^4.5.0"
 udc = "^0.2.5"
 # udc = {git = "https://github.com/data-yaml/udc.git", rev = "main"}
+tzlocal = "^5.0.1"
 
 
 [tool.poetry.group.dev.dependencies]

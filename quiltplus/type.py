@@ -1,4 +1,5 @@
 from datetime import datetime
+from tzlocal import get_localzone
 
 from udc import K_HOST
 
@@ -44,4 +45,7 @@ class QuiltType:
 
     @staticmethod
     def Now() -> str:
-        return datetime.now().isoformat()
+        tz = get_localzone()
+        dt = datetime.now(tz)
+        dts = dt.replace(microsecond=0)
+        return dts.isoformat()
