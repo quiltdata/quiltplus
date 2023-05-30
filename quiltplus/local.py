@@ -15,6 +15,7 @@ class QuiltLocal(QuiltRoot):
         with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
             tmpdir = Path(tmpdirname)
             yield (tmpdir)
+            logging.debug(f"Removing {tmpdirname} on {platform.system()}")
 
     @staticmethod
     def OpenDesktop(dest: str):
