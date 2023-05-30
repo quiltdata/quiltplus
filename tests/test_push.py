@@ -4,10 +4,11 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from quilt3 import Package
-from quiltplus import QuiltPackage
+
+from quiltplus import QuiltLocal, QuiltPackage
 
 from .conftest import pytestmark  # NOQA F401
-from .conftest import TEST_URI, pytest
+from .conftest import SKIP_LONG_TESTS, TEST_URI, pytest
 
 TIMESTAMP = QuiltPackage.Now()
 WRITE_URI = None
@@ -25,6 +26,58 @@ def get_unique_pkg(prefix: str):
     return QuiltPackage.FromURI(WRITE_URI)
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+async def test_push_patch():
+    pkg = get_unique_pkg("test_push_patch")
+    for tmpdirname in QuiltLocal.TempDir():
+        os.chdir(tmpdirname)
+        key = "test.txt"
+        p = Path(key)
+        p.write_text(TEST_URI)
+        filename = str(p)
+        opts = {"msg": f"{__name__} {TIMESTAMP}"}
+        result = await pkg.patch(opts)
+        assert result is not None
+
+
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+async def test_push_put():
+    pkg = get_unique_pkg("test_push")
+    assert pkg is not None
+
+    # Create new Package
+    README = f"# Hello World!\n{TIMESTAMP}"
+    logging.debug(README)
+    pkg.write_text(README, "README.md")
+    opts = {"msg": f"{__name__} {README}"}
+    qpkg = await pkg.put(opts)
+    assert qpkg is not None
+
+    # Read that Package
+    files = await pkg.list()
+    assert "README.md" in files
+
+    # Add a file
+    WRITEME = f"# Goodbye Cruel World!\n{TIMESTAMP}"
+    pkg.write_text(WRITEME, "WRITEME.md")
+
+    # Verify diff
+    diffs = await pkg.diff()
+    logging.debug(diffs)
+    assert "WRITEME.md" in diffs["added"]
+    logging.debug(pkg.local_files())
+
+    # Update Whole Package
+    opts2 = {"msg": f"{__name__} {WRITEME}"}
+    qpkg2 = await pkg.put(opts2)
+    assert qpkg2 is not None
+
+    # Verify Result using legacy quilt3 APIs
+    q3 = Package.browse(pkg.package, pkg.registry)
+    files3 = list(q3.keys())
+    assert "README.md" in files3
+    assert "WRITEME.md" in files3
+
 @pytest.mark.skip(reason="Not implemented")
 async def test_push_call():
     pkg = get_unique_pkg("test_push_call")
@@ -37,58 +90,3 @@ async def test_push_call():
     assert True
 
 
-# @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-@pytest.mark.skip(reason="Not implemented")
-async def test_push_patch():
-    pkg = get_unique_pkg("test_push_patch")
-    cfg = pkg.config
-    with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
-        os.chdir(tmpdirname)
-        key = "test.txt"
-        p = Path(key)
-        p.write_text(TEST_URI)
-        filename = str(p)
-
-        assert len(cfg.get_stage()) == 0
-        cfg.stage(filename, True)
-        assert len(cfg.get_stage()) == 1
-        msg = f"test_push_patch {TIMESTAMP}"
-        await pkg.post(msg)
-        await pkg.patch(msg)
-        assert len(cfg.get_stage()) == 0
-
-
-@pytest.mark.skip(reason="Not implemented")
-async def test_push():
-    pkg = get_unique_pkg("test_push")
-    assert pkg is not None
-
-    # Create new Package
-    README = f"# Hello World!\n{TIMESTAMP}"
-    logging.debug(README)
-    pkg.write_text(README, "README.md")
-    qpkg = await pkg.post("README")
-    assert qpkg is not None
-
-    # Read that Package
-    files = await pkg.list()
-    assert "README.md" in files
-
-    # Add a file
-    pkg.write_text(f"# Goodbye Cruel World!\n{TIMESTAMP}", "WRITEME.md")
-
-    # Verify diff
-    diffs = await pkg.diff()
-    logging.debug(diffs)
-    assert "WRITEME.md" in diffs["added"]
-    logging.debug(pkg.local_files())
-
-    # Update Whole Package
-    qpkg2 = await pkg.put("WRITEME")
-    assert qpkg2 is not None
-
-    # Verify Result using legacy quilt3 APIs
-    q3 = Package.browse(pkg.package, pkg.registry)
-    files3 = list(q3.keys())
-    assert "README.md" in files3
-    assert "WRITEME.md" in files3
