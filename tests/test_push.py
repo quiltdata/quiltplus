@@ -35,7 +35,7 @@ async def test_push_patch():
         p = Path(key)
         p.write_text(TEST_URI)
         filename = str(p)
-        opts = {"msg": f"{__name__} {TIMESTAMP}"}
+        opts = {"message": f"{__name__} {TIMESTAMP}"}
         result = await pkg.patch(opts)
         assert result is not None
 
@@ -49,7 +49,7 @@ async def test_push_put():
     README = f"# Hello World!\n{TIMESTAMP}"
     logging.debug(README)
     pkg.write_text(README, "README.md")
-    opts = {"msg": f"{__name__} {README}"}
+    opts = {"message": f"{__name__} {README}"}
     qpkg = await pkg.put(opts)
     assert qpkg is not None
 
@@ -68,7 +68,7 @@ async def test_push_put():
     logging.debug(pkg.local_files())
 
     # Update Whole Package
-    opts2 = {"msg": f"{__name__} {WRITEME}"}
+    opts2 = {"message": f"{__name__} {WRITEME}"}
     qpkg2 = await pkg.put(opts2)
     assert qpkg2 is not None
 

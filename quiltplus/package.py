@@ -40,7 +40,7 @@ class QuiltPackage(QuiltLocal):
         return q
 
     async def remote_pkg(self):
-        return await self.browse()
+        return (await self.browse()) or Package()
 
     async def child(self, changed_only=False):
         if changed_only:
@@ -77,7 +77,7 @@ class QuiltPackage(QuiltLocal):
         kwargs = {
             "registry": self.registry,
             "force": opts.get("force", False),
-            "msg": opts.get("msg", f"{__name__} {QuiltUri.Now()} @ {opts}"),
+            "message": opts.get("message", f"{__name__} {QuiltUri.Now()} @ {opts}"),
         }
         if "commit" in opts:
             await self.commit(opts)
