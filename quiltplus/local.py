@@ -14,7 +14,6 @@ class QuiltLocal(QuiltRoot):
     def TempDir() -> Generator[Path, None, None]:
         with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
             tmpdir = Path(tmpdirname)
-            os.chdir(tmpdir)
             yield (tmpdir)
 
     @staticmethod
