@@ -1,6 +1,8 @@
 sinclude .env # create from example.env
+PROJECT=quiltplus
 .PHONY: install test watch all clean
 
+TEST_README=--codeblocks
 ifeq ($(TEST_OS),windows-latest)
 	TEST_README=''
 endif
@@ -20,7 +22,7 @@ update:
 	poetry update
 
 test:
-	poetry run pytest --cov --cov-report xml:coverage.xml
+	poetry run pytest $(TEST_README) --cov --cov-report xml:coverage.xml
 
 test-short:
 	make test "SKIP_LONG_TESTS=True"
@@ -49,15 +51,15 @@ clean-git:
 	git branch | grep -v '*' | grep -v 'main' | xargs git branch -D
 
 which:
-	which udc
-	udc --version
+	which $(PROJECT)
+	$(PROJECT) --version
 
 pip-install:
-	python3 -m pip install udc
+	python3 -m pip install $(PROJECT)
 	make which
 
 pip-upgrade:
-	python3 -m pip install --upgrade udc
+	python3 -m pip install --upgrade $(PROJECT)
 	make which
 
 pip-update:
