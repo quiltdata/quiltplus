@@ -2,7 +2,6 @@
 
 import logging
 import shutil
-from pathlib import Path
 
 from quilt3 import Package
 from typing_extensions import Self
@@ -66,13 +65,13 @@ class QuiltPackage(QuiltLocal):
         if QuiltUri.K_PTH in opts:
             self.check_dir(opts[QuiltUri.K_PTH])
         return self.dest()
-    
+
     async def get(self, opts: dict = {}):
         dest = self.check_path(opts)
         q = await self.remote_pkg()
         q.fetch(dest=dest)
         return dest
-    
+
     async def push_args(self, opts: dict) -> dict:
         kwargs = {
             "registry": self.registry,
@@ -90,11 +89,11 @@ class QuiltPackage(QuiltLocal):
         result = q.build(self.package)
         return result
 
-    async def push(self, opts: dict, put = True):
+    async def push(self, opts: dict, put=True):
         """Generic handler for all push methods"""
-        q = await self.remote_pkg() # reset to latest
+        q = await self.remote_pkg()  # reset to latest
         if put:
-            [q.delete(f) for f in await self.child()] # clean slate; replace with dest
+            [q.delete(f) for f in await self.child()]  # clean slate; replace with dest
         q.set_dir(".", self.check_path(opts))
         q.build(self.package)
         args = await self.push_args(opts)
@@ -102,15 +101,15 @@ class QuiltPackage(QuiltLocal):
         return result
 
     async def put(self, opts: dict = {}):
-        return await self.push(opts, put = True)
+        return await self.push(opts, put=True)
 
     async def patch(self, opts: dict = {}):
         """Update the latest version of the remote package with the latest commit"""
-        return await self.push(opts, put = False)
+        return await self.push(opts, put=False)
 
     def delete(self):  # remove local cache
         return shutil.rmtree(self.last_path)
 
-    async def call(self, method: str = "get", opts = {}):
+    async def call(self, method: str = "get", opts={}):
         attr_method = getattr(self, method)
         return await attr_method(opts)

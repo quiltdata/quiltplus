@@ -1,10 +1,8 @@
 import logging
 import os
 from pathlib import Path
-from tempfile import TemporaryDirectory
 
 from quilt3 import Package
-
 from quiltplus import QuiltLocal, QuiltPackage
 
 from .conftest import pytestmark  # NOQA F401
@@ -34,7 +32,7 @@ async def test_push_patch():
         key = "test.txt"
         p = Path(key)
         p.write_text(TEST_URI)
-        filename = str(p)
+        str(p)
         opts = {"message": f"{__name__} {TIMESTAMP}"}
         result = await pkg.patch(opts)
         assert result is not None
@@ -78,6 +76,7 @@ async def test_push_put():
     assert "README.md" in files3
     assert "WRITEME.md" in files3
 
+
 @pytest.mark.skip(reason="Not implemented")
 async def test_push_call():
     pkg = get_unique_pkg("test_push_call")
@@ -88,5 +87,3 @@ async def test_push_call():
         logging.debug(msg)
         await pkg.call(method, msg)
     assert True
-
-
