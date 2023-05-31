@@ -1,7 +1,7 @@
 from datetime import datetime
 from tzlocal import get_localzone
 
-from udc import UnUri
+from un_yaml import UnUri
 
 
 class QuiltType:

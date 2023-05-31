@@ -1,7 +1,7 @@
 # Create Quilt URI from UnURI attributes
 
 from typing_extensions import Self
-from udc import UnUri
+from un_yaml import UnUri
 
 from .type import QuiltType
 
