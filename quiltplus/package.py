@@ -27,7 +27,7 @@ class QuiltPackage(QuiltLocal):
         return self.pkg_uri() + "#path=" + sub_path
 
     async def browse(self):
-        print(f"browse {self.package} {self.registry} {self.hash}")
+        logging.debug(f"browse {self.package} {self.registry} {self.hash}")
         try:
             q = Package.browse(self.package, self.registry, top_hash=self.hash)
             return q

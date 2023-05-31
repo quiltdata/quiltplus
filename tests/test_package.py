@@ -90,8 +90,6 @@ async def test_pkg_diff(pkg: QuiltPackage):
 
 async def test_pkg_child(pkg: QuiltPackage):
     files = await pkg.child()
-    print(pkg.uri)
-    print(files)
     assert files
     assert len(files) > 3
     assert "README.md" in files
