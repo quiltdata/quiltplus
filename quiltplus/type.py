@@ -1,12 +1,12 @@
 from datetime import datetime
 from tzlocal import get_localzone
 
-from udc import K_HOST
+from udc import UnUri
 
 
 class QuiltType:
     PREFIX = "quilt+"
-    K_BKT = K_HOST
+    K_BKT = UnUri.K_HOST
 
     # Fragments
     K_PKG = "package"
@@ -31,7 +31,7 @@ class QuiltType:
         for key in QuiltType.FRAG_KEYS:
             if key in attrs:
                 return key
-        return K_HOST
+        return UnUri.K_HOST
 
     @staticmethod
     def Type(attrs: dict) -> str:

@@ -1,7 +1,7 @@
 # Create Quilt URI from UnURI attributes
 
 from typing_extensions import Self
-from udc import K_HOST, K_PROT, K_URI, UnUri
+from udc import UnUri
 
 from .type import QuiltType
 
@@ -23,8 +23,8 @@ class QuiltUri(QuiltType):
 
     def __init__(self, attrs: dict):
         self.attrs = attrs
-        self.uri = attrs.get(K_URI)
-        self.registry = f"{attrs.get(K_PROT)}://{attrs.get(K_HOST)}"
+        self.uri = attrs.get(UnUri.K_URI)
+        self.registry = f"{attrs.get(UnUri.K_PROT)}://{attrs.get(UnUri.K_HOST)}"
         self.package = self.parse_package()
 
     def __repr__(self):
