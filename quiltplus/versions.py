@@ -13,7 +13,7 @@ class QuiltVersions(QuiltRoot):
         """Pin package name to specific version."""
         return self.pkg_uri() + f"@{hash}"
 
-    async def list(self):
+    async def list(self, opts: dict = {}):
         """List version URIs in package."""
         return [
             self.url(hash)

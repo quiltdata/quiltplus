@@ -17,6 +17,6 @@ class QuiltRegistry(QuiltRoot):
         """Convert package name to URL."""
         return self.pkg_uri(pkg) + ":latest"
 
-    async def list(self):
+    async def list(self, opts: dict = {}):
         """List package URIs in registry."""
         return [self.url(pkg) for pkg in list_packages(self.registry)]
