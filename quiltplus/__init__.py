@@ -1,16 +1,12 @@
 import yaml
 
-from .cache import QuiltIdCache  # NOQA F401
-from .cli import cli  # NOQA F401
-from .config import QuiltConfig  # NOQA F401
-from .id import QuiltID  # NOQA F401
 from .ignore import GitIgnore  # NOQA F401
+from .local import QuiltLocal  # NOQA F401
 from .package import QuiltPackage  # NOQA F401
-from .parse import (K_BKT, K_HSH, K_PKG, K_PRP, K_PTH,  # NOQA F401
-                             K_STR, K_VER, QuiltParse)
-from .resource import QuiltResource  # NOQA F401
 from .registry import QuiltRegistry  # NOQA F401
-from .unparse import QuiltUnparse  # NOQA F401
+from .resource import QuiltResource, QuiltResourceURI  # NOQA F401
+from .type import QuiltType  # NOQA F401
+from .uri import QuiltUri  # NOQA F401
 from .versions import QuiltVersions  # NOQA F401
 
 

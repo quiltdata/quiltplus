@@ -1,19 +1,25 @@
-from .id import QuiltID
 from .package import QuiltPackage
+from .path import QuiltPath
+from .property import QuiltProperty
 from .registry import QuiltRegistry
+from .uri import QuiltUri
 from .versions import QuiltVersions
-from .parse import K_BKT, K_PKG, K_PTH, K_VER
 
-def QuiltResource(uri: str):
-    id = QuiltID(uri)
-    t = id.type()
-    if t == K_PTH:
-        return QuiltPackage(id)
-    elif t == K_VER:
-        return QuiltVersions(id)
-    elif t == K_PKG:
-        return QuiltPackage(id)
-    elif t == K_BKT:
-        return QuiltRegistry(id)
-    else:
-        raise ValueError(f"Unknown resource type: {t}")
+KLASS_MAP = {
+    QuiltUri.K_PKG: QuiltPackage,
+    QuiltUri.K_PRP: QuiltProperty,
+    QuiltUri.K_PTH: QuiltPath,
+    QuiltUri.K_BKT: QuiltRegistry,
+    QuiltUri.K_VER: QuiltVersions,
+}
+
+
+def QuiltResource(attrs: dict):
+    type = QuiltUri.Type(attrs)
+    klass = KLASS_MAP[type]
+    return klass(attrs)
+
+
+def QuiltResourceURI(uri: str):
+    attrs = QuiltUri.AttrsFromUri(uri)
+    return QuiltResource(attrs)

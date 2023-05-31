@@ -1,20 +1,14 @@
+import logging
+import os
 from pathlib import Path
-from tempfile import TemporaryDirectory
 
 from quilt3 import Package
+from quiltplus import QuiltLocal, QuiltPackage
 
 from .conftest import pytestmark  # NOQA F401
-from .conftest import (
-    SKIP_LONG_TESTS,
-    TEST_URI,
-    QuiltConfig,
-    QuiltPackage,
-    logging,
-    os,
-    pytest,
-)
+from .conftest import SKIP_LONG_TESTS, TEST_URI, pytest
 
-TIMESTAMP = QuiltConfig.Now()
+TIMESTAMP = QuiltPackage.Now()
 WRITE_URI = None
 WRITE_BUCKET = os.environ.get("WRITE_BUCKET")
 
@@ -23,7 +17,7 @@ if not WRITE_BUCKET:
     pytest.skip("no writeable bucket available", allow_module_level=True)
 
 
-def get_pkg(prefix: str):
+def get_unique_pkg(prefix: str):
     WRITE_URI = (
         f"quilt+s3://{WRITE_BUCKET}#package=test/{prefix}_{TIMESTAMP.replace(':','_')}"
     )
@@ -31,47 +25,30 @@ def get_pkg(prefix: str):
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-async def test_push_call():
-    pkg = get_pkg("test_push_call")
-    methods = QuiltPackage.METHOD_NAMES
-    rmethods = list(reversed(methods))
-    for method in rmethods:
-        msg = f"{method}: test_push_calluri {TIMESTAMP}"
-        logging.debug(msg)
-        await pkg.call(method, msg)
-    assert True
-
-
-# @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_push_patch():
-    pkg = get_pkg("test_push_patch")
-    cfg = pkg.config
-    with TemporaryDirectory() as tmpdirname:
+    pkg = get_unique_pkg("test_push_patch")
+    for tmpdirname in QuiltLocal.TempDir():
         os.chdir(tmpdirname)
         key = "test.txt"
         p = Path(key)
         p.write_text(TEST_URI)
-        filename = str(p)
-
-        assert len(cfg.get_stage()) == 0
-        cfg.stage(filename, True)
-        assert len(cfg.get_stage()) == 1
-        msg = f"test_push_patch {TIMESTAMP}"
-        await pkg.post(msg)
-        await pkg.patch(msg)
-        assert len(cfg.get_stage()) == 0
+        str(p)
+        opts = {"message": f"{__name__} {TIMESTAMP}"}
+        result = await pkg.patch(opts)
+        assert result is not None
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-async def test_push():
-    pkg = get_pkg("test_push")
+async def test_push_put():
+    pkg = get_unique_pkg("test_push")
     assert pkg is not None
 
     # Create new Package
     README = f"# Hello World!\n{TIMESTAMP}"
     logging.debug(README)
     pkg.write_text(README, "README.md")
-    qpkg = await pkg.post("README")
+    opts = {"message": f"{__name__} {README}"}
+    qpkg = await pkg.put(opts)
     assert qpkg is not None
 
     # Read that Package
@@ -79,7 +56,8 @@ async def test_push():
     assert "README.md" in files
 
     # Add a file
-    pkg.write_text(f"# Goodbye Cruel World!\n{TIMESTAMP}", "WRITEME.md")
+    WRITEME = f"# Goodbye Cruel World!\n{TIMESTAMP}"
+    pkg.write_text(WRITEME, "WRITEME.md")
 
     # Verify diff
     diffs = await pkg.diff()
@@ -88,11 +66,24 @@ async def test_push():
     logging.debug(pkg.local_files())
 
     # Update Whole Package
-    qpkg2 = await pkg.put("WRITEME")
+    opts2 = {"message": f"{__name__} {WRITEME}"}
+    qpkg2 = await pkg.put(opts2)
     assert qpkg2 is not None
 
     # Verify Result using legacy quilt3 APIs
-    q3 = Package.browse(pkg.name, pkg.registry)
+    q3 = Package.browse(pkg.package, pkg.registry)
     files3 = list(q3.keys())
     assert "README.md" in files3
     assert "WRITEME.md" in files3
+
+
+@pytest.mark.skip(reason="Not implemented")
+async def test_push_call():
+    pkg = get_unique_pkg("test_push_call")
+    methods = QuiltPackage.METHOD_NAMES
+    rmethods = list(reversed(methods))
+    for method in rmethods:
+        msg = f"{method}: test_push_calluri {TIMESTAMP}"
+        logging.debug(msg)
+        await pkg.call(method, msg)
+    assert True

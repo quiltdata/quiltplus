@@ -1,51 +1,29 @@
-# quiltplus
+# QuiltPlus
 
-Resource-oriented API for Quilt's decentralized social knowledge platform
+## Next-generation API for Quilt Universal Data Collections
 
-## Command-Line QuickStart
+QuiltPlus provides an asychronous, object-oriented wrapper around the Quilt API.
+In particular, it implements a resource-based architecture using Quilt+ URIs in
+order to support the Universal Data Client [udc](https://github.com/data-yaml/udc).
+
+## Installation
 
 ```bash
-pip install quiltplus
-qp -U "quilt+s3://quilt-example#package=examples/echarts" pkg # get
-qp list
-qp --help
+python3 -m pip install quiltplus
 ```
 
-### Detailed Command-Line
+## Usage
 
-```bash
-export WRITE_BUCKET=writeable_s3_bucket
-# create empty package and save to config
-qp -U "quilt+s3://$(WRITE_BUCKET)#package=test/quiltplus" pkg -x post
-time > README.md
-qp stage -a README.md
-qp stage # displays staged files
-qp pkg -x patch # uploads staged files
-```
+```python
+from quiltplus import QuiltPackage
+import anyio
 
-## Developmment
+URI = "quilt+s3://quilt-example#package=examples/wellplates"
 
-Uses the [trio](https://trio.readthedocs.io/en/stable/) version of Python's `async` I/O
+async def print_contents(uri: str):
+    pkg = QuiltPackage.FromURI(URI)
+    files = await pkg.list()
+    print(files)
 
-```bash
-git clone https://github.com/quiltdata/quiltplus
-cd quiltplus
-poetry self update
-poetry install
-export WRITE_BUCKET=writeable_s3_bucket
-poetry run pytest --cov-report html && open htmlcov/index.html
-poetry run ptw --now .
-```
-
-## Pushing Changes
-
-Be sure you to first set your [API token](https://pypi.org/manage/account/) using `poetry config pypi-token.pypi <pypi-api-token>`
-
-```bash
-# merge PR
-poetry version patch # minor major
-poetry build
-poetry publish
-# create new branch
-poetry version prepatch # preminor premajor
+anyio.run(print_contents, URI)
 ```
