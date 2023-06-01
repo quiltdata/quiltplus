@@ -30,6 +30,9 @@ test-short:
 test-long:
 	make test "SKIP_LONG_TESTS=False"
 
+typecheck:
+	poetry run mypy quiltplus
+
 coverage:
 	poetry run pytest --cov --cov-report html:coverage_html
 	open coverage_html/index.html
