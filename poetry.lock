@@ -975,13 +975,13 @@ devenv = ["black", "check-manifest", "flake8", "pyroma", "pytest (>=4.3)", "pyte
 
 [[package]]
 name = "un-yaml"
-version = "0.1.1"
+version = "0.1.2"
 description = "Universal YAML: replace repetitive code with your own Domain-Specific un-Language (DSuL)"
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "un_yaml-0.1.1-py3-none-any.whl", hash = "sha256:cfa8a5201bfbdfd3afbfbe57519b8484d70e774272e8d77a39b4a0349dc80488"},
-    {file = "un_yaml-0.1.1.tar.gz", hash = "sha256:00b3d57fed894ab5083cdc5fb7defc19e3481974da12744e7d33d8594d8eeac7"},
+    {file = "un_yaml-0.1.2-py3-none-any.whl", hash = "sha256:775b5d0d5d529b668951560154aad6d19e572732d56f5081a309728b513d2044"},
+    {file = "un_yaml-0.1.2.tar.gz", hash = "sha256:7166cf62d19b157ea5fbbcc968286b3c5a4f643ef52b489b2b2df6b881e3efd3"},
 ]
 
 [package.dependencies]
