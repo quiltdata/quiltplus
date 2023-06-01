@@ -39,7 +39,7 @@ class QuiltType:
         if type != QuiltType.K_PKG:
             return type
         pkg = attrs.get(QuiltType.K_PKG)
-        if QuiltType.SEP_HASH in pkg or QuiltType.SEP_TAG in pkg:
+        if pkg and (QuiltType.SEP_HASH in pkg or QuiltType.SEP_TAG in pkg):
             return QuiltType.K_PKG
         return QuiltType.K_VER
 
