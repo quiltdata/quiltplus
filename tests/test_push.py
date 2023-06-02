@@ -2,11 +2,11 @@ import logging
 import os
 from pathlib import Path
 
-from quilt3 import Package # type: ignore
+from quilt3 import Package  # type: ignore
 from quiltplus import QuiltPackage
 
 from .conftest import pytestmark  # NOQA F401
-from .conftest import SKIP_LONG_TESTS, TEST_URI, pytest
+from .conftest import TEST_URI, pytest
 
 TIMESTAMP = QuiltPackage.Now()
 WRITE_URI = None

@@ -1,4 +1,4 @@
-from quilt3 import list_package_versions # type: ignore
+from quilt3 import list_package_versions  # type: ignore
 
 from .root import QuiltRoot
 

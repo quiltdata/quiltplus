@@ -20,7 +20,7 @@ class QuiltLocal(QuiltRoot):
     @staticmethod
     def OpenDesktop(dest: str):
         if platform.system() == "Windows":
-            os.startfile(dest) # type: ignore
+            os.startfile(dest)  # type: ignore
         elif platform.system() == "Darwin":
             subprocess.Popen(["open", "-R", dest])
         else:
@@ -32,7 +32,7 @@ class QuiltLocal(QuiltRoot):
         for tmp in QuiltLocal.TempDir():
             self.last_path = tmp
 
-    def check_dir(self, path: Path|None = None):
+    def check_dir(self, path: Path | None = None):
         if not path:
             return self.last_path
 

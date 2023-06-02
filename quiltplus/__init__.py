@@ -15,4 +15,4 @@ def default_representer(dumper, data):
     return dumper.represent_scalar("tag:yaml.org,2002:str", str(data))
 
 
-yaml.representer.SafeRepresenter.add_representer(None, default_representer) # type: ignore
+yaml.representer.SafeRepresenter.add_representer(None, default_representer)  # type: ignore

@@ -1,13 +1,11 @@
 # Create Quilt URI from UnURI attributes
 
-from typing_extensions import Self
 from un_yaml.un_uri import UnUri
 
 from .type import QuiltType
 
 
 class QuiltUri(QuiltType):
-
     @classmethod
     def FromUnUri(cls, un: UnUri) -> "QuiltUri":
         return cls(un.attrs)
