@@ -76,7 +76,7 @@ async def test_push_put():
     q3 = Package.browse(pkg.package, pkg.registry)
     files3 = list(q3.keys())
     assert check_file("README.md", files3)
-    assert check_file("WRITEME.md", files)
+    assert check_file("WRITEME.md", files3)
 
 
 @pytest.mark.skip(reason="Not implemented")
