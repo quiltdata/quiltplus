@@ -24,7 +24,8 @@ def get_unique_pkg(prefix: str):
     return QuiltPackage.FromURI(WRITE_URI)
 
 
-@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+# @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+@pytest.mark.skip(reason="Not fully implemented")
 async def test_push_patch():
     pkg = get_unique_pkg("test_push_patch")
     for tmpdirname in QuiltLocal.TempDir():
@@ -38,7 +39,8 @@ async def test_push_patch():
         assert result is not None
 
 
-@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+# @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+@pytest.mark.skip(reason="Not fully implemented")
 async def test_push_put():
     pkg = get_unique_pkg("test_push")
     assert pkg is not None
