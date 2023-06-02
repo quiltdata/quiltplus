@@ -32,7 +32,7 @@ class QuiltLocal(QuiltRoot):
         for tmp in QuiltLocal.TempDir():
             self.last_path = tmp
 
-    def check_dir(self, path: Path = None):
+    def check_dir(self, path: Path|None = None):
         if not path:
             return self.last_path
 

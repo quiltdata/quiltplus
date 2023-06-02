@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.9.1 (2023-06-01)
+
+- support get, put, patch operations
+- improve typing
+
 ## 0.9.0 (2023-05-29)
 
 Pre-release to support Universal Data Client (udc) development.

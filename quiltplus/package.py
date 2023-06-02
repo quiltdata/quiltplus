@@ -4,7 +4,7 @@ import logging
 import shutil
 
 from quilt3 import Package
-from typing_extensions import Self
+from typing_extensions import Self, Type
 
 from .local import QuiltLocal
 from .uri import QuiltUri
@@ -14,7 +14,7 @@ class QuiltPackage(QuiltLocal):
     METHOD_NAMES = "get list diff patch put".split(" ")
 
     @classmethod
-    def FromURI(cls: Self, uri: str):
+    def FromURI(cls: Type[Self], uri: str):
         attrs = QuiltUri.AttrsFromUri(uri)
         return cls(attrs)
 
@@ -83,11 +83,7 @@ class QuiltPackage(QuiltLocal):
         return kwargs
 
     async def commit(self, opts: dict = {}):  # create new empty package
-        q = await self.local_pkg()
-        [q.set(f) for f in self.config.get_stage(adds=True)]
-        [q.delete(f) for f in self.config.get_stage(adds=False)]
-        result = q.build(self.package)
-        return result
+        pass
 
     async def push(self, opts: dict, put=True):
         """Generic handler for all push methods"""

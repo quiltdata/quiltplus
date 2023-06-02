@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 
 from quilt3 import Package
-from quiltplus import QuiltLocal, QuiltPackage
+from quiltplus import QuiltPackage
 
 from .conftest import pytestmark  # NOQA F401
 from .conftest import SKIP_LONG_TESTS, TEST_URI, pytest
@@ -28,7 +28,7 @@ def get_unique_pkg(prefix: str):
 @pytest.mark.skip(reason="Not fully implemented")
 async def test_push_patch():
     pkg = get_unique_pkg("test_push_patch")
-    for tmpdirname in QuiltLocal.TempDir():
+    for tmpdirname in QuiltPackage.TempDir():
         os.chdir(tmpdirname)
         key = "test.txt"
         p = Path(key)
