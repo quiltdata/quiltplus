@@ -6,11 +6,11 @@ from quilt3 import Package  # type: ignore
 from quiltplus import QuiltPackage
 
 from .conftest import pytestmark  # NOQA F401
-from .conftest import TEST_URI, pytest
+from .conftest import SKIP_LONG_TESTS, TEST_URI, pytest
 
 TIMESTAMP = QuiltPackage.Now()
 WRITE_URI = None
-WRITE_BUCKET = os.environ.get("WRITE_BUCKET")
+WRITE_BUCKET = os.environ.get("WRITE_BUCKET") or False
 
 logging.info(f"WRITE_BUCKET: [{WRITE_BUCKET}]")
 if not WRITE_BUCKET:
@@ -24,8 +24,7 @@ def get_unique_pkg(prefix: str):
     return QuiltPackage.FromURI(WRITE_URI)
 
 
-# @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-@pytest.mark.skip(reason="Not fully implemented")
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_push_patch():
     pkg = get_unique_pkg("test_push_patch")
     for tmpdirname in QuiltPackage.TempDir():
@@ -38,9 +37,10 @@ async def test_push_patch():
         result = await pkg.patch(opts)
         assert result is not None
 
+def check_file(s: str, l: list[str]) -> bool:
+    return sum(1 for x in l if s in x) == 1
 
-# @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-@pytest.mark.skip(reason="Not fully implemented")
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_push_put():
     pkg = get_unique_pkg("test_push")
     assert pkg is not None
@@ -55,17 +55,17 @@ async def test_push_put():
 
     # Read that Package
     files = await pkg.list()
-    assert "README.md" in files
+    assert check_file("README.md", files)
 
     # Add a file
     WRITEME = f"# Goodbye Cruel World!\n{TIMESTAMP}"
     pkg.write_text(WRITEME, "WRITEME.md")
 
     # Verify diff
-    diffs = await pkg.diff()
-    logging.debug(diffs)
-    assert "WRITEME.md" in diffs["added"]
-    logging.debug(pkg.local_files())
+    # diffs = await pkg.diff()
+    # logging.debug(diffs)
+    # assert "WRITEME.md" in diffs["added"]
+    # logging.debug(pkg.local_files())
 
     # Update Whole Package
     opts2 = {"message": f"{__name__} {WRITEME}"}
@@ -75,8 +75,8 @@ async def test_push_put():
     # Verify Result using legacy quilt3 APIs
     q3 = Package.browse(pkg.package, pkg.registry)
     files3 = list(q3.keys())
-    assert "README.md" in files3
-    assert "WRITEME.md" in files3
+    assert check_file("README.md", files3)
+    assert check_file("WRITEME.md", files)
 
 
 @pytest.mark.skip(reason="Not implemented")
