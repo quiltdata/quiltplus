@@ -1,20 +1,21 @@
 # Create Quilt URI from UnURI attributes
 
 from typing_extensions import Self
-from un_yaml import UnUri
+from un_yaml.un_uri import UnUri
 
 from .type import QuiltType
 
 
 class QuiltUri(QuiltType):
-    @staticmethod
-    def FromUnUri(un: UnUri) -> Self:
-        return QuiltUri(un.attrs)
 
-    @staticmethod
-    def FromUri(uri: str) -> Self:
+    @classmethod
+    def FromUnUri(cls, un: UnUri) -> "QuiltUri":
+        return cls(un.attrs)
+
+    @classmethod
+    def FromUri(cls, uri: str) -> "QuiltUri":
         un = UnUri(uri)
-        return QuiltUri.FromUnUri(un)
+        return cls.FromUnUri(un)
 
     @staticmethod
     def AttrsFromUri(uri: str) -> dict:
@@ -30,12 +31,10 @@ class QuiltUri(QuiltType):
     def __repr__(self):
         return f"QuiltUri({self.uri})"
 
-    def __eq__(self, other: Self):
-        return (
-            self.registry == other.registry
-            and self.package == other.package
-            and self.__class__ == other.__class__
-        )
+    def __eq__(self, other: object):
+        if not isinstance(other, QuiltUri):
+            return NotImplemented
+        return self.registry == other.registry and self.package == other.package
 
     def full_package(self):
         return self.attrs.get(QuiltUri.K_PKG)

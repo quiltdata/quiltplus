@@ -20,7 +20,7 @@ class QuiltLocal(QuiltRoot):
     @staticmethod
     def OpenDesktop(dest: str):
         if platform.system() == "Windows":
-            os.startfile(dest)
+            os.startfile(dest) # type: ignore
         elif platform.system() == "Darwin":
             subprocess.Popen(["open", "-R", dest])
         else:

@@ -2,7 +2,7 @@ import logging
 import os
 from pathlib import Path
 
-from quilt3 import Package
+from quilt3 import Package # type: ignore
 from quiltplus import QuiltPackage
 
 from .conftest import pytestmark  # NOQA F401

@@ -3,7 +3,7 @@
 import logging
 import shutil
 
-from quilt3 import Package
+from quilt3 import Package # type: ignore
 from typing_extensions import Self, Type
 
 from .local import QuiltLocal
