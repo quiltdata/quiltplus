@@ -935,6 +935,17 @@ sniffio = "*"
 sortedcontainers = "*"
 
 [[package]]
+name = "types-pyyaml"
+version = "6.0.12.10"
+description = "Typing stubs for PyYAML"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-PyYAML-6.0.12.10.tar.gz", hash = "sha256:ebab3d0700b946553724ae6ca636ea932c1b0868701d4af121630e78d695fc97"},
+    {file = "types_PyYAML-6.0.12.10-py3-none-any.whl", hash = "sha256:662fa444963eff9b68120d70cda1af5a5f2aa57900003c2006d7626450eaae5f"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.6.2"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -975,13 +986,13 @@ devenv = ["black", "check-manifest", "flake8", "pyroma", "pytest (>=4.3)", "pyte
 
 [[package]]
 name = "un-yaml"
-version = "0.1.2"
+version = "0.2.0"
 description = "Universal YAML: replace repetitive code with your own Domain-Specific un-Language (DSuL)"
 optional = false
 python-versions = ">=3.10,<4.0"
 files = [
-    {file = "un_yaml-0.1.2-py3-none-any.whl", hash = "sha256:775b5d0d5d529b668951560154aad6d19e572732d56f5081a309728b513d2044"},
-    {file = "un_yaml-0.1.2.tar.gz", hash = "sha256:7166cf62d19b157ea5fbbcc968286b3c5a4f643ef52b489b2b2df6b881e3efd3"},
+    {file = "un_yaml-0.2.0-py3-none-any.whl", hash = "sha256:3d3f0decb1af2c2cedc2c324b0562910bf9d6981b52994a5250a70ced975e5c1"},
+    {file = "un_yaml-0.2.0.tar.gz", hash = "sha256:96fc231b22bbebeae2f5fb260bdf93504cfe707ea63e73cc8eaf43bc1dc47575"},
 ]
 
 [package.dependencies]
@@ -989,6 +1000,7 @@ anyio = ">=3.7.0,<4.0.0"
 asyncclick = ">=8.1.3.4,<9.0.0.0"
 pyyaml = ">=6.0,<7.0"
 trio = ">=0.22.0,<0.23.0"
+types-pyyaml = ">=6.0.12.10,<7.0.0.0"
 typing-extensions = ">=4.5.0,<5.0.0"
 
 [[package]]
