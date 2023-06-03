@@ -24,8 +24,15 @@ def test_local_path():
     assert p3 != p
     assert str(p3) == "."
 
-    p4 = loc.check_dir(Path("test_nonexistent"))
+    p4 = loc.check_dir(Path("test_nonexistent/"))
     assert p4
 
     with raises(ValueError):
         loc.check_dir(Path("README.md"))
+
+    opts = {QuiltLocal.K_PTH: Path(".")}
+    p5 = loc.check_path(opts)
+    assert p5 == p3
+
+    p6 = loc.check_path({})
+    assert p6 == p5
