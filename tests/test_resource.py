@@ -1,7 +1,22 @@
-from quiltplus import QuiltPackage, QuiltRegistry, QuiltResourceURI, QuiltVersions
+from quiltplus import (
+    QuiltPackage,
+    QuiltPath,
+    QuiltProperty,
+    QuiltRegistry,
+    QuiltResourceURI,
+    QuiltVersions,
+)
 
 from .conftest import pytestmark  # NOQA F401
-from .conftest import BKT_URI, PKG_URI, SKIP_LONG_TESTS, VER_URI, pytest
+from .conftest import (
+    BKT_URI,
+    PKG_URI,
+    PRP_URI,
+    PTH_URI,
+    SKIP_LONG_TESTS,
+    VER_URI,
+    pytest,
+)
 
 
 async def test_res_pkg():
@@ -12,6 +27,14 @@ async def test_res_pkg():
 async def test_res_reg():
     qreg = QuiltResourceURI(BKT_URI)
     assert isinstance(qreg, QuiltRegistry)
+
+async def test_res_path():
+    qreg = QuiltResourceURI(PTH_URI)
+    assert isinstance(qreg, QuiltPath)
+
+async def test_res_prop():
+    qreg = QuiltResourceURI(PRP_URI)
+    assert isinstance(qreg, QuiltProperty)
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
