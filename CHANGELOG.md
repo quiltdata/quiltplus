@@ -1,9 +1,9 @@
 # CHANGELOG
 
-## 0.9.1 (2023-06-01)
+## 0.9.1 (2023-06-03)
 
 - support get, put, patch operations
-- improve typing
+- improve typing and test coverage (>90%)
 
 ## 0.9.0 (2023-05-29)
 
