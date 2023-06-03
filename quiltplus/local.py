@@ -44,6 +44,11 @@ class QuiltLocal(QuiltRoot):
             raise ValueError(f"Path is not a directory: {path}")
         return path
 
+    def check_path(self, opts: dict):
+        if QuiltLocal.K_PTH in opts:
+            self.check_dir(opts[QuiltLocal.K_PTH])
+        return self.dest()
+
     def local_path(self, *paths: str):
         p = self.check_dir()
         for path in paths:

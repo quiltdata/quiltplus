@@ -61,11 +61,6 @@ class QuiltPackage(QuiltLocal):
         logging.debug(f"diff: {diffs}")
         return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[2]}
 
-    def check_path(self, opts: dict):
-        if QuiltUri.K_PTH in opts:
-            self.check_dir(opts[QuiltUri.K_PTH])
-        return self.dest()
-
     async def get(self, opts: dict = {}):
         dest = self.check_path(opts)
         q = await self.remote_pkg()

@@ -1,10 +1,12 @@
+import logging
+import yaml
+
 from .package import QuiltPackage
 from .path import QuiltPath
 from .property import QuiltProperty
 from .registry import QuiltRegistry
 from .uri import QuiltUri
 from .versions import QuiltVersions
-import yaml
 
 KLASS_MAP = {
     QuiltUri.K_PKG: QuiltPackage,
@@ -17,9 +19,8 @@ KLASS_MAP = {
 
 def QuiltResource(attrs: dict):
     type = QuiltUri.Type(attrs)
-    print(f"QuiltResource: type={type} for\n{yaml.dump(attrs)}")
+    logging.debug(f"QuiltResource: type={type} for\n{yaml.dump(attrs)}")
     klass = KLASS_MAP[type]
-    print(f"QuiltResource: klass={klass}")
     return klass(attrs)
 
 
