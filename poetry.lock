@@ -736,13 +736,13 @@ trio = ">=0.22.0"
 
 [[package]]
 name = "pytest-watcher"
-version = "0.2.6"
-description = "Continiously runs pytest on changes in *.py files"
+version = "0.3.1"
+description = "Automatically rerun your tests on file modifications"
 optional = false
 python-versions = ">=3.7.0,<4.0.0"
 files = [
-    {file = "pytest-watcher-0.2.6.tar.gz", hash = "sha256:351dfb3477366030ff275bfbfc9f29bee35cd07f16a3355b38bf92766886bae4"},
-    {file = "pytest_watcher-0.2.6-py3-none-any.whl", hash = "sha256:0a507159d051c9461790363e0f9b2827c1d82ad2ae8966319598695e485b1dd5"},
+    {file = "pytest-watcher-0.3.1.tar.gz", hash = "sha256:89a7be67ce3849d497622d9353de8f7caeb3cc52b6ca47ebe862359cf35a8b22"},
+    {file = "pytest_watcher-0.3.1-py3-none-any.whl", hash = "sha256:2f61807b4322205ad463a1da6b282e127fed52d5a374b6c080e90b5cddf29e8a"},
 ]
 
 [package.dependencies]
@@ -1143,4 +1143,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "bac221238b3a0f24ef6eee2376c9ae319557555eabe9071172b8d9d6acb6ee24"
+content-hash = "2fe6c51c45b2d7029d68e34af76bcdcb92f38290456d1f7c51f27db0be7ea776"
