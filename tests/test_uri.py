@@ -23,9 +23,11 @@ def test_uri(uri: QuiltUri):
     assert uri.registry == f"s3://{TEST_BKT}"
     assert uri.package == TEST_PKG
 
+
 def test_uri_repr(uri: QuiltUri):
     assert TEST_URI in repr(uri)
     assert uri == uri
+
 
 def test_uri_eq(uri: QuiltUri):
     assert uri == uri

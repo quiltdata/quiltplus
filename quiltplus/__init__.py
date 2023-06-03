@@ -1,4 +1,3 @@
-
 from .ignore import GitIgnore  # NOQA F401
 from .local import QuiltLocal  # NOQA F401
 from .package import QuiltPackage  # NOQA F401
