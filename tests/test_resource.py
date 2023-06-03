@@ -63,4 +63,3 @@ async def test_res_path_get():
     assert isinstance(qr, QuiltPath)
     results = await qr.get()
     assert len(results) > 0
-

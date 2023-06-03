@@ -1,6 +1,6 @@
 from pathlib import Path
-from pytest import raises
 
+from pytest import raises
 from quiltplus import QuiltLocal
 
 
@@ -29,4 +29,3 @@ def test_local_path():
 
     with raises(ValueError):
         loc.check_dir(Path("README.md"))
-

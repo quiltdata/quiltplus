@@ -1,4 +1,3 @@
-import yaml
 
 from .ignore import GitIgnore  # NOQA F401
 from .local import QuiltLocal  # NOQA F401

@@ -25,7 +25,7 @@ def test_pkg_fixture(pkg: QuiltPackage):
 
 def test_pkg_str(pkg: QuiltPackage):
     s = str(pkg)
-    pkg_name = pkg.package or ''
+    pkg_name = pkg.package or ""
     assert pkg_name in s
     logging.debug(pkg)
 
@@ -101,7 +101,7 @@ async def test_pkg_list(pkg: QuiltPackage):
     files = await pkg.list()
     assert files
     assert len(files) > 3
-    pkg_name = pkg.package or ''
+    pkg_name = pkg.package or ""
     assert pkg_name in files[0]
 
 
