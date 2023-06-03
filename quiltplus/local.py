@@ -20,7 +20,7 @@ class QuiltLocal(QuiltRoot):
     @staticmethod
     def OpenDesktop(dest: str):
         if platform.system() == "Windows":
-            os.startfile(dest)
+            os.startfile(dest)  # type: ignore
         elif platform.system() == "Darwin":
             subprocess.Popen(["open", "-R", dest])
         else:
@@ -32,7 +32,7 @@ class QuiltLocal(QuiltRoot):
         for tmp in QuiltLocal.TempDir():
             self.last_path = tmp
 
-    def check_dir(self, path: Path = None):
+    def check_dir(self, path: Path | None = None):
         if not path:
             return self.last_path
 
@@ -43,6 +43,11 @@ class QuiltLocal(QuiltRoot):
         elif not path.is_dir():
             raise ValueError(f"Path is not a directory: {path}")
         return path
+
+    def check_path(self, opts: dict):
+        path = opts.get(QuiltLocal.K_PTH)
+        print(path)
+        return self.check_dir(path)
 
     def local_path(self, *paths: str):
         p = self.check_dir()

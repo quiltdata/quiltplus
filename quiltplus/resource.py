@@ -1,3 +1,7 @@
+import logging
+
+import yaml
+
 from .package import QuiltPackage
 from .path import QuiltPath
 from .property import QuiltProperty
@@ -16,6 +20,7 @@ KLASS_MAP = {
 
 def QuiltResource(attrs: dict):
     type = QuiltUri.Type(attrs)
+    logging.debug(f"QuiltResource: type={type} for\n{yaml.dump(attrs)}")
     klass = KLASS_MAP[type]
     return klass(attrs)
 

@@ -1,7 +1,22 @@
-from quiltplus import QuiltPackage, QuiltRegistry, QuiltResourceURI, QuiltVersions
+from quiltplus import (
+    QuiltPackage,
+    QuiltPath,
+    QuiltProperty,
+    QuiltRegistry,
+    QuiltResourceURI,
+    QuiltVersions,
+)
 
 from .conftest import pytestmark  # NOQA F401
-from .conftest import BKT_URI, PKG_URI, SKIP_LONG_TESTS, VER_URI, pytest
+from .conftest import (
+    BKT_URI,
+    PKG_URI,
+    PRP_URI,
+    PTH_URI,
+    SKIP_LONG_TESTS,
+    VER_URI,
+    pytest,
+)
 
 
 async def test_res_pkg():
@@ -14,10 +29,19 @@ async def test_res_reg():
     assert isinstance(qreg, QuiltRegistry)
 
 
+async def test_res_path():
+    qr = QuiltResourceURI(PTH_URI)
+    assert isinstance(qr, QuiltPath)
+
+
+async def test_res_prop():
+    qr = QuiltResourceURI(PRP_URI)
+    assert isinstance(qr, QuiltProperty)
+
+
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_res_reg_list():
     qreg = QuiltResourceURI(BKT_URI)
-    assert isinstance(qreg, QuiltRegistry)
     result = await qreg.list()
     assert len(result) > 0
     first = result[0]
@@ -27,8 +51,15 @@ async def test_res_reg_list():
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_res_ver_list():
-    qreg = QuiltResourceURI(VER_URI)
-    assert isinstance(qreg, QuiltVersions)
-    result = await qreg.list()
+    qr = QuiltResourceURI(VER_URI)
+    assert isinstance(qr, QuiltVersions)
+    result = await qr.list()
     assert len(result) > 0
     assert "@" in result[0]
+
+
+async def test_res_path_get():
+    qr = QuiltResourceURI(PTH_URI)
+    assert isinstance(qr, QuiltPath)
+    results = await qr.get()
+    assert len(results) > 0

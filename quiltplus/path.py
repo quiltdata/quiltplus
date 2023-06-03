@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 
 from .package import QuiltPackage
 
@@ -10,8 +9,12 @@ class QuiltPath(QuiltPackage):
         self.path = attrs[QuiltPath.K_PTH]
         logging.debug(f"QuiltPath {self.path} @ {self.uri}")
 
-    async def get(self, path: Path = None, key=None):
-        dest = self.dest()
+    def dest(self):
+        return str(self.local_path() / self.path)
+
+    async def get(self, opts: dict = {}):
+        dest = self.check_path(opts)
         q = await self.remote_pkg()
-        q.fetch(self.path, dest=dest)
-        return dest
+        qp = q[self.path]
+        qp.fetch(dest=dest)
+        return [self.uri]
