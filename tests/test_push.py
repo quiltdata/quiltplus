@@ -38,8 +38,8 @@ async def test_push_patch():
         assert result is not None
 
 
-def check_file(s: str, l: list[str]) -> bool:
-    return sum(1 for x in l if s in x) == 1
+def check_file(file: str, uris: list[str]) -> bool:
+    return sum(1 for uri in uris if file in uri) == 1
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
