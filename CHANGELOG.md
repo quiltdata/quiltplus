@@ -3,7 +3,7 @@
 ## 0.9.1 (2023-06-03)
 
 - support get, put, patch operations
-- improve typing and test coverage (>90%)
+- improve typing and test coverage (>95%)
 
 ## 0.9.0 (2023-05-29)
 
