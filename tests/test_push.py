@@ -77,15 +77,3 @@ async def test_push_put():
     files3 = list(q3.keys())
     assert check_file("README.md", files3)
     assert check_file("WRITEME.md", files3)
-
-
-@pytest.mark.skip(reason="Not implemented")
-async def test_push_call():
-    pkg = get_unique_pkg("test_push_call")
-    methods = QuiltPackage.METHOD_NAMES
-    rmethods = list(reversed(methods))
-    for method in rmethods:
-        msg = f"{method}: test_push_calluri {TIMESTAMP}"
-        logging.debug(msg)
-        await pkg.call(method, msg)
-    assert True
