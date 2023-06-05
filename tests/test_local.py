@@ -45,6 +45,6 @@ def test_local_diff():
     diff = loc._diff()
     assert diff
     print(diff)
-    assert diff["removed"]
-    assert len(diff["added"]) == 0
-    assert len(diff["updated"]) == 0
+    assert diff["rm"]
+    assert len(diff["add"]) == 0
+    assert len(diff["touch"]) == 0

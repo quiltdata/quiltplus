@@ -2,7 +2,8 @@
 
 ## 0.9.2 (2023-06-04)
 
-= diff directory vs local registry
+- QuiltLocal._diff directory vs local registry
+- QuiltPackage.diff => quilt+stage+{add,rm,touch}+URI
 
 ## 0.9.1 (2023-06-03)
 

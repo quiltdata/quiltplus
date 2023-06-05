@@ -82,9 +82,9 @@ class QuiltLocal(QuiltRoot):
         cache = self.local_cache()
         diff = dircmp(cache, self.dest())
         return {
-            "added": diff.right_only,
-            "removed": diff.left_only,
-            "updated": diff.diff_files,
+            "add": diff.right_only,
+            "rm": diff.left_only,
+            "touch": diff.diff_files,
         }
 
     def write_text(self, text: str, file: str, *paths: str):

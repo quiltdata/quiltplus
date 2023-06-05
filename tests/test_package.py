@@ -73,7 +73,18 @@ async def test_pkg_local_files(pkg: QuiltPackage):
 
 
 async def test_pkg_diff(pkg: QuiltPackage):
-    d = await pkg.diff({})
+    staged = pkg.stage_uri("diff","README.md")
+    assert staged.startswith("quilt+stage+diff")
+    assert staged.endswith("README.md")
+
+    await pkg.get()
+    diffs = await pkg.diff({})
+    assert diffs
+    assert len(diffs) > 0
+    d0 = diffs[0]
+    assert isinstance(d0, str)
+    assert d0.startswith("quilt+stage+rm")
+    
 
 async def test_pkg_child(pkg: QuiltPackage):
     files = await pkg.child()
