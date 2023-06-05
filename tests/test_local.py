@@ -1,9 +1,10 @@
 from pathlib import Path
 
 from pytest import raises
-from quiltplus import QuiltLocal
+from quiltplus import QuiltLocal, QuiltResourceURI
 
-from .conftest import TEST_PKG, pytest
+from .conftest import pytestmark  # NOQA F401
+from .conftest import TEST_PKG, TEST_URI, pytest
 
 
 def test_local_tmp():
@@ -40,14 +41,25 @@ def test_local_path():
     assert p6 == p5
 
 
-@pytest.mark.skip(reason="Must first download a package to diff")
-def test_local_diff():
+async def test_local_diff_get():
+    qpkg = QuiltResourceURI(TEST_URI)
+    await qpkg.get()
     loc = QuiltLocal({"package": TEST_PKG})
     assert loc.local_registry
     assert TEST_PKG in str(loc.local_cache())
     diff = loc._diff()
     assert diff
     assert isinstance(diff, dict)
+    assert len(diff) > 0
     for uri, stage in diff.items():
         assert stage in ("add", "rm", "touch")
         assert stage == "rm"
+
+def test_local_diff_new():
+    PKG=TEST_PKG+"-new"
+    loc = QuiltLocal({"package": PKG})
+    assert loc.local_registry
+    assert PKG in str(loc.local_cache())
+    diff = loc._diff()
+    assert diff == {}
+    assert len(diff) == 0
