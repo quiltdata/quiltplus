@@ -43,8 +43,9 @@ def test_local_diff():
     assert loc.local_registry
     assert TEST_PKG in loc.local_cache()
     diff = loc._diff()
-    assert diff
     print(diff)
-    assert diff["rm"]
-    assert len(diff["add"]) == 0
-    assert len(diff["touch"]) == 0
+    assert diff
+    assert isinstance(diff, dict)
+    for uri, stage in diff.items():
+        assert stage in ("add", "rm", "touch")
+        assert stage == "rm"

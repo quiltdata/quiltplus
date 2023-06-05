@@ -81,11 +81,14 @@ class QuiltLocal(QuiltRoot):
         """Compare files in local_path to local cache"""
         cache = self.local_cache()
         diff = dircmp(cache, self.dest())
-        return {
+        results = {
             "add": diff.right_only,
             "rm": diff.left_only,
             "touch": diff.diff_files,
         }
+        print(results)
+        return {filename: stage for stage, sublist in results.items() for filename in sublist}
+
 
     def write_text(self, text: str, file: str, *paths: str):
         dir = self.local_path(*paths)

@@ -52,8 +52,8 @@ class QuiltPackage(QuiltLocal):
         return self.path_uri(sub_path).replace("quilt+",f"quilt+stage+{stage}")
 
     async def diff(self, opts: dict = {}):
-        _diff = self._diff()
-        return [self.stage_uri(k, v) for k, sublist in _diff.items() for v in sublist]
+        diffs = self._diff()
+        return [self.stage_uri(stage, filename) for filename, stage in diffs.items()]
 
     async def get(self, opts: dict = {}):
         dest = self.check_path(opts)
