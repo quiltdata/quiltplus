@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.9.3 (2023-06-05)
+
+- Include command in args / data.yaml
+
 ## 0.9.2 (2023-06-04)
 
 - QuiltLocal._diff directory vs local registry
