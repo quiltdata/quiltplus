@@ -24,6 +24,19 @@ def test_uri(uri: QuiltUri):
     assert uri.package == TEST_PKG
 
 
+def test_uri_repr(uri: QuiltUri):
+    assert TEST_URI in repr(uri)
+    assert uri == uri
+
+
+def test_uri_eq(uri: QuiltUri):
+    assert uri == uri
+    uri_pth = QuiltUri.FromUri(PTH_URI)
+    assert uri_pth == uri
+    uri_bkt = QuiltUri.FromUri(BKT_URI)
+    assert uri_bkt != uri
+
+
 TYPE_URIS = {
     QuiltUri.K_PKG: PKG_URI,
     QuiltUri.K_PRP: PRP_URI,
