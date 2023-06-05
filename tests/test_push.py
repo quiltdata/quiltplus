@@ -29,7 +29,7 @@ async def test_push_patch():
     pkg = get_unique_pkg("test_push_patch")
     for tmpdirname in QuiltPackage.TempDir():
         key = "test.txt"
-        p = Path(key)
+        p = Path(tmpdirname) / key
         p.write_text(TEST_URI)
         str(p)
         opts = {

@@ -59,7 +59,7 @@ async def test_pkg_local(pkg: QuiltPackage):
     q = await pkg.local_pkg()
     assert len(q.keys()) == 0
 
-    await pkg.get()
+    await pkg.get(FORCE)
     q = await pkg.local_pkg()
     assert len(q.keys()) > 0
 
@@ -67,7 +67,7 @@ async def test_pkg_local(pkg: QuiltPackage):
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_local_files(pkg: QuiltPackage):
     assert pkg.local_files() == []
-    await pkg.get()
+    await pkg.get(FORCE)
     assert pkg.local_files() != []
     assert "README.md" in pkg.local_files()
 

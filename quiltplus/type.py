@@ -8,6 +8,7 @@ class QuiltType:
     PREFIX = "quilt+"
     K_BKT = UnUri.K_HOST
     K_FORCE = "force"
+    K_REG = "registry"
 
     # Fragments
     K_PKG = "package"

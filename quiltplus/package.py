@@ -83,7 +83,7 @@ class QuiltPackage(QuiltLocal):
     async def push(self, q: Package, opts: dict):
         """Generic handler for all push methods"""
         kwargs = {
-            QuiltPackage.K_BKT: self.registry,
+            QuiltPackage.K_REG: self.registry,
             QuiltPackage.K_FORCE: True,
             QuiltPackage.K_MSG: opts.get(
                 QuiltPackage.K_MSG, f"{__name__} {QuiltPackage.Now()} @ {opts}"
