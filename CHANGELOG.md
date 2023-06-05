@@ -4,6 +4,7 @@
 
 - QuiltLocal._diff directory vs local registry
 - QuiltPackage.diff => quilt+stage+{add,rm,touch}+URI
+- properly return list of URIs from REST methods
 
 ## 0.9.1 (2023-06-03)
 

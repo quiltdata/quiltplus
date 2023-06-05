@@ -11,9 +11,9 @@ from .uri import QuiltUri
 
 
 class QuiltPackage(QuiltLocal):
-    K_FORCE = "force"
     K_STAGE = "stage"
     K_MSG = "message"
+    ERR_MOD = "Local files have been modifie. Use --force to overwrite."
 
     @classmethod
     def FromURI(cls: Type[Self], uri: str):
@@ -61,14 +61,21 @@ class QuiltPackage(QuiltLocal):
         self.check_dir
         diffs = self._diff()
         return [self.stage_uri(stage, filename) for filename, stage in diffs.items()]
+    
+    def unexpected_loss(self, opts: dict = {}) -> bool:
+        """Check if _diff and not force"""
+        modified = len(self._diff()) > 0
+        force = opts.get(QuiltPackage.K_FORCE, False)
+        return modified and not force
 
-    # TODO: fail if local directory has been modified (unless --force)
     async def get(self, opts: dict = {}):
         """Download package to dest()"""
         dest = self.check_path(opts)
+        if self.unexpected_loss(opts):
+            raise ValueError(f"{QuiltPackage.ERR_MOD}\n{self._diff()}")
         q = await self.remote_pkg()
         q.fetch(dest=dest)
-        return dest
+        return self.local_files()
 
     async def commit(self, opts: dict = {}):
         """Create package in the local registry"""
@@ -87,7 +94,7 @@ class QuiltPackage(QuiltLocal):
         q.set_dir(".", self.check_path(opts))
         q.build(self.package)
         result = q.push(self.package, **kwargs)
-        return result
+        return [self.uri]
 
     async def put(self, opts: dict = {}):
         """Create a new remote version that exactly matches the local folder"""

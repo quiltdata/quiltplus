@@ -4,7 +4,7 @@ import os
 from quiltplus import QuiltPackage
 
 from .conftest import pytestmark  # NOQA F402
-from .conftest import SKIP_LONG_TESTS, TEST_URI, pytest
+from .conftest import FORCE, SKIP_LONG_TESTS, TEST_URI, pytest
 
 
 def assert_diffs(diffs, a, m, d):
@@ -77,14 +77,14 @@ async def test_pkg_diff(pkg: QuiltPackage):
     assert staged.startswith("quilt+stage+diff")
     assert staged.endswith("README.md")
 
-    await pkg.get()
+    await pkg.get(FORCE)
     diffs = await pkg.diff({})
     assert diffs
     assert len(diffs) > 0
     d0 = diffs[0]
     assert isinstance(d0, str)
     assert d0.startswith("quilt+stage+rm")
-    
+
 
 async def test_pkg_child(pkg: QuiltPackage):
     files = await pkg.child()

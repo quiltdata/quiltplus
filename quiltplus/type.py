@@ -7,6 +7,7 @@ from un_yaml.un_uri import UnUri
 class QuiltType:
     PREFIX = "quilt+"
     K_BKT = UnUri.K_HOST
+    K_FORCE = "force"
 
     # Fragments
     K_PKG = "package"
