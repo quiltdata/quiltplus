@@ -4,7 +4,7 @@ import os
 from quiltplus import QuiltPackage
 
 from .conftest import pytestmark  # NOQA F402
-from .conftest import FORCE, SKIP_LONG_TESTS, TEST_URI, pytest
+from .conftest import FORCE, SKIP_LONG_TESTS, PKG_URI, TEST_URI, pytest
 
 
 def assert_diffs(diffs, a, m, d):
@@ -16,7 +16,7 @@ def assert_diffs(diffs, a, m, d):
 
 @pytest.fixture
 def pkg():
-    return QuiltPackage.FromURI(TEST_URI)
+    return QuiltPackage.FromURI(PKG_URI)
 
 
 def test_pkg_fixture(pkg: QuiltPackage):
@@ -59,7 +59,7 @@ async def test_pkg_local(pkg: QuiltPackage):
     q = await pkg.local_pkg()
     assert len(q.keys()) == 0
 
-    await pkg.get(FORCE)
+    await pkg.get()
     q = await pkg.local_pkg()
     assert len(q.keys()) > 0
 
@@ -67,7 +67,7 @@ async def test_pkg_local(pkg: QuiltPackage):
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_local_files(pkg: QuiltPackage):
     assert pkg.local_files() == []
-    await pkg.get(FORCE)
+    await pkg.get()
     assert pkg.local_files() != []
     assert "README.md" in pkg.local_files()
 
@@ -77,7 +77,7 @@ async def test_pkg_diff(pkg: QuiltPackage):
     assert staged.startswith("quilt+stage+diff")
     assert staged.endswith("README.md")
 
-    await pkg.get(FORCE)
+    await pkg.get()
     diffs = await pkg.diff({})
     assert diffs
     assert len(diffs) > 0
@@ -104,5 +104,5 @@ async def test_pkg_list(pkg: QuiltPackage):
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_get(pkg: QuiltPackage):
-    rc = await pkg.get(FORCE)
+    rc = await pkg.get()
     assert rc

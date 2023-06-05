@@ -13,7 +13,7 @@ from .uri import QuiltUri
 class QuiltPackage(QuiltLocal):
     K_STAGE = "stage"
     K_MSG = "message"
-    ERR_MOD = "Local files have been modifie. Use --force to overwrite."
+    ERR_MOD = "Local files have been modified. Use --force to overwrite."
 
     @classmethod
     def FromURI(cls: Type[Self], uri: str):
@@ -52,27 +52,28 @@ class QuiltPackage(QuiltLocal):
 
     def stage_uri(self, stage: str, sub_path: str):
         return self.path_uri(sub_path).replace(
-            QuiltPackage.PREFIX, f"{QuiltPackage.PREFIX}{QuiltPackage.K_STAGE}+{stage}"
+            QuiltPackage.PREFIX, f"{QuiltPackage.PREFIX}{QuiltPackage.K_STAGE}+{stage}+"
         )
 
     async def diff(self, opts: dict = {}):
         """List files that differ from local_cache()"""
-        self.check_dir
+        self.check_path(opts)
         diffs = self._diff()
         return [self.stage_uri(stage, filename) for filename, stage in diffs.items()]
 
-    def unexpected_loss(self, opts: dict = {}) -> bool:
+    def unexpected_loss(self, opts, get=True) -> bool:
         """Check if _diff and not force"""
-        modified = len(self._diff()) > 0
+        modified = [k for k,v in self._diff().items() if v == "touch"]
         force = opts.get(QuiltPackage.K_FORCE, False)
-        return modified and not force
+        return len(modified) > 0 and not force
 
     async def get(self, opts: dict = {}):
         """Download package to dest()"""
         dest = self.check_path(opts)
         if self.unexpected_loss(opts):
-            raise ValueError(f"{QuiltPackage.ERR_MOD}\n{self._diff()}")
+            raise ValueError(f"{dest}: {QuiltPackage.ERR_MOD}\n{self._diff()}")
         q = await self.remote_pkg()
+        print("\ndest", dest, "\nlocal_path", self.local_path(), "\nq", q)
         q.fetch(dest=dest)
         return self.local_files()
 

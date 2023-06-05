@@ -15,9 +15,17 @@ from .root import QuiltRoot
 class QuiltLocal(QuiltRoot):
     @staticmethod
     def TempDir() -> Generator[Path, None, None]:
+        test_dir = os.environ.get("GITHUB_WORKSPACE")
         with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
             tmpdir = Path(tmpdirname)
-            yield (tmpdir)
+            if not test_dir:
+                logging.info(f"Creating {tmpdirname} on {platform.system()}")
+                yield tmpdir
+            else:
+                temp_dir = Path(test_dir) / tmpdir.name
+                logging.info(f"Creating {temp_dir} on {platform.system()}")
+                temp_dir.mkdir(parents=True, exist_ok=True)
+                yield temp_dir
             logging.debug(f"Removing {tmpdirname} on {platform.system()}")
 
     @staticmethod
@@ -34,6 +42,7 @@ class QuiltLocal(QuiltRoot):
         super().__init__(attrs)
         self.local_registry = get_package_registry()
         for tmp in QuiltLocal.TempDir():
+            logging.info(f"Package using QuiltLocal.TempDir: {tmp}")
             self.last_path = tmp
 
     def check_dir(self, path: Path | None = None):
