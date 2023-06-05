@@ -42,7 +42,7 @@ class QuiltLocal(QuiltRoot):
 
         self.last_path = path
         if not path.exists():
-            logging.warn(f"Path does not exist: {path}")
+            logging.warning(f"Path does not exist: {path}")
             path.mkdir(parents=True, exist_ok=True)
         elif not path.is_dir():
             raise ValueError(f"Path is not a directory: {path}")
@@ -72,21 +72,22 @@ class QuiltLocal(QuiltRoot):
     def dest(self):
         return str(self.local_path())  # + "/"
     
-    def local_cache(self) -> str:
+    def local_cache(self) -> Path:
         base_path = Path(self.local_registry.base.path)
-        return str(base_path / self.package)
+        return base_path / self.package
 
     
-    def _diff(self):
+    def _diff(self) -> dict[str, str]:
         """Compare files in local_path to local cache"""
         cache = self.local_cache()
-        diff = dircmp(cache, self.dest())
+        if not cache.exists():
+            return {}
+        diff = dircmp(str(cache), self.dest())
         results = {
             "add": diff.right_only,
             "rm": diff.left_only,
             "touch": diff.diff_files,
         }
-        print(results)
         return {filename: stage for stage, sublist in results.items() for filename in sublist}
 
 
