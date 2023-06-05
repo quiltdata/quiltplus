@@ -4,7 +4,7 @@ from pytest import raises
 from quiltplus import QuiltLocal, QuiltResourceURI
 
 from .conftest import pytestmark  # NOQA F401
-from .conftest import TEST_PKG, TEST_URI, pytest
+from .conftest import TEST_PKG, PKG_URI, pytest
 
 
 def test_local_tmp():
@@ -42,7 +42,7 @@ def test_local_path():
 
 
 async def test_local_diff_get():
-    qpkg = QuiltResourceURI(TEST_URI)
+    qpkg = QuiltResourceURI(PKG_URI)
     await qpkg.get()
     loc = QuiltLocal({"package": TEST_PKG})
     assert loc.local_registry
