@@ -75,7 +75,9 @@ class QuiltPackage(QuiltLocal):
         q = await self.remote_pkg()
         print("\ndest", dest, "\nlocal_path", self.local_path(), "\nq", q)
         q.fetch(dest=dest)
-        return self.local_files()
+        result = self.local_files()
+        print("\nresult\n", result)
+        return result
 
     async def commit(self, opts: dict = {}):
         """Create package in the local registry"""
