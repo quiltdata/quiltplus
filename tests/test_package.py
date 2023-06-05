@@ -104,5 +104,5 @@ async def test_pkg_list(pkg: QuiltPackage):
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_get(pkg: QuiltPackage):
-    rc = await pkg.get()
+    rc = await pkg.get(FORCE)
     assert rc
