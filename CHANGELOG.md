@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.9.2 (2023-06-04)
+
+= diff directory vs local registry
+
 ## 0.9.1 (2023-06-03)
 
 - support get, put, patch operations

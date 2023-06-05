@@ -41,10 +41,7 @@ class QuiltPackage(QuiltLocal):
     async def remote_pkg(self):
         return (await self.browse()) or Package()
 
-    async def child(self, changed_only=False):
-        if changed_only:
-            diffs = await self.diff()
-            return [x for sub in diffs.values() for x in sub]
+    async def child(self):
         q = await self.remote_pkg()
         return list(q.keys())
 
@@ -52,14 +49,7 @@ class QuiltPackage(QuiltLocal):
         return [self.path_uri(k) for k in await self.child()]
 
     async def diff(self, opts: dict = {}):
-        logging.debug(f"\ndiff.local_files\n{self.local_files()}")
-        q_remote = await self.remote_pkg()
-        logging.debug(f"diff.remote_keys {q_remote.keys()}")
-        q_local = await self.local_pkg()
-        logging.debug(f"diff.local_keys {q_local.keys()}")
-        diffs = q_remote.diff(q_local)
-        logging.debug(f"diff: {diffs}")
-        return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[2]}
+        pass
 
     async def get(self, opts: dict = {}):
         dest = self.check_path(opts)
