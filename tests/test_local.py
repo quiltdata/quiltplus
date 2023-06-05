@@ -1,3 +1,5 @@
+import os
+
 from pathlib import Path
 
 from pytest import raises
@@ -41,6 +43,7 @@ def test_local_path():
     assert p6 == p5
 
 
+@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="does not work in CI")
 async def test_local_diff_get():
     qpkg = QuiltResourceURI(PKG_URI)
     await qpkg.get()

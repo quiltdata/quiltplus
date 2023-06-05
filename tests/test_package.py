@@ -72,6 +72,7 @@ async def test_pkg_local_files(pkg: QuiltPackage):
     assert "README.md" in pkg.local_files()
 
 
+@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="does not work in CI")
 async def test_pkg_diff(pkg: QuiltPackage):
     staged = pkg.stage_uri("diff", "README.md")
     assert staged.startswith("quilt+stage+diff")

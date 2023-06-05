@@ -59,7 +59,6 @@ class QuiltLocal(QuiltRoot):
 
     def check_path(self, opts: dict):
         path = opts.get(QuiltLocal.K_PTH)
-        print(path)
         return self.check_dir(path)
 
     def local_path(self, *paths: str):
