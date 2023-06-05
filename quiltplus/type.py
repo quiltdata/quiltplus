@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from tzlocal import get_localzone
-from un_yaml import UnUri
+from un_yaml.un_uri import UnUri
 
 
 class QuiltType:
@@ -24,6 +24,7 @@ class QuiltType:
     SEP = {
         K_HASH: SEP_HASH,
         K_TAG: SEP_TAG,
+        K_PKG: "/"
     }
 
     @staticmethod

@@ -1,7 +1,8 @@
 from pathlib import Path
-
 from pytest import raises
 from quiltplus import QuiltLocal
+
+from .conftest import TEST_PKG
 
 
 def test_local_tmp():
@@ -36,3 +37,14 @@ def test_local_path():
 
     p6 = loc.check_path({})
     assert p6 == p5
+
+def test_local_diff():
+    loc = QuiltLocal({"package":TEST_PKG})
+    assert loc.local_registry
+    assert TEST_PKG in loc.local_cache()
+    diff = loc._diff()
+    assert diff
+    print(diff)
+    assert diff["removed"]
+    assert len(diff["added"]) == 0
+    assert len(diff["updated"]) == 0

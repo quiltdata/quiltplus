@@ -5,11 +5,14 @@ import subprocess
 from collections.abc import Generator
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from quilt3.backends import get_package_registry  # type: ignore
+from filecmp import dircmp
 
 from .root import QuiltRoot
 
 
 class QuiltLocal(QuiltRoot):
+
     @staticmethod
     def TempDir() -> Generator[Path, None, None]:
         with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
@@ -29,6 +32,7 @@ class QuiltLocal(QuiltRoot):
 
     def __init__(self, attrs: dict):
         super().__init__(attrs)
+        self.local_registry = get_package_registry()
         for tmp in QuiltLocal.TempDir():
             self.last_path = tmp
 
@@ -67,6 +71,21 @@ class QuiltLocal(QuiltRoot):
 
     def dest(self):
         return str(self.local_path())  # + "/"
+    
+    def local_cache(self) -> str:
+        base_path = Path(self.local_registry.base.path)
+        return str(base_path / self.package)
+
+    
+    def _diff(self):
+        """Compare files in local_path to local cache"""
+        cache = self.local_cache()
+        diff = dircmp(cache, self.dest())
+        return {
+            "added": diff.right_only,
+            "removed": diff.left_only,
+            "updated": diff.diff_files,
+        }
 
     def write_text(self, text: str, file: str, *paths: str):
         dir = self.local_path(*paths)
