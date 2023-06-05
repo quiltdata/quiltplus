@@ -73,7 +73,7 @@ async def test_pkg_local_files(pkg: QuiltPackage):
 
 
 async def test_pkg_diff(pkg: QuiltPackage):
-    staged = pkg.stage_uri("diff","README.md")
+    staged = pkg.stage_uri("diff", "README.md")
     assert staged.startswith("quilt+stage+diff")
     assert staged.endswith("README.md")
 
