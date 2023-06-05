@@ -3,16 +3,16 @@ import os
 import platform
 import subprocess
 from collections.abc import Generator
+from filecmp import dircmp
 from pathlib import Path
 from tempfile import TemporaryDirectory
+
 from quilt3.backends import get_package_registry  # type: ignore
-from filecmp import dircmp
 
 from .root import QuiltRoot
 
 
 class QuiltLocal(QuiltRoot):
-
     @staticmethod
     def TempDir() -> Generator[Path, None, None]:
         with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
@@ -71,12 +71,11 @@ class QuiltLocal(QuiltRoot):
 
     def dest(self):
         return str(self.local_path())  # + "/"
-    
+
     def local_cache(self) -> Path:
         base_path = Path(self.local_registry.base.path)
         return base_path / self.package
 
-    
     def _diff(self) -> dict[str, str]:
         """Compare files in local_path to local cache"""
         cache = self.local_cache()
@@ -88,8 +87,11 @@ class QuiltLocal(QuiltRoot):
             "rm": diff.left_only,
             "touch": diff.diff_files,
         }
-        return {filename: stage for stage, sublist in results.items() for filename in sublist}
-
+        return {
+            filename: stage
+            for stage, sublist in results.items()
+            for filename in sublist
+        }
 
     def write_text(self, text: str, file: str, *paths: str):
         dir = self.local_path(*paths)

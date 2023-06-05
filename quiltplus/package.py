@@ -4,7 +4,7 @@ import logging
 import shutil
 
 from quilt3 import Package  # type: ignore
-from typing_extensions import Self, Type, Coroutine
+from typing_extensions import Self, Type
 
 from .local import QuiltLocal
 from .uri import QuiltUri
@@ -49,11 +49,10 @@ class QuiltPackage(QuiltLocal):
 
     async def list(self, opts: dict = {}):
         return [self.path_uri(k) for k in await self.child()]
-    
+
     def stage_uri(self, stage: str, sub_path: str):
         return self.path_uri(sub_path).replace(
-            QuiltPackage.PREFIX,
-            f"{QuiltPackage.PREFIX}{QuiltPackage.K_STAGE}+{stage}"
+            QuiltPackage.PREFIX, f"{QuiltPackage.PREFIX}{QuiltPackage.K_STAGE}+{stage}"
         )
 
     async def diff(self, opts: dict = {}):
@@ -61,7 +60,7 @@ class QuiltPackage(QuiltLocal):
         self.check_dir
         diffs = self._diff()
         return [self.stage_uri(stage, filename) for filename, stage in diffs.items()]
-    
+
     def unexpected_loss(self, opts: dict = {}) -> bool:
         """Check if _diff and not force"""
         modified = len(self._diff()) > 0
@@ -84,16 +83,15 @@ class QuiltPackage(QuiltLocal):
     async def push(self, q: Package, opts: dict):
         """Generic handler for all push methods"""
         kwargs = {
-            "registry": self.registry,
+            QuiltPackage.K_BKT: self.registry,
             QuiltPackage.K_FORCE: True,
             QuiltPackage.K_MSG: opts.get(
-                QuiltPackage.K_MSG, 
-                f"{__name__} {QuiltPackage.Now()} @ {opts}"
+                QuiltPackage.K_MSG, f"{__name__} {QuiltPackage.Now()} @ {opts}"
             ),
         }
         q.set_dir(".", self.check_path(opts))
         q.build(self.package)
-        result = q.push(self.package, **kwargs)
+        q.push(self.package, **kwargs)
         return [self.uri]
 
     async def put(self, opts: dict = {}):
