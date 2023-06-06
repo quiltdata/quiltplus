@@ -30,7 +30,9 @@ class QuiltPackage(QuiltLocal):
     async def browse(self):
         logging.debug(f"browse {self.package} {self.registry} {self.hash}")
         try:
-            q = Package.browse(self.package, self.registry, top_hash=self.hash)
+            q = Package.browse(
+                self.package, self.registry, top_hash=self.hash
+            ) if self.hash else Package.browse(self.package, self.registry)
             return q
         except Exception as err:
             logging.error(err)
@@ -93,6 +95,8 @@ class QuiltPackage(QuiltLocal):
         q.set_dir(".", self.check_path(opts))
         q.build(self.package)
         q.push(self.package, **kwargs)
+        self.hash = None
+        await self.browse() # reset to latest
         return [self.uri]
 
     async def put(self, opts: dict = {}):
