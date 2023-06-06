@@ -1,4 +1,5 @@
 import os
+import sys
 
 from pathlib import Path
 
@@ -58,6 +59,7 @@ async def test_local_diff_get():
         assert stage in ("add", "rm", "touch")
         assert stage == "rm"
 
+@pytest.mark.skipif(sys.platform.startswith('win'), reason="tmp folder name issue")
 def test_local_diff_new():
     PKG=TEST_PKG+"-new"
     loc = QuiltLocal({"package": PKG})
