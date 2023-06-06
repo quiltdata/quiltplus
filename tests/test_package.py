@@ -27,7 +27,6 @@ def test_pkg_str(pkg: QuiltPackage):
     s = str(pkg)
     pkg_name = pkg.package or ""
     assert pkg_name in s
-    logging.debug(pkg)
 
 
 async def test_pkg_empty(pkg: QuiltPackage):

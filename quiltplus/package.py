@@ -73,7 +73,6 @@ class QuiltPackage(QuiltLocal):
         if self.unexpected_loss(opts):
             raise ValueError(f"{dest}: {QuiltPackage.ERR_MOD}\n{self._diff()}")
         q = await self.remote_pkg()
-        logging.debug("\ndest", dest, "\nlocal_path", self.local_path(), "\nq", q)
         q.fetch(dest=dest)
         result = self.local_files()
         return result

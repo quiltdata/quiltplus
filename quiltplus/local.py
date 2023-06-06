@@ -19,11 +19,11 @@ class QuiltLocal(QuiltRoot):
         with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
             tmpdir = Path(tmpdirname)
             if not test_dir:
-                logging.info(f"Creating {tmpdirname} on {platform.system()}")
+                # logging.info(f"Creating {tmpdirname} on {platform.system()}")
                 yield tmpdir
             else:
                 temp_dir = Path(test_dir) / tmpdir.name
-                logging.info(f"Creating {temp_dir} on {platform.system()}")
+                # logging.info(f"Creating {temp_dir} on {platform.system()}")
                 temp_dir.mkdir(parents=True, exist_ok=True)
                 yield temp_dir
             logging.debug(f"Removing {tmpdirname} on {platform.system()}")
@@ -93,13 +93,12 @@ class QuiltLocal(QuiltRoot):
             logging.warning(f"_diff: local_cache[{cache}] does not exist")
             return {}
         diff = dircmp(str(cache), self.dest())
-        logging.debug(f"_diff.diff: {diff}")
+        # logging.debug(f"_diff.diff: {diff}")
         results = {
             "add": diff.right_only,
             "rm": diff.left_only,
             "touch": diff.diff_files,
         }
-        logging.debug(f"_diff.results: {results}")
         return {
             filename: stage
             for stage, sublist in results.items()
