@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "quiltplus"
-version = "0.9.1"
+version = "0.9.2"
 description = "Resource-oriented Python API/CLI for Quilt's decentralized social knowledge platform"
 authors = ["Ernest Prabhakar <ernest@quiltdata.io>"]
 license = "MIT"

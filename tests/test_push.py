@@ -28,12 +28,14 @@ def get_unique_pkg(prefix: str):
 async def test_push_patch():
     pkg = get_unique_pkg("test_push_patch")
     for tmpdirname in QuiltPackage.TempDir():
-        os.chdir(tmpdirname)
         key = "test.txt"
-        p = Path(key)
+        p = Path(tmpdirname) / key
         p.write_text(TEST_URI)
         str(p)
-        opts = {"message": f"{__name__} {TIMESTAMP}"}
+        opts = {
+            QuiltPackage.K_MSG: f"{__name__} {TIMESTAMP}",
+            QuiltPackage.K_PTH: tmpdirname,
+        }
         result = await pkg.patch(opts)
         assert result is not None
 

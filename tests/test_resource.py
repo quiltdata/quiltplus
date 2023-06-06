@@ -58,6 +58,7 @@ async def test_res_ver_list():
     assert "@" in result[0]
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_res_path_get():
     qr = QuiltResourceURI(PTH_URI)
     assert isinstance(qr, QuiltPath)

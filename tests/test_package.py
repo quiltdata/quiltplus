@@ -4,7 +4,7 @@ import os
 from quiltplus import QuiltPackage
 
 from .conftest import pytestmark  # NOQA F402
-from .conftest import SKIP_LONG_TESTS, TEST_URI, pytest
+from .conftest import FORCE, SKIP_LONG_TESTS, PKG_URI, TEST_URI, pytest
 
 
 def assert_diffs(diffs, a, m, d):
@@ -16,7 +16,7 @@ def assert_diffs(diffs, a, m, d):
 
 @pytest.fixture
 def pkg():
-    return QuiltPackage.FromURI(TEST_URI)
+    return QuiltPackage.FromURI(PKG_URI)
 
 
 def test_pkg_fixture(pkg: QuiltPackage):
@@ -27,7 +27,6 @@ def test_pkg_str(pkg: QuiltPackage):
     s = str(pkg)
     pkg_name = pkg.package or ""
     assert pkg_name in s
-    logging.debug(pkg)
 
 
 async def test_pkg_empty(pkg: QuiltPackage):
@@ -72,21 +71,19 @@ async def test_pkg_local_files(pkg: QuiltPackage):
     assert "README.md" in pkg.local_files()
 
 
-@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="does not work in CI")
 async def test_pkg_diff(pkg: QuiltPackage):
-    # new remote package
-    assert_diffs(await pkg.diff(), 0, 0, 7)
+    staged = pkg.stage_uri("diff", "README.md")
+    assert staged.startswith("quilt+stage+diff")
+    assert staged.endswith("README.md")
 
-    # installed package
     await pkg.get()
-    assert_diffs(await pkg.diff(), 0, 0, 0)
-
-    # added files
-    TEST_FILE = "test.txt"
-    pkg.write_text(TEST_FILE, TEST_FILE)
-    diff3 = assert_diffs(await pkg.diff(), 1, 0, 0)
-    adds = diff3["added"]
-    assert TEST_FILE in adds
+    diffs = await pkg.diff({})
+    assert diffs
+    assert len(diffs) > 0
+    d0 = diffs[0]
+    assert isinstance(d0, str)
+    assert d0.startswith("quilt+stage+rm")
 
 
 async def test_pkg_child(pkg: QuiltPackage):

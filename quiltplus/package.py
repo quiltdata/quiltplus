@@ -11,7 +11,9 @@ from .uri import QuiltUri
 
 
 class QuiltPackage(QuiltLocal):
-    METHOD_NAMES = "get list diff patch put".split(" ")
+    K_STAGE = "stage"
+    K_MSG = "message"
+    ERR_MOD = "Local files have been modified. Use --force to overwrite."
 
     @classmethod
     def FromURI(cls: Type[Self], uri: str):
@@ -23,12 +25,14 @@ class QuiltPackage(QuiltLocal):
         self.hash = self.attrs.get(QuiltUri.K_HASH)
 
     def path_uri(self, sub_path: str):
-        return self.pkg_uri() + "&path=" + sub_path
+        return self.pkg_uri() + f"&{QuiltPackage.K_PTH}=" + sub_path
 
     async def browse(self):
         logging.debug(f"browse {self.package} {self.registry} {self.hash}")
         try:
-            q = Package.browse(self.package, self.registry, top_hash=self.hash)
+            q = Package.browse(
+                self.package, self.registry, top_hash=self.hash
+            ) if self.hash else Package.browse(self.package, self.registry)
             return q
         except Exception as err:
             logging.error(err)
@@ -41,51 +45,66 @@ class QuiltPackage(QuiltLocal):
     async def remote_pkg(self):
         return (await self.browse()) or Package()
 
-    async def child(self, changed_only=False):
-        if changed_only:
-            diffs = await self.diff()
-            return [x for sub in diffs.values() for x in sub]
+    async def child(self):
         q = await self.remote_pkg()
         return list(q.keys())
 
     async def list(self, opts: dict = {}):
         return [self.path_uri(k) for k in await self.child()]
 
+    def stage_uri(self, stage: str, sub_path: str):
+        return self.path_uri(sub_path).replace(
+            QuiltPackage.PREFIX, f"{QuiltPackage.PREFIX}{QuiltPackage.K_STAGE}+{stage}+"
+        )
+
     async def diff(self, opts: dict = {}):
-        logging.debug(f"\ndiff.local_files\n{self.local_files()}")
-        q_remote = await self.remote_pkg()
-        logging.debug(f"diff.remote_keys {q_remote.keys()}")
-        q_local = await self.local_pkg()
-        logging.debug(f"diff.local_keys {q_local.keys()}")
-        diffs = q_remote.diff(q_local)
-        logging.debug(f"diff: {diffs}")
-        return {"added": diffs[0], "modified": diffs[1], "deleted": diffs[2]}
+        """List files that differ from local_cache()"""
+        self.check_path(opts)
+        diffs = self._diff()
+        return [self.stage_uri(stage, filename) for filename, stage in diffs.items()]
+
+    def unexpected_loss(self, opts, get=True) -> bool:
+        """Check if _diff and not force"""
+        modified = [k for k,v in self._diff().items() if v == "touch"]
+        force = opts.get(QuiltPackage.K_FORCE, False)
+        return len(modified) > 0 and not force
 
     async def get(self, opts: dict = {}):
+        """Download package to dest()"""
         dest = self.check_path(opts)
+        if self.unexpected_loss(opts):
+            raise ValueError(f"{dest}: {QuiltPackage.ERR_MOD}\n{self._diff()}")
         q = await self.remote_pkg()
         q.fetch(dest=dest)
-        return dest
+        result = self.local_files()
+        return result
 
-    async def commit(self, opts: dict = {}):  # create new empty package
+    async def commit(self, opts: dict = {}):
+        """Create package in the local registry"""
         pass
 
     async def push(self, q: Package, opts: dict):
         """Generic handler for all push methods"""
         kwargs = {
-            "registry": self.registry,
-            "force": True,
-            "message": opts.get("message", f"{__name__} {QuiltUri.Now()} @ {opts}"),
+            QuiltPackage.K_REG: self.registry,
+            QuiltPackage.K_FORCE: True,
+            QuiltPackage.K_MSG: opts.get(
+                QuiltPackage.K_MSG, f"{__name__} {QuiltPackage.Now()} @ {opts}"
+            ),
         }
         q.set_dir(".", self.check_path(opts))
         q.build(self.package)
-        result = q.push(self.package, **kwargs)
-        return result
+        q.push(self.package, **kwargs)
+        self.hash = None
+        await self.browse() # reset to latest
+        return [self.uri]
 
     async def put(self, opts: dict = {}):
+        """Create a new remote version that exactly matches the local folder"""
         q = Package()
         return await self.push(q, opts)
 
+    # TODO: fail if remote package is newer (unless --force)
     async def patch(self, opts: dict = {}):
         """Use contents of directory to (merge) update the remote package"""
         q = await self.remote_pkg()  # reset to latest

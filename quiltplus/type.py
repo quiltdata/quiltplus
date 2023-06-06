@@ -7,6 +7,8 @@ from un_yaml import UnUri
 class QuiltType:
     PREFIX = "quilt+"
     K_BKT = UnUri.K_HOST
+    K_FORCE = "force"
+    K_REG = "registry"
 
     # Fragments
     K_PKG = "package"
@@ -21,10 +23,7 @@ class QuiltType:
     K_HASH = "_hash"
     K_TAG = "_tag"
     K_VER = "_version"
-    SEP = {
-        K_HASH: SEP_HASH,
-        K_TAG: SEP_TAG,
-    }
+    SEP = {K_HASH: SEP_HASH, K_TAG: SEP_TAG, K_PKG: "/"}
 
     @staticmethod
     def BaseType(attrs: dict) -> str:
