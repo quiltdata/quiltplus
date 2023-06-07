@@ -69,7 +69,7 @@ class QuiltLocal(QuiltRoot):
         p.mkdir(parents=True, exist_ok=True)
         return p
 
-    def local_files(self):
+    def local_files(self) -> list[Path]:
         root = self.local_path()
         return [f for f in root.rglob("*") if f.is_file()]
 

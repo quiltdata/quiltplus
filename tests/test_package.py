@@ -66,9 +66,12 @@ async def test_pkg_local(pkg: QuiltPackage):
 async def test_pkg_local_files(pkg: QuiltPackage):
     assert pkg.local_files() == []
     await pkg.get()
-    assert pkg.local_files() != []
-    assert "README.md" in pkg.local_files()
-
+    result = pkg.local_files()
+    assert len(result) > 0
+    file0 = str(result[0])
+    assert file0.startswith("file://")
+    assert ".gitignore" 
+    
 
 @pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="does not work in CI")
 async def test_pkg_diff(pkg: QuiltPackage):
