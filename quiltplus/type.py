@@ -1,13 +1,14 @@
 from datetime import datetime
 
 from tzlocal import get_localzone
-from un_yaml import UnUri
+from un_yaml import UnUri  # type: ignore
 
 
 class QuiltType:
     PREFIX = "quilt+"
     K_BKT = UnUri.K_HOST
     K_FORCE = "force"
+    K_FAIL = "fallible"
     K_REG = "registry"
 
     # Fragments

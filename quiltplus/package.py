@@ -13,7 +13,7 @@ from .uri import QuiltUri
 class QuiltPackage(QuiltLocal):
     K_STAGE = "stage"
     K_MSG = "message"
-    ERR_MOD = "Local files have been modified. Use --force to overwrite."
+    ERR_MOD = f"Local files have been modified. Unset --{QuiltLocal.K_FAIL} to overwrite."
 
     @classmethod
     def FromURI(cls: Type[Self], uri: str):
@@ -64,10 +64,10 @@ class QuiltPackage(QuiltLocal):
         return [self.stage_uri(stage, filename) for filename, stage in diffs.items()]
 
     def unexpected_loss(self, opts, get=True) -> bool:
-        """Check if _diff and not force"""
+        """Check if _diff and fallible"""
         modified = [k for k,v in self._diff().items() if v == "touch"]
-        force = opts.get(QuiltPackage.K_FORCE, False)
-        return len(modified) > 0 and not force
+        fallible = opts.get(QuiltPackage.K_FAIL, False)
+        return len(modified) > 0 and fallible
 
     async def get(self, opts: dict = {}):
         """Download package to dest()"""
@@ -87,7 +87,7 @@ class QuiltPackage(QuiltLocal):
         """Generic handler for all push methods"""
         kwargs = {
             QuiltPackage.K_REG: self.registry,
-            QuiltPackage.K_FORCE: True,
+            QuiltPackage.K_FORCE: not opts.get(QuiltPackage.K_FAIL, False),
             QuiltPackage.K_MSG: opts.get(
                 QuiltPackage.K_MSG, f"{__name__} {QuiltPackage.Now()} @ {opts}"
             ),
@@ -104,7 +104,7 @@ class QuiltPackage(QuiltLocal):
         q = Package()
         return await self.push(q, opts)
 
-    # TODO: fail if remote package is newer (unless --force)
+    # TODO: fail if remote package is newer AND --fallible
     async def patch(self, opts: dict = {}):
         """Use contents of directory to (merge) update the remote package"""
         q = await self.remote_pkg()  # reset to latest
