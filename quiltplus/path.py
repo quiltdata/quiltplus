@@ -1,7 +1,5 @@
 import logging
 
-from pathlib import Path
-
 from .package import QuiltPackage
 
 

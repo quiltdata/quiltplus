@@ -1,10 +1,9 @@
-import logging
 import os
 
 from quiltplus import QuiltPackage
 
 from .conftest import pytestmark  # NOQA F402
-from .conftest import SKIP_LONG_TESTS, PKG_URI, TEST_URI, pytest
+from .conftest import PKG_URI, SKIP_LONG_TESTS, pytest
 
 
 def assert_diffs(diffs, a, m, d):
@@ -108,4 +107,4 @@ async def test_pkg_get(pkg: QuiltPackage):
     assert rc
     assert len(rc) > 0
     result = rc[0]
-    assert result.startswith("file://")   
+    assert result.startswith("file://")
