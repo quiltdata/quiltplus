@@ -736,13 +736,13 @@ trio = ">=0.22.0"
 
 [[package]]
 name = "pytest-watcher"
-version = "0.3.1"
+version = "0.3.2"
 description = "Automatically rerun your tests on file modifications"
 optional = false
 python-versions = ">=3.7.0,<4.0.0"
 files = [
-    {file = "pytest-watcher-0.3.1.tar.gz", hash = "sha256:89a7be67ce3849d497622d9353de8f7caeb3cc52b6ca47ebe862359cf35a8b22"},
-    {file = "pytest_watcher-0.3.1-py3-none-any.whl", hash = "sha256:2f61807b4322205ad463a1da6b282e127fed52d5a374b6c080e90b5cddf29e8a"},
+    {file = "pytest_watcher-0.3.2-py3-none-any.whl", hash = "sha256:6b93e20b3e8e9cedb6ccfe974e618b395daaef358be13f78688a6da6bd0117c5"},
+    {file = "pytest_watcher-0.3.2.tar.gz", hash = "sha256:bba4b697cd6d7903db14e085ae3448dfaf65c0dc62bf5d697be3a09f1a5d0190"},
 ]
 
 [package.dependencies]
