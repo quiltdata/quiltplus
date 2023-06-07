@@ -106,3 +106,6 @@ async def test_pkg_list(pkg: QuiltPackage):
 async def test_pkg_get(pkg: QuiltPackage):
     rc = await pkg.get()
     assert rc
+    assert len(rc) > 0
+    result = rc[0]
+    assert result.startswith("file://")   

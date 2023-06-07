@@ -76,8 +76,8 @@ class QuiltPackage(QuiltLocal):
             raise ValueError(f"{dest}: {QuiltPackage.ERR_MOD}\n{self._diff()}")
         q = await self.remote_pkg()
         q.fetch(dest=dest)
-        result = self.local_files()
-        return result
+        files = self.local_files()
+        return [f"file://{fn}" for fn in files]
 
     async def commit(self, opts: dict = {}):
         """Create package in the local registry"""
@@ -95,7 +95,7 @@ class QuiltPackage(QuiltLocal):
         q.set_dir(".", self.check_path(opts))
         q.build(self.package)
         q.push(self.package, **kwargs)
-        self.hash = None
+        self.hash = None ## TODO: get, and return URI with, new hash
         await self.browse() # reset to latest
         return [self.uri]
 

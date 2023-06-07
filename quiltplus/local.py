@@ -61,7 +61,7 @@ class QuiltLocal(QuiltRoot):
         path = opts.get(QuiltLocal.K_PTH)
         return self.check_dir(path)
 
-    def local_path(self, *paths: str):
+    def local_path(self, *paths: str) -> Path:
         p = self.check_dir()
         for path in paths:
             p = p / path
@@ -71,14 +71,10 @@ class QuiltLocal(QuiltRoot):
 
     def local_files(self):
         root = self.local_path()
-        return [
-            os.path.relpath(os.path.join(dir, file), root)
-            for (dir, dirs, files) in os.walk(root)
-            for file in files
-        ]
+        return [f for f in root.rglob("*") if f.is_file()]
 
     def dest(self):
-        return str(self.local_path())  # + "/"
+        return str(self.local_path())
 
     def local_cache(self) -> Path:
         base_path = Path(self.local_registry.base.path)

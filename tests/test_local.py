@@ -44,6 +44,20 @@ def test_local_path():
     assert p6 == p5
 
 
+def test_local_files():
+    NEW_FILE = "test.txt"
+    loc =  QuiltResourceURI(PKG_URI)
+    assert loc
+    files = loc.local_files()
+    assert len(files) == 0
+
+    loc.write_text("abc", NEW_FILE)
+    files = loc.local_files()
+    assert len(files) == 1
+    file0 = files[0]
+    assert file0 == loc.local_path() / NEW_FILE
+
+
 @pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="does not work in CI")
 async def test_local_diff_get():
     qpkg = QuiltResourceURI(PKG_URI)
