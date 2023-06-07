@@ -6,7 +6,7 @@ class QuiltRoot(QuiltUri):
         super().__init__(attrs)
 
     def __repr__(self):
-        return f"{__class__}({self.attrs})"
+        return f"{type(self).__name__}({self.attrs})"
 
     def base_uri(self):
         return f"quilt+{self.registry}"

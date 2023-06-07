@@ -1,6 +1,6 @@
 # Create Quilt URI from UnURI attributes
 
-from un_yaml import UnUri
+from un_yaml import UnUri  # type: ignore
 
 from .type import QuiltType
 
