@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.9.3 (2023-06-06)
+
+- New UnYaml 0.3.0
+- fallible flag
+- get returns file: URIs
+
 ## 0.9.2 (2023-06-04)
 
 - QuiltLocal._diff directory vs local registry
