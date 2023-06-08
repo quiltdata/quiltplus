@@ -98,7 +98,7 @@ class QuiltPackage(QuiltLocal):
                 QuiltPackage.K_MSG, f"{__name__} {QuiltPackage.Now()} @ {opts}"
             ),
         }
-        logging.debug(f"get dest={dest}: {opts}\n{kwargs}")
+        logging.debug(f"push dest={dest}: {opts}\n{kwargs}")
         q.set_dir(".", dest)
         q.build(self.package)
         q.push(self.package, **kwargs)
