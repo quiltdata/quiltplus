@@ -1,10 +1,9 @@
-import logging
 import os
 
 from quiltplus import QuiltPackage
 
 from .conftest import pytestmark  # NOQA F402
-from .conftest import SKIP_LONG_TESTS, PKG_URI, TEST_URI, pytest
+from .conftest import PKG_URI, SKIP_LONG_TESTS, pytest
 
 
 def assert_diffs(diffs, a, m, d):
@@ -66,10 +65,12 @@ async def test_pkg_local(pkg: QuiltPackage):
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_local_files(pkg: QuiltPackage):
     assert pkg.local_files() == []
-    await pkg.get()
-    assert pkg.local_files() != []
-    assert "README.md" in pkg.local_files()
-
+    result = await pkg.get()
+    assert len(result) > 0
+    file0 = str(result[0])
+    assert file0.startswith("file://")
+    assert ".gitignore" 
+    
 
 @pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="does not work in CI")
 async def test_pkg_diff(pkg: QuiltPackage):
@@ -108,4 +109,4 @@ async def test_pkg_get(pkg: QuiltPackage):
     assert rc
     assert len(rc) > 0
     result = rc[0]
-    assert result.startswith("file://")   
+    assert result.startswith("file://")

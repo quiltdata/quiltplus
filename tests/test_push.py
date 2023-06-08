@@ -34,7 +34,7 @@ async def test_push_patch():
         str(p)
         opts = {
             QuiltPackage.K_MSG: f"{__name__} {TIMESTAMP}",
-            QuiltPackage.K_PTH: tmpdirname,
+            QuiltPackage.K_DIR: Path(tmpdirname),
         }
         result = await pkg.patch(opts)
         assert result is not None

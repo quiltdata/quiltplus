@@ -13,7 +13,9 @@ from .uri import QuiltUri
 class QuiltPackage(QuiltLocal):
     K_STAGE = "stage"
     K_MSG = "message"
-    ERR_MOD = f"Local files have been modified. Unset --{QuiltLocal.K_FAIL} to overwrite."
+    ERR_MOD = (
+        f"Local files have been modified. Unset --{QuiltLocal.K_FAIL} to overwrite."
+    )
 
     @classmethod
     def FromURI(cls: Type[Self], uri: str):
@@ -30,9 +32,11 @@ class QuiltPackage(QuiltLocal):
     async def browse(self):
         logging.debug(f"browse {self.package} {self.registry} {self.hash}")
         try:
-            q = Package.browse(
-                self.package, self.registry, top_hash=self.hash
-            ) if self.hash else Package.browse(self.package, self.registry)
+            q = (
+                Package.browse(self.package, self.registry, top_hash=self.hash)
+                if self.hash
+                else Package.browse(self.package, self.registry)
+            )
             return q
         except Exception as err:
             logging.error(err)
@@ -59,19 +63,20 @@ class QuiltPackage(QuiltLocal):
 
     async def diff(self, opts: dict = {}):
         """List files that differ from local_cache()"""
-        self.check_path(opts)
+        self.check_dir_arg(opts)
         diffs = self._diff()
         return [self.stage_uri(stage, filename) for filename, stage in diffs.items()]
 
     def unexpected_loss(self, opts, get=True) -> bool:
         """Check if _diff and fallible"""
-        modified = [k for k,v in self._diff().items() if v == "touch"]
+        modified = [k for k, v in self._diff().items() if v == "touch"]
         fallible = opts.get(QuiltPackage.K_FAIL, False)
         return len(modified) > 0 and fallible
 
     async def get(self, opts: dict = {}):
         """Download package to dest()"""
-        dest = self.check_path(opts)
+        dest = self.check_dir_arg(opts)
+        logging.debug(f"get dest={dest}: {opts}")
         if self.unexpected_loss(opts):
             raise ValueError(f"{dest}: {QuiltPackage.ERR_MOD}\n{self._diff()}")
         q = await self.remote_pkg()
@@ -85,6 +90,7 @@ class QuiltPackage(QuiltLocal):
 
     async def push(self, q: Package, opts: dict):
         """Generic handler for all push methods"""
+        dest = self.check_dir_arg(opts)
         kwargs = {
             QuiltPackage.K_REG: self.registry,
             QuiltPackage.K_FORCE: not opts.get(QuiltPackage.K_FAIL, False),
@@ -92,11 +98,12 @@ class QuiltPackage(QuiltLocal):
                 QuiltPackage.K_MSG, f"{__name__} {QuiltPackage.Now()} @ {opts}"
             ),
         }
-        q.set_dir(".", self.check_path(opts))
+        logging.debug(f"push dest={dest}: {opts}\n{kwargs}")
+        q.set_dir(".", dest)
         q.build(self.package)
         q.push(self.package, **kwargs)
-        self.hash = None ## TODO: get, and return URI with, new hash
-        await self.browse() # reset to latest
+        self.hash = None  # TODO: get, and return URI with, new hash
+        await self.browse()  # reset local registry to latest
         return [self.uri]
 
     async def put(self, opts: dict = {}):
