@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.9.4 (2023-06-08)
+
+- Versions inherit from Package (so get/put work)
+
 ## 0.9.3 (2023-06-06)
 
 - New UnYaml 0.3.0
