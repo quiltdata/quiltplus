@@ -7,6 +7,8 @@ from un_yaml import UnUri  # type: ignore
 class QuiltType:
     PREFIX = "quilt+"
     K_BKT = UnUri.K_HOST
+    K_DIR = "dir"
+    K_FILE = "file"
     K_FORCE = "force"
     K_FAIL = "fallible"
     K_REG = "registry"

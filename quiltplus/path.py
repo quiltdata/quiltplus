@@ -10,7 +10,7 @@ class QuiltPath(QuiltPackage):
         logging.debug(f"QuiltPath {self.path} @ {self.uri}")
 
     async def get(self, opts: dict = {}):
-        dir_dest = self.check_path(opts)
+        dir_dest = self.check_dir_arg(opts)
         dest = dir_dest / self.path
         q = await self.remote_pkg()
         qp = q[self.path]

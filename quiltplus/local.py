@@ -41,25 +41,26 @@ class QuiltLocal(QuiltRoot):
     def __init__(self, attrs: dict):
         super().__init__(attrs)
         self.local_registry = get_package_registry()
+        logging.debug(f"get_package_registry(): {self.local_registry}")
         for tmp in QuiltLocal.TempDir():
             logging.info(f"Package using QuiltLocal.TempDir: {tmp}")
             self.last_path = tmp
 
-    def check_dir(self, path: Path | None = None):
-        if not path:
+    def check_dir(self, local_dir: Path | None = None):
+        if not local_dir:
             return self.last_path
 
-        self.last_path = path
-        if not path.exists():
-            logging.warning(f"Path does not exist: {path}")
-            path.mkdir(parents=True, exist_ok=True)
-        elif not path.is_dir():
-            raise ValueError(f"Path is not a directory: {path}")
-        return path
+        self.last_path = local_dir
+        if not local_dir.exists():
+            logging.warning(f"Path does not exist: {local_dir}")
+            local_dir.mkdir(parents=True, exist_ok=True)
+        elif not local_dir.is_dir():
+            raise ValueError(f"Path is not a directory: {local_dir}")
+        return local_dir
 
-    def check_path(self, opts: dict):
-        path = opts.get(QuiltLocal.K_PTH)
-        return self.check_dir(path)
+    def check_dir_arg(self, opts: dict):
+        local_dir = opts.get(QuiltLocal.K_DIR)
+        return self.check_dir(local_dir)
 
     def local_path(self, *paths: str) -> Path:
         p = self.check_dir()
@@ -78,12 +79,13 @@ class QuiltLocal(QuiltRoot):
 
     def local_cache(self) -> Path:
         base_path = Path(self.local_registry.base.path)
+        logging.debug(f"local_registry.base.path: {base_path}")
         if not base_path.exists():
             logging.warning(f"local_cache does not exist: {base_path}")
         return base_path / self.package
 
     def _diff(self) -> dict[str, str]:
-        """Compare files in local_path to local cache"""
+        """Compare files in local_dir to local cache"""
         cache = self.local_cache()
         if not cache.exists():
             logging.warning(f"_diff: local_cache[{cache}] does not exist")

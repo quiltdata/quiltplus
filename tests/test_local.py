@@ -35,11 +35,11 @@ def test_local_path():
     with raises(ValueError):
         loc.check_dir(Path("README.md"))
 
-    opts = {QuiltLocal.K_PTH: Path(".")}
-    p5 = loc.check_path(opts)
+    opts = {QuiltLocal.K_DIR: Path(".")}
+    p5 = loc.check_dir_arg(opts)
     assert p5 == p3
 
-    p6 = loc.check_path({})
+    p6 = loc.check_dir_arg({})
     assert p6 == p5
 
 
