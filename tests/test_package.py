@@ -68,7 +68,7 @@ async def test_pkg_local_files(pkg: QuiltPackage):
     result = await pkg.get()
     assert len(result) > 0
     file0 = str(result[0])
-    assert file0.startswith("file:///")
+    assert file0.startswith("file://")
     assert ".gitignore" 
     
 
