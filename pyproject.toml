@@ -20,8 +20,8 @@ asyncclick = "^8.1.3.4"
 pytest-cov = "^4.0.0"
 anyio = "^3.7.0"
 typing-extensions = "^4.6.3"
-un-yaml = ">=0.2.0"
-# udc = {git = "https://github.com/data-yaml/udc.git", rev = "main"}
+un-yaml = ">=0.3.1"
+# un-yaml = {git = "https://github.com/data-yaml/un-yaml.git", rev = "main"}
 tzlocal = "^5.0.1"
 
 [tool.poetry.group.dev.dependencies]
