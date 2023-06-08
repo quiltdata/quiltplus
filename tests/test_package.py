@@ -65,11 +65,10 @@ async def test_pkg_local(pkg: QuiltPackage):
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_local_files(pkg: QuiltPackage):
     assert pkg.local_files() == []
-    await pkg.get()
-    result = pkg.local_files()
+    result = await pkg.get()
     assert len(result) > 0
     file0 = str(result[0])
-    assert file0.startswith("file://")
+    assert file0.startswith("file:///")
     assert ".gitignore" 
     
 
