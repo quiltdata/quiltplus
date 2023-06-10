@@ -1,9 +1,9 @@
 from quilt3 import list_package_versions  # type: ignore
 
-from .root import QuiltRoot
+from .package import QuiltPackage
 
 
-class QuiltVersions(QuiltRoot):
+class QuiltVersions(QuiltPackage):
     """Creates versions manager for a package."""
 
     def __init__(self, attrs: dict):
