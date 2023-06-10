@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.9.5 (2023-06-10)
+
+- Embed package names in attr dict (for parsing)
+
 ## 0.9.4 (2023-06-08)
 
 - Versions inherit from Package (so get/put work)
