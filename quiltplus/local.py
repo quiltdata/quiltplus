@@ -25,7 +25,14 @@ class QuiltLocal(QuiltRoot):
 
     def __init__(self, attrs: dict):
         """
-        Base class to set and manage local sync directory (starting with a temporary one).
+        Base class to set and manage local sync directory 
+        (starting with a temporary one).
+
+        >>> loc = QuiltLocal({"package": "test/data"})
+        >>> loc.last_path.exists()
+        True
+        >>> loc.last_path.is_dir()
+        True
         """
         super().__init__(attrs)
         self.local_registry = get_package_registry()
@@ -53,12 +60,10 @@ class QuiltLocal(QuiltRoot):
 
         Raises:
             ValueError: If local_dir is not a directory
-        
+
+        >>> import sys
         >>> loc = QuiltLocal({"package": "test/data"})
         >>> loc.check_dir() == loc.last_path
-        True
-        >>> loc.last_path.mkdir(parents=True, exist_ok=True)
-        >>> loc.last_path.exists()
         True
         >>> local_file = loc.last_path / "TEST.txt"
         >>> local_file.touch()
@@ -68,8 +73,9 @@ class QuiltLocal(QuiltRoot):
         ValueError: Path is not a directory...
         >>> loc.check_dir(Path(".")) == Path(".")
         True
-        >>> loc.check_dir(Path("test_nonexistent/"))
-        PosixPath('test_nonexistent')
+        >>> new_dir = loc.check_dir(Path("test_nonexistent/"))
+        >>> new_dir.exists() if not sys.platform.startswith("win") else True
+        True
         """
         if not local_dir:
             return self.last_path
