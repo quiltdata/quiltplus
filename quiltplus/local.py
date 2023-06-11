@@ -64,7 +64,7 @@ class QuiltLocal(QuiltRoot):
             ValueError: If local_dir is not a directory
 
         >>> import shutil, sys
-        >>> loc = QuiltLocal({"package": "test/data"})
+        >>> loc = QuiltLocal({"package": "test_pkg/data"})
         >>> loc.check_dir() == loc.last_path
         True
         >>> local_file = loc.last_path / "TEST.txt"
@@ -79,8 +79,8 @@ class QuiltLocal(QuiltRoot):
         >>> new_dir.exists() if not sys.platform.startswith("win") else True
         True
         >>> format_dir = loc.check_dir(Path("{package}"))
-        >>> str(format_dir)
-        'test/data'
+        >>> str(format_dir) if not sys.platform.startswith("win") else str(format_dir).replace("\\", "/")
+        'test_pkg/data'
         >>> shutil.rmtree(new_dir)
         >>> shutil.rmtree(format_dir)
         """
