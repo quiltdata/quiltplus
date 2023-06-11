@@ -76,10 +76,11 @@ class QuiltLocal(QuiltRoot):
         >>> loc.check_dir(Path(".")) == Path(".")
         True
         >>> new_dir = loc.check_dir(Path("test_nonexistent/"))
-        >>> new_dir.exists() if not sys.platform.startswith("win") else True
+        >>> not_windows = not sys.platform.startswith("win")
+        >>> new_dir.exists() if not_windows else True
         True
         >>> format_dir = loc.check_dir(Path("{package}"))
-        >>> str(format_dir) if not sys.platform.startswith("win") else str(format_dir).replace("\\", "/")
+        >>> str(format_dir) if not_windows else str(format_dir.as_posix())
         'test_pkg/data'
         >>> shutil.rmtree(new_dir)
         >>> shutil.rmtree(format_dir)
