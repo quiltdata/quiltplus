@@ -14,21 +14,6 @@ from .root import QuiltRoot
 
 class QuiltLocal(QuiltRoot):
     @staticmethod
-    def TempDir() -> Generator[Path, None, None]:
-        test_dir = os.environ.get("GITHUB_WORKSPACE")
-        with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
-            tmpdir = Path(tmpdirname)
-            if not test_dir:
-                # logging.info(f"Creating {tmpdirname} on {platform.system()}")
-                yield tmpdir
-            else:
-                temp_dir = Path(test_dir) / tmpdir.name
-                # logging.info(f"Creating {temp_dir} on {platform.system()}")
-                temp_dir.mkdir(parents=True, exist_ok=True)
-                yield temp_dir
-            logging.debug(f"Removing {tmpdirname} on {platform.system()}")
-
-    @staticmethod
     def OpenDesktop(dest: str):
         if platform.system() == "Windows":
             os.startfile(dest)  # type: ignore
@@ -39,14 +24,53 @@ class QuiltLocal(QuiltRoot):
         return dest
 
     def __init__(self, attrs: dict):
+        """
+        Base class to set and manage local sync directory (starting with a temporary one).
+        """
         super().__init__(attrs)
         self.local_registry = get_package_registry()
         logging.debug(f"get_package_registry(): {self.local_registry}")
-        for tmp in QuiltLocal.TempDir():
-            logging.info(f"Package using QuiltLocal.TempDir: {tmp}")
-            self.last_path = tmp
+        self.make_temp_dir()
+
+    def make_temp_dir(self):
+        self.temp_dir: TemporaryDirectory = TemporaryDirectory(ignore_cleanup_errors=True)
+        self.last_path = Path(self.temp_dir.name)
+    
+    def __del__(self):
+        self.temp_dir.cleanup()
 
     def check_dir(self, local_dir: Path | None = None):
+        """
+        Check if local_dir exists and is a directory.
+        If local_dir is None, return the last path used.
+        If it does not exist, create it.
+
+        Args:
+            local_dir (Path): Path to check (optional)
+        
+        Returns:
+            Path: Path to local_dir (gauranteed to exist)
+
+        Raises:
+            ValueError: If local_dir is not a directory
+        
+        >>> loc = QuiltLocal({"package": "test/data"})
+        >>> loc.check_dir() == loc.last_path
+        True
+        >>> loc.last_path.mkdir(parents=True, exist_ok=True)
+        >>> loc.last_path.exists()
+        True
+        >>> local_file = loc.last_path / "TEST.txt"
+        >>> local_file.touch()
+        >>> loc.check_dir(local_file)  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: Path is not a directory...
+        >>> loc.check_dir(Path(".")) == Path(".")
+        True
+        >>> loc.check_dir(Path("test_nonexistent/"))
+        PosixPath('test_nonexistent')
+        """
         if not local_dir:
             return self.last_path
 
