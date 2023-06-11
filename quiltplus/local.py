@@ -51,6 +51,7 @@ class QuiltLocal(QuiltRoot):
         Check if local_dir exists and is a directory.
         If local_dir is None, return the last path used.
         If it does not exist, create it.
+        If an attrs variable, expand it
 
         Args:
             local_dir (Path): Path to check (optional)
@@ -76,9 +77,15 @@ class QuiltLocal(QuiltRoot):
         >>> new_dir = loc.check_dir(Path("test_nonexistent/"))
         >>> new_dir.exists() if not sys.platform.startswith("win") else True
         True
+        >>> format_dir = loc.check_dir(Path("{package}"))
+        >>> str(format_dir)
+        'test/data'
         """
         if not local_dir:
             return self.last_path
+
+        if str(local_dir).startswith("{"):
+            local_dir = Path(str(local_dir).format(**self.attrs))
 
         self.last_path = local_dir
         if not local_dir.exists():
