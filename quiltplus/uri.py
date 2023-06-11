@@ -27,7 +27,7 @@ class QuiltUri(QuiltType):
     def __init__(self, attrs: dict):
         """
         Set local variables and additional attributes.
-        
+
         >>> reg = "s3://quilt-example"
         >>> pkg = "quilt/data"
         >>> pkg_full = f"{pkg}:latest"

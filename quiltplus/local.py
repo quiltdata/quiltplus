@@ -2,7 +2,6 @@ import logging
 import os
 import platform
 import subprocess
-from collections.abc import Generator
 from filecmp import dircmp
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -25,7 +24,7 @@ class QuiltLocal(QuiltRoot):
 
     def __init__(self, attrs: dict):
         """
-        Base class to set and manage local sync directory 
+        Base class to set and manage local sync directory
         (starting with a temporary one).
 
         >>> loc = QuiltLocal({"package": "test/data"})
@@ -40,9 +39,11 @@ class QuiltLocal(QuiltRoot):
         self.make_temp_dir()
 
     def make_temp_dir(self):
-        self.temp_dir: TemporaryDirectory = TemporaryDirectory(ignore_cleanup_errors=True)
+        self.temp_dir: TemporaryDirectory = TemporaryDirectory(
+            ignore_cleanup_errors=True
+        )
         self.last_path = Path(self.temp_dir.name)
-    
+
     def __del__(self):
         self.temp_dir.cleanup()
 
@@ -55,14 +56,14 @@ class QuiltLocal(QuiltRoot):
 
         Args:
             local_dir (Path): Path to check (optional)
-        
+
         Returns:
             Path: Path to local_dir (gauranteed to exist)
 
         Raises:
             ValueError: If local_dir is not a directory
 
-        >>> import sys
+        >>> import shutil, sys
         >>> loc = QuiltLocal({"package": "test/data"})
         >>> loc.check_dir() == loc.last_path
         True
@@ -80,6 +81,8 @@ class QuiltLocal(QuiltRoot):
         >>> format_dir = loc.check_dir(Path("{package}"))
         >>> str(format_dir)
         'test/data'
+        >>> shutil.rmtree(new_dir)
+        >>> shutil.rmtree(format_dir)
         """
         if not local_dir:
             return self.last_path
