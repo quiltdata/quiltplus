@@ -2,7 +2,6 @@ import logging
 import os
 import platform
 import subprocess
-from collections.abc import Generator
 from filecmp import dircmp
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -14,21 +13,6 @@ from .root import QuiltRoot
 
 class QuiltLocal(QuiltRoot):
     @staticmethod
-    def TempDir() -> Generator[Path, None, None]:
-        test_dir = os.environ.get("GITHUB_WORKSPACE")
-        with TemporaryDirectory(ignore_cleanup_errors=True) as tmpdirname:
-            tmpdir = Path(tmpdirname)
-            if not test_dir:
-                # logging.info(f"Creating {tmpdirname} on {platform.system()}")
-                yield tmpdir
-            else:
-                temp_dir = Path(test_dir) / tmpdir.name
-                # logging.info(f"Creating {temp_dir} on {platform.system()}")
-                temp_dir.mkdir(parents=True, exist_ok=True)
-                yield temp_dir
-            logging.debug(f"Removing {tmpdirname} on {platform.system()}")
-
-    @staticmethod
     def OpenDesktop(dest: str):
         if platform.system() == "Windows":
             os.startfile(dest)  # type: ignore
@@ -39,16 +23,76 @@ class QuiltLocal(QuiltRoot):
         return dest
 
     def __init__(self, attrs: dict):
+        """
+        Base class to set and manage local sync directory
+        (starting with a temporary one).
+
+        >>> loc = QuiltLocal({"package": "test/data"})
+        >>> loc.last_path.exists()
+        True
+        >>> loc.last_path.is_dir()
+        True
+        """
         super().__init__(attrs)
         self.local_registry = get_package_registry()
         logging.debug(f"get_package_registry(): {self.local_registry}")
-        for tmp in QuiltLocal.TempDir():
-            logging.info(f"Package using QuiltLocal.TempDir: {tmp}")
-            self.last_path = tmp
+        self.make_temp_dir()
+
+    def make_temp_dir(self):
+        self.temp_dir: TemporaryDirectory = TemporaryDirectory(
+            ignore_cleanup_errors=True
+        )
+        self.last_path = Path(self.temp_dir.name)
+
+    def __del__(self):
+        self.temp_dir.cleanup()
 
     def check_dir(self, local_dir: Path | None = None):
+        """
+        Check if local_dir exists and is a directory.
+        If local_dir is None, return the last path used.
+        If it does not exist, create it.
+        If an attrs variable, expand it
+
+        Args:
+            local_dir (Path): Path to check (optional)
+
+        Returns:
+            Path: Path to local_dir (gauranteed to exist)
+
+        Raises:
+            ValueError: If local_dir is not a directory
+
+        >>> import shutil, sys
+        >>> loc = QuiltLocal({"package": "test_pkg/data"})
+        >>> loc.check_dir() == loc.last_path
+        True
+        >>> local_file = loc.last_path / "TEST.txt"
+        >>> local_file.touch()
+        >>> loc.check_dir(local_file)  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: Path is not a directory...
+        >>> loc.check_dir(Path(".")) == Path(".").resolve()
+        True
+        >>> new_dir = loc.check_dir(Path("test_nonexistent/"))
+        >>> not_windows = not sys.platform.startswith("win")
+        >>> new_dir.exists() if not_windows else True
+        True
+        >>> format_dir = loc.check_dir(Path("{package}")).as_posix()
+        >>> str(format_dir).endswith("test_pkg/data")
+        True
+        >>> shutil.rmtree(new_dir)
+        >>> shutil.rmtree(format_dir)
+        """
         if not local_dir:
             return self.last_path
+
+        dir_str = str(local_dir)
+        logging.debug(f"check_dir: {local_dir} => {dir_str}")
+        dir_var = dir_str.format(**self.attrs)
+        logging.debug(f"check_dir: {dir_var} <= {self.attrs}")
+        local_dir = Path(dir_var).resolve()
 
         self.last_path = local_dir
         if not local_dir.exists():

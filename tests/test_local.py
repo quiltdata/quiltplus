@@ -10,10 +10,12 @@ from .conftest import PKG_URI, TEST_PKG, pytest
 
 
 def test_local_tmp():
-    for tmp in QuiltLocal.TempDir():
-        assert tmp
-        assert isinstance(tmp, Path)
-        assert tmp.exists()
+    loc = QuiltLocal({"package": "test"})
+    tmp = loc.temp_dir
+    assert tmp
+    p = loc.last_path
+    assert p.exists()
+    assert p.is_dir()
 
 
 def test_local_path():
@@ -27,7 +29,7 @@ def test_local_path():
 
     p3 = loc.check_dir(Path("."))
     assert p3 != p
-    assert str(p3) == "."
+    assert str(p3) == str(Path(".").resolve())
 
     p4 = loc.check_dir(Path("test_nonexistent/"))
     assert p4
