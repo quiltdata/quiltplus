@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.9.6 (2023-06-13)
+
+- Include Hostname in File URIs
+
 ## 0.9.5 (2023-06-10)
 
 - Embed package names in attr dict (for parsing)
