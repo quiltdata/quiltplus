@@ -29,7 +29,7 @@ def test_local_path():
 
     p3 = loc.check_dir(Path("."))
     assert p3 != p
-    assert str(p3) == "."
+    assert str(p3) == str(Path(".").resolve())
 
     p4 = loc.check_dir(Path("test_nonexistent/"))
     assert p4

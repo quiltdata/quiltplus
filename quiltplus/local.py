@@ -73,15 +73,15 @@ class QuiltLocal(QuiltRoot):
         Traceback (most recent call last):
         ...
         ValueError: Path is not a directory...
-        >>> loc.check_dir(Path(".")) == Path(".")
+        >>> loc.check_dir(Path(".")) == Path(".").resolve()
         True
         >>> new_dir = loc.check_dir(Path("test_nonexistent/"))
         >>> not_windows = not sys.platform.startswith("win")
         >>> new_dir.exists() if not_windows else True
         True
-        >>> format_dir = loc.check_dir(Path("{package}"))
-        >>> str(format_dir) if not_windows else str(format_dir.as_posix())
-        'test_pkg/data'
+        >>> format_dir = loc.check_dir(Path("{package}")).as_posix()
+        >>> str(format_dir).endswith("test_pkg/data")
+        True
         >>> shutil.rmtree(new_dir)
         >>> shutil.rmtree(format_dir)
         """
