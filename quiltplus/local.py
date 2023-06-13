@@ -92,7 +92,7 @@ class QuiltLocal(QuiltRoot):
         logging.debug(f"check_dir: {local_dir} => {dir_str}")
         dir_var = dir_str.format(**self.attrs)
         logging.debug(f"check_dir: {dir_var} <= {self.attrs}") 
-        local_dir = Path(dir_var)
+        local_dir = Path(dir_var).resolve()
 
         self.last_path = local_dir
         if not local_dir.exists():
