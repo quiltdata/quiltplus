@@ -80,17 +80,17 @@ requests = ">=0.14.0"
 
 [[package]]
 name = "boto3"
-version = "1.26.152"
+version = "1.26.153"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "boto3-1.26.152-py3-none-any.whl", hash = "sha256:a2778c5729d3dc0b3688c9f0d103543d7ec5ff44a4fd0e84d0d542e2dff05e62"},
-    {file = "boto3-1.26.152.tar.gz", hash = "sha256:ee0b8f8d238d4e1cf50fa6a185e4e066955b6105e9838a80b1b6582cd327dfdf"},
+    {file = "boto3-1.26.153-py3-none-any.whl", hash = "sha256:ec3a4aef45d16d9362191aa245a31059df009cd73668d0c3b15126cfeb5d3fd7"},
+    {file = "boto3-1.26.153.tar.gz", hash = "sha256:92de7eec15adda76abff0580b1e8ca70646470fba4c807934062456d0c5c9171"},
 ]
 
 [package.dependencies]
-botocore = ">=1.29.152,<1.30.0"
+botocore = ">=1.29.153,<1.30.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.6.0,<0.7.0"
 
@@ -99,13 +99,13 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "botocore"
-version = "1.29.152"
+version = "1.29.153"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">= 3.7"
 files = [
-    {file = "botocore-1.29.152-py3-none-any.whl", hash = "sha256:02a3205cc8579d4be6d537e63d72aebbf3f70f3aedcf40b3cae9dc2e24c774d0"},
-    {file = "botocore-1.29.152.tar.gz", hash = "sha256:f6319ecdbe3d325878f837cac2874e461b4d90691bb2d2186f980bce3b3cfcc8"},
+    {file = "botocore-1.29.153-py3-none-any.whl", hash = "sha256:d6d3294fde297ae76fadb4bafad93ef958f145bb9a502bf7b1e57ff6f8dc4039"},
+    {file = "botocore-1.29.153.tar.gz", hash = "sha256:d59b8e87138581a339b9f84a9e90bc4c1a152cf8ca2adbaad7792a4c4125bffa"},
 ]
 
 [package.dependencies]
@@ -1068,22 +1068,25 @@ devenv = ["black", "check-manifest", "flake8", "pyroma", "pytest (>=4.3)", "pyte
 
 [[package]]
 name = "un-yaml"
-version = "0.3.1"
+version = "0.3.2"
 description = "Universal YAML: replace repetitive code with your own Domain-Specific un-Language (DSuL)"
 optional = false
-python-versions = ">=3.10,<4.0"
-files = [
-    {file = "un_yaml-0.3.1-py3-none-any.whl", hash = "sha256:007f1cee0f3b044a4eb7827822e098242a2e2b4a714a0d6ab23cae6f0f66a715"},
-    {file = "un_yaml-0.3.1.tar.gz", hash = "sha256:8fa416cee871d7111ba3511c82548dbea286e48dc807342074e9bc63145367bd"},
-]
+python-versions = "^3.10"
+files = []
+develop = false
 
 [package.dependencies]
-anyio = ">=3.7.0,<4.0.0"
-asyncclick = ">=8.1.3.4,<9.0.0.0"
-pyyaml = ">=6.0,<7.0"
-trio = ">=0.22.0,<0.23.0"
-types-pyyaml = ">=6.0.12.10,<7.0.0.0"
-typing-extensions = ">=4.5.0,<5.0.0"
+anyio = "^3.7.0"
+asyncclick = "^8.1.3.4"
+pyyaml = "^6.0"
+trio = "^0.22.0"
+typing-extensions = "^4.5.0"
+
+[package.source]
+type = "git"
+url = "https://github.com/data-yaml/un-yaml.git"
+reference = "un-attr"
+resolved_reference = "037daed625d010436a2bcd5154e5b59a306e24dd"
 
 [[package]]
 name = "urllib3"
@@ -1143,4 +1146,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "17d1abae4ff921a508df6b1cbc753109d1ca0073fab36b268199cd1c56a3e002"
+content-hash = "9ea19863c14b30e36803efb5fb23667b4823193ecdc387defa9209e787b3b905"
