@@ -118,7 +118,7 @@ class QuiltPackage(QuiltLocal):
         return await self.push(q, opts)
 
     def delete(self):  # remove local cache
-        return shutil.rmtree(self.last_path)
+        return shutil.rmtree(self.dir_path)
 
     async def call(self, method: str = "get", opts={}):
         attr_method = getattr(self, method)

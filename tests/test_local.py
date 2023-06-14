@@ -13,36 +13,9 @@ def test_local_tmp():
     loc = QuiltLocal({"package": "test"})
     tmp = loc.temp_dir
     assert tmp
-    p = loc.last_path
+    p = loc.dir_path
     assert p.exists()
     assert p.is_dir()
-
-
-def test_local_path():
-    loc = QuiltLocal({"package": "test"})
-    assert loc
-    p = loc.local_path()
-    assert p
-
-    p2 = loc.check_dir()
-    assert p2 == p
-
-    p3 = loc.check_dir(Path("."))
-    assert p3 != p
-    assert str(p3) == str(Path(".").resolve())
-
-    p4 = loc.check_dir(Path("test_nonexistent/"))
-    assert p4
-
-    with raises(ValueError):
-        loc.check_dir(Path("README.md"))
-
-    opts = {QuiltLocal.K_DIR: Path(".")}
-    p5 = loc.check_dir_arg(opts)
-    assert p5 == p3
-
-    p6 = loc.check_dir_arg({})
-    assert p6 == p5
 
 
 def test_local_files():

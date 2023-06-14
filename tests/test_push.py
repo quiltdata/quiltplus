@@ -27,17 +27,16 @@ def get_unique_pkg(prefix: str):
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_push_patch():
     pkg = get_unique_pkg("test_push_patch")
-    for tmpdirname in QuiltPackage.TempDir():
-        key = "test.txt"
-        p = Path(tmpdirname) / key
-        p.write_text(TEST_URI)
-        str(p)
-        opts = {
-            QuiltPackage.K_MSG: f"{__name__} {TIMESTAMP}",
-            QuiltPackage.K_DIR: Path(tmpdirname),
-        }
-        result = await pkg.patch(opts)
-        assert result is not None
+    key = "test.txt"
+    p = pkg.dir_path / key
+    p.write_text(TEST_URI)
+    str(p)
+    opts = {
+        QuiltPackage.K_MSG: f"{__name__} {TIMESTAMP}",
+        QuiltPackage.K_DIR: pkg.dir_path,
+    }
+    result = await pkg.patch(opts)
+    assert result is not None
 
 
 def check_file(file: str, uris: list[str]) -> bool:

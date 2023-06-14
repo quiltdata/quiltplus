@@ -1,12 +1,12 @@
 from datetime import datetime
 
 from tzlocal import get_localzone
-from un_yaml import UnUri  # type: ignore
+from un_yaml import UnDir  # type: ignore
 
 
-class QuiltType:
+class QuiltType(UnDir):
     PREFIX = "quilt+"
-    K_BKT = UnUri.K_HOST
+    K_BKT = UnDir.K_HOST
     K_DIR = "dir"
     K_FILE = "file"
     K_FORCE = "force"
@@ -36,7 +36,7 @@ class QuiltType:
         for key in QuiltType.FRAG_KEYS:
             if key in attrs:
                 return key
-        return UnUri.K_HOST
+        return UnDir.K_HOST
 
     @staticmethod
     def Type(attrs: dict) -> str:
