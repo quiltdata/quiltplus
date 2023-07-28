@@ -1,7 +1,4 @@
 import logging
-import os
-import platform
-import subprocess
 from filecmp import dircmp
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -12,15 +9,6 @@ from .root import QuiltRoot
 
 
 class QuiltLocal(QuiltRoot):
-    @staticmethod
-    def OpenDesktop(dest: str):
-        if platform.system() == "Windows":
-            os.startfile(dest)  # type: ignore
-        elif platform.system() == "Darwin":
-            subprocess.Popen(["open", "-R", dest])
-        else:
-            subprocess.Popen(["xdg-open", dest])
-        return dest
 
     def __init__(self, attrs: dict):
         """
@@ -39,9 +27,7 @@ class QuiltLocal(QuiltRoot):
         self.make_temp_dir()
 
     def make_temp_dir(self):
-        self.temp_dir: TemporaryDirectory = TemporaryDirectory(
-            ignore_cleanup_errors=True
-        )
+        self.temp_dir = TemporaryDirectory(ignore_cleanup_errors=True)
         self.last_path = Path(self.temp_dir.name)
 
     def __del__(self):
@@ -152,6 +138,3 @@ class QuiltLocal(QuiltRoot):
         p = dir / file
         p.write_text(text)
         return p
-
-    def open(self):
-        return QuiltLocal.OpenDesktop(self.dest())

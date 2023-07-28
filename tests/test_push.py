@@ -1,6 +1,7 @@
 import logging
 import os
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from quilt3 import Package  # type: ignore
 from quiltplus import QuiltPackage
@@ -27,7 +28,7 @@ def get_unique_pkg(prefix: str):
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_push_patch():
     pkg = get_unique_pkg("test_push_patch")
-    for tmpdirname in QuiltPackage.TempDir():
+    with TemporaryDirectory() as tmpdirname:
         key = "test.txt"
         p = Path(tmpdirname) / key
         p.write_text(TEST_URI)
