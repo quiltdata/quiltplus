@@ -4,7 +4,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from quilt3 import Package  # type: ignore
-from quiltplus import QuiltPackage
+from quiltplus import QuiltPackage, QuiltType
 
 from .conftest import pytestmark  # NOQA F401
 from .conftest import SKIP_LONG_TESTS, TEST_URI, pytest
@@ -20,7 +20,7 @@ if not WRITE_BUCKET:
 
 def get_unique_pkg(prefix: str):
     WRITE_URI = (
-        f"quilt+s3://{WRITE_BUCKET}#package=test/{prefix}_{TIMESTAMP.replace(':','_')}"
+        f"quilt+s3://{WRITE_BUCKET}#package=test/{prefix}_{QuiltType.Now()}"
     )
     return QuiltPackage.FromURI(WRITE_URI)
 
