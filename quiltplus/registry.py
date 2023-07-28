@@ -10,9 +10,6 @@ class QuiltRegistry(QuiltRoot):
         super().__init__(attrs)
         self.attrs = attrs
 
-    def __repr__(self):
-        return f"QuiltRegistry({self.registry})"
-
     def url(self, pkg: str):
         """Convert package name to URL."""
         return self.pkg_uri(pkg) + ":latest"
