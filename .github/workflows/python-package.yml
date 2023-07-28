@@ -52,6 +52,8 @@ jobs:
     - name: Test with pytest
       run: |
         make test TEST_OS=${{ matrix.os }}
+      env:
+        WRITE_BUCKET: ${{ vars.WRITE_BUCKET }}
     - name: Get Coverage Report
       uses: orgoro/coverage@v3.1
       with:

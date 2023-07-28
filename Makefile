@@ -22,6 +22,7 @@ update:
 	poetry update
 
 test:
+	echo "Testing with WRITE_BUCKET=$(WRITE_BUCKET)"
 	poetry run pytest $(TEST_README) --cov --cov-report xml:coverage.xml
 
 test-short:
