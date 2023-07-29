@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "quiltplus"
-version = "0.9.5"
+version = "0.1.0"
 description = "Resource-oriented Python API/CLI for Quilt's decentralized social knowledge platform"
 authors = ["Ernest Prabhakar <ernest@quiltdata.io>"]
 license = "MIT"
@@ -22,6 +22,7 @@ tzlocal = "^5.0.1"
 un-yaml = ">=0.3.1"
 # un-yaml = {git = "https://github.com/data-yaml/un-yaml.git", rev = "main"}
 urllib3 = "<2"
+quiltcore = "^0.3.0"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.0.0"

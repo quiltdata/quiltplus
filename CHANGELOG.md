@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.0.0 UNRELEASED
+
+- Use QuiltCore instead of Quilt3
+
 ## 0.9.5 (2023-06-10)
 
 - Embed package names in attr dict (for parsing)
