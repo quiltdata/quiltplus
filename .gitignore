@@ -133,3 +133,8 @@ dmypy.json
 
 # Testing artifacts
 data.yaml
+examples
+quilt/
+test/
+test_*
+None*
