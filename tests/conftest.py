@@ -10,6 +10,7 @@ pytestmark = pytest.mark.anyio
 
 TEST_BKT = "quilt-example"
 TEST_PKG = "examples/wellplates"
+FIRST_PKG = "akarve/amazon-reviews"
 
 CATALOG_URL = f"https://open.quiltdata.com/b/{TEST_BKT}/packages/{TEST_PKG}"
 TEST_URI = (

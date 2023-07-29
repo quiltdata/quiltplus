@@ -14,6 +14,7 @@ from .conftest import (
     PRP_URI,
     PTH_URI,
     SKIP_LONG_TESTS,
+    FIRST_PKG,
     VER_URI,
     pytest,
 )
@@ -39,6 +40,13 @@ async def test_res_prop():
     assert isinstance(qr, QuiltProperty)
 
 
+def test_res_reg_core():
+    qreg = QuiltResourceURI(BKT_URI)
+    assert qreg.core is not None
+    names = qreg.core.list()
+    assert len(names) > 0
+    assert QuiltRegistry.PackageName(names[0]) == FIRST_PKG
+
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_res_reg_list():
     qreg = QuiltResourceURI(BKT_URI)
@@ -46,7 +54,7 @@ async def test_res_reg_list():
     assert len(result) > 0
     first = result[0]
     assert ":latest" in first
-    assert "package=" in first
+    assert f"package={FIRST_PKG}" in first
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
