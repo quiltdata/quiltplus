@@ -1,3 +1,5 @@
+from quiltcore import Registry, Namespace
+
 from quiltplus import (
     QuiltPackage,
     QuiltPath,
@@ -42,10 +44,11 @@ async def test_res_prop():
 
 def test_res_reg_core():
     qreg = QuiltResourceURI(BKT_URI)
-    assert qreg.core is not None
-    names = qreg.core.list()
+    assert qreg.domain is not None
+    assert isinstance(qreg.domain, Registry)
+    names = qreg.domain.list()
     assert len(names) > 0
-    assert QuiltRegistry.PackageName(names[0]) == FIRST_PKG
+    assert names[0].name == FIRST_PKG
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_res_reg_list():
@@ -55,6 +58,17 @@ async def test_res_reg_list():
     first = result[0]
     assert ":latest" in first
     assert f"package={FIRST_PKG}" in first
+
+
+async def test_res_ver_core():
+    qr = QuiltResourceURI(VER_URI)
+    print(qr.domain)
+    print(f"qr.package={qr.package}")
+    ns = qr.domain.get(qr.package)
+    assert ns is not None
+    assert isinstance(ns, Namespace)
+    print(f"ns={ns} -> {ns.manifests}")
+    assert ns.get("latest") is not None
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")

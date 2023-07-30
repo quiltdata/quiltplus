@@ -31,7 +31,8 @@ class QuiltLocal(QuiltRoot):
         self.last_path = Path(self.temp_dir.name)
 
     def __del__(self):
-        self.temp_dir.cleanup()
+        if hasattr(self, "temp_dir") and self.temp_dir:
+            self.temp_dir.cleanup()
 
     def check_dir(self, local_dir: Path | None = None):
         """
