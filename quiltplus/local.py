@@ -4,6 +4,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from quilt3.backends import get_package_registry  # type: ignore
+from quiltcore import Volume
 
 from .root import QuiltRoot
 
@@ -23,12 +24,15 @@ class QuiltLocal(QuiltRoot):
         """
         super().__init__(attrs)
         self.local_registry = get_package_registry()
-        logging.debug(f"get_package_registry(): {self.local_registry}")
-        self.make_temp_dir()
+        self.assign_dir()
 
-    def make_temp_dir(self):
-        self.temp_dir = TemporaryDirectory(ignore_cleanup_errors=True)
-        self.last_path = Path(self.temp_dir.name)
+    def assign_dir(self, local_dir: Path | None = None):
+        if not local_dir:
+            self.temp_dir = TemporaryDirectory(ignore_cleanup_errors=True)
+            local_dir = Path(self.temp_dir.name)
+        self.last_path = local_dir
+        self.volume = Volume(self.last_path)
+        return self.last_path
 
     def __del__(self):
         if hasattr(self, "temp_dir") and self.temp_dir:
@@ -81,13 +85,13 @@ class QuiltLocal(QuiltRoot):
         logging.debug(f"check_dir: {dir_var} <= {self.attrs}")
         local_dir = Path(dir_var).resolve()
 
-        self.last_path = local_dir
         if not local_dir.exists():
             logging.warning(f"Path does not exist: {local_dir}")
             local_dir.mkdir(parents=True, exist_ok=True)
         elif not local_dir.is_dir():
             raise ValueError(f"Path is not a directory: {local_dir}")
-        return local_dir
+        
+        return self.assign_dir(local_dir)
 
     def check_dir_arg(self, opts: dict):
         local_dir = opts.get(QuiltLocal.K_DIR)
@@ -110,7 +114,6 @@ class QuiltLocal(QuiltRoot):
 
     def local_cache(self) -> Path:
         base_path = Path(self.local_registry.base.path)
-        logging.debug(f"local_registry.base.path: {base_path}")
         if not base_path.exists():
             logging.warning(f"local_cache does not exist: {base_path}")
         return base_path / self.package

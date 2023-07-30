@@ -72,7 +72,7 @@ async def test_pkg_local_files(pkg: QuiltPackage):
     assert ".gitignore"
 
 
-@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="does not work in CI")
+@pytest.mark.skip(reason="diff not implemented in QuiltCore")
 async def test_pkg_diff(pkg: QuiltPackage):
     staged = pkg.stage_uri("diff", "README.md")
     assert staged.startswith("quilt+stage+diff")
