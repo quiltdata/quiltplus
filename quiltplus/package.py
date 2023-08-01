@@ -29,6 +29,19 @@ class QuiltPackage(QuiltLocal):
     def path_uri(self, sub_path: str):
         return self.pkg_uri() + f"&{QuiltPackage.K_PTH}=" + sub_path
 
+    def local_man(self):
+        try:
+            return self.volume.read_manifest(self.hash)  # type: ignore
+        except Exception as err:
+            logging.debug(f"no local manifest for hash: {self.hash}")
+        return None
+    
+    def remote_man(self):
+        print(f"remote_man: {self.hash} for {self.package} {self.registry}")
+        tag = self.attrs.get(QuiltUri.K_TAG, self.namespace.TAG_DEFAULT)
+        opts = {QuiltUri.K_HASH: self.hash} if self.hash else {}
+        return self.namespace.get(tag, **opts)
+    
     async def browse(self):
         logging.debug(f"browse {self.package} {self.registry} {self.hash}")
         try:

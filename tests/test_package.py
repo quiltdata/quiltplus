@@ -51,6 +51,15 @@ async def test_pkg_write(pkg: QuiltPackage):
     path = os.path.join("parent", "test.txt")
     assert path in str(p2)
 
+def test_pkg_core_get(pkg: QuiltPackage):
+    assert pkg.volume
+    assert pkg.hash
+    print(f"test_pkg_core_get.pkg.hash: {pkg.hash}")
+    man = pkg.remote_man()
+    assert man
+    print(f"test_pkg_core_get.man.path: {man.path}")
+    rc = pkg.volume.put(man)
+    assert rc
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_local(pkg: QuiltPackage):
