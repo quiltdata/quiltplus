@@ -16,8 +16,8 @@ asyncclick = "^8.1.3.4"
 anyio = "^3.7.1"
 isort = "^5.12.0"
 quilt3 = "^5.1.0"
-# quiltcore = "^0.3.0"
-quiltcore = {git = "https://github.com/quiltdata/quiltcore.git", rev = "quiltplus-fixes"}
+quiltcore = "^0.3.1"
+#quiltcore = {git = "https://github.com/quiltdata/quiltcore.git", rev = "quiltplus-fixes"}
 trio = "^0.22.2"
 typing-extensions = "^4.7.1"
 tzlocal = "^5.0.1"
