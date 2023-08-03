@@ -61,6 +61,7 @@ def test_pkg_core_get(pkg: QuiltPackage):
     rc = pkg.volume.put(man)
     assert rc
 
+
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_local(pkg: QuiltPackage):
     q = await pkg.local_pkg()

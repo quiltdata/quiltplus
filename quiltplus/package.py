@@ -4,7 +4,6 @@ import logging
 import shutil
 
 from quilt3 import Package  # type: ignore
-from typing_extensions import Self, Type
 
 from .local import QuiltLocal
 from .uri import QuiltUri
@@ -17,11 +16,6 @@ class QuiltPackage(QuiltLocal):
         f"Local files have been modified. Unset --{QuiltLocal.K_FAIL} to overwrite."
     )
 
-    @classmethod
-    def FromURI(cls: Type[Self], uri: str):
-        attrs = QuiltUri.AttrsFromUri(uri)
-        return cls(attrs)
-
     def __init__(self, attrs: dict):
         super().__init__(attrs)
         self.hash = self.attrs.get(QuiltUri.K_HASH)
@@ -29,19 +23,6 @@ class QuiltPackage(QuiltLocal):
     def path_uri(self, sub_path: str):
         return self.pkg_uri() + f"&{QuiltPackage.K_PTH}=" + sub_path
 
-    def local_man(self):
-        try:
-            return self.volume.read_manifest(self.hash)  # type: ignore
-        except Exception as err:
-            logging.debug(f"no local manifest for hash: {self.hash}")
-        return None
-    
-    def remote_man(self):
-        print(f"remote_man: {self.hash} for {self.package} {self.registry}")
-        tag = self.attrs.get(QuiltUri.K_TAG, self.namespace.TAG_DEFAULT)
-        opts = {QuiltUri.K_HASH: self.hash} if self.hash else {}
-        return self.namespace.get(tag, **opts)
-    
     async def browse(self):
         logging.debug(f"browse {self.package} {self.registry} {self.hash}")
         try:
@@ -61,6 +42,19 @@ class QuiltPackage(QuiltLocal):
 
     async def remote_pkg(self):
         return (await self.browse()) or Package()
+
+    def local_man(self):
+        try:
+            return self.volume.read_manifest(self.hash)  # type: ignore
+        except Exception as err:
+            logging.debug(f"no local manifest for hash: {self.hash}")
+        return None
+    
+    def remote_man(self):
+        print(f"remote_man: {self.hash} for {self.package} {self.registry}")
+        tag = self.attrs.get(QuiltUri.K_TAG, self.namespace.TAG_DEFAULT)
+        opts = {QuiltUri.K_HASH: self.hash} if self.hash else {}
+        return self.namespace.get(tag, **opts)
 
     async def child(self):
         q = await self.remote_pkg()
