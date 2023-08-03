@@ -746,13 +746,13 @@ six = "*"
 
 [[package]]
 name = "jsonschema"
-version = "4.18.4"
+version = "4.18.6"
 description = "An implementation of JSON Schema validation for Python"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jsonschema-4.18.4-py3-none-any.whl", hash = "sha256:971be834317c22daaa9132340a51c01b50910724082c2c1a2ac87eeec153a3fe"},
-    {file = "jsonschema-4.18.4.tar.gz", hash = "sha256:fb3642735399fa958c0d2aad7057901554596c63349f4f6b283c493cf692a25d"},
+    {file = "jsonschema-4.18.6-py3-none-any.whl", hash = "sha256:dc274409c36175aad949c68e5ead0853aaffbe8e88c830ae66bb3c7a1728ad2d"},
+    {file = "jsonschema-4.18.6.tar.gz", hash = "sha256:ce71d2f8c7983ef75a756e568317bf54bc531dc3ad7e66a128eae0d51623d8a3"},
 ]
 
 [package.dependencies]
@@ -1398,27 +1398,31 @@ tests = ["anndata (!=0.9.0)", "coverage (==6.4)", "git-pylint-commit-hook", "pyt
 
 [[package]]
 name = "quiltcore"
-version = "0.3.1"
+version = "0.3.2"
 description = "low-level plubming to read/write Quilt packages"
 optional = false
-python-versions = ">=3.10,<4.0"
-files = [
-    {file = "quiltcore-0.3.1-py3-none-any.whl", hash = "sha256:88ee3c86cd24a3d920092546724dcfe4f02966e567dd2d07ec56bece3888d1b3"},
-    {file = "quiltcore-0.3.1.tar.gz", hash = "sha256:8c7b1f97ea4811fea315d526d9bb75395880915565a72363d2007f19e38acbbc"},
-]
+python-versions = "^3.10"
+files = []
+develop = false
 
 [package.dependencies]
 jsonlines = "1.2.0"
-multiformats = ">=0.2.1,<0.3.0"
-pandas = ">=2.0.2,<3.0.0"
-pandas-stubs = ">=2.0.2.230605,<3.0.0.0"
-pyarrow = ">=12.0.0,<13.0.0"
-quilt3 = ">=5.3.1,<6.0.0"
-s3fs = ">=2023.6.0,<2024.0.0"
-typing-extensions = ">=4.6.3,<5.0.0"
-tzlocal = ">=5.0.1,<6.0.0"
+multiformats = "^0.2.1"
+pandas = "^2.0.2"
+pandas-stubs = "^2.0.2.230605"
+pyarrow = "^12.0.0"
+quilt3 = "^5.3.1"
+s3fs = "^2023.6.0"
+typing-extensions = "^4.6.3"
+tzlocal = "^5.0.1"
 un-yaml = ">=0.3.1"
-universal-pathlib = ">=0.0.24,<0.0.25"
+universal-pathlib = "^0.0.24"
+
+[package.source]
+type = "git"
+url = "https://github.com/quiltdata/quiltcore.git"
+reference = "partial-hash"
+resolved_reference = "d8cd3490dbf58e918a439c23a4ef85f8a7b16b28"
 
 [[package]]
 name = "referencing"
@@ -2066,4 +2070,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "26fcd3b1f535bdb73f1ac3bc3d02382a607c9dfd3e5eac6861f6e413b3270e20"
+content-hash = "c76507463b94dc4af01dc3178c679a58d6e9409df52035afe9a80ed9de9f3e48"

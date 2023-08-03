@@ -51,12 +51,14 @@ async def test_pkg_write(pkg: QuiltPackage):
     path = os.path.join("parent", "test.txt")
     assert path in str(p2)
 
+
 def test_pkg_core_get(pkg: QuiltPackage):
     assert pkg.volume
     assert pkg.hash
     print(f"test_pkg_core_get.pkg.hash: {pkg.hash}")
     man = pkg.remote_man()
     assert man
+    assert pkg.hash in man.name
     print(f"test_pkg_core_get.man.path: {man.path}")
     rc = pkg.volume.put(man)
     assert rc
@@ -99,7 +101,11 @@ async def test_pkg_diff(pkg: QuiltPackage):
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_child(pkg: QuiltPackage):
+    cfiles =  await pkg.man_child()
+    assert cfiles
     files = await pkg.child()
+    assert cfiles[0] == files[0]
+    assert cfiles == files
     assert files
     assert len(files) > 3
     assert "README.md" in files
