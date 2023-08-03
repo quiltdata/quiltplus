@@ -1,4 +1,4 @@
-from quiltcore import Resource, Registry
+from quiltcore import Resource
 
 from .root import QuiltRoot
 

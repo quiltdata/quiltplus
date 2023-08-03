@@ -4,7 +4,6 @@ from .uri import QuiltUri
 
 
 class QuiltRoot(QuiltUri):
-
     @classmethod
     def FromURI(cls: Type[Self], uri: str):
         attrs = QuiltUri.AttrsFromUri(uri)

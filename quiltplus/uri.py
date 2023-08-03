@@ -65,7 +65,7 @@ class QuiltUri(QuiltType):
     def __repr__(self):
         return f"QuiltUri({self.uri})"
 
-    def __eq__(self, other: object): 
+    def __eq__(self, other: object):
         if not isinstance(other, QuiltUri):
             return NotImplemented
         return self.registry == other.registry and self.package == other.package

@@ -101,7 +101,7 @@ async def test_pkg_diff(pkg: QuiltPackage):
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_child(pkg: QuiltPackage):
-    cfiles =  await pkg.man_child()
+    cfiles = await pkg.man_child()
     assert cfiles
     files = await pkg.child()
     assert cfiles[0] == files[0]

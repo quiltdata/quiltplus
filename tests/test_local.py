@@ -1,12 +1,10 @@
-import os
-import sys
 from pathlib import Path
 
 from pytest import raises
 from quiltplus import QuiltLocal, QuiltResourceURI
 
 from .conftest import pytestmark  # NOQA F401
-from .conftest import PKG_URI, TEST_PKG, pytest
+from .conftest import PKG_URI
 
 
 def test_local_tmp():

@@ -35,6 +35,7 @@ typecheck:
 	poetry run mypy $(PROJECT) tests
 
 coverage:
+	echo "Using WRITE_BUCKET=$(WRITE_BUCKET) | SKIP_LONG_TESTS=$(SKIP_LONG_TESTS)"
 	poetry run pytest --cov --cov-report html:coverage_html
 	open coverage_html/index.html
 

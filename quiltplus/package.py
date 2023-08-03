@@ -46,10 +46,10 @@ class QuiltPackage(QuiltLocal):
     def local_man(self):
         try:
             return self.volume.read_manifest(self.hash)  # type: ignore
-        except Exception as err:
+        except Exception:
             logging.debug(f"no local manifest for hash: {self.hash}")
         return None
-    
+
     def remote_man(self):
         print(f"remote_man: {self.hash} for {self.package} {self.registry}")
         tag = self.attrs.get(QuiltUri.K_TAG, self.namespace.TAG_DEFAULT)
@@ -60,7 +60,7 @@ class QuiltPackage(QuiltLocal):
     async def child(self):
         q = await self.remote_pkg()
         return list(q.keys())
-    
+
     async def man_child(self):
         man = self.remote_man()
         return [entry.name for entry in man.list()]

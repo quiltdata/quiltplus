@@ -10,7 +10,6 @@ from .root import QuiltRoot
 
 
 class QuiltLocal(QuiltRoot):
-
     def __init__(self, attrs: dict):
         """
         Base class to set and manage local sync directory
@@ -90,7 +89,7 @@ class QuiltLocal(QuiltRoot):
             local_dir.mkdir(parents=True, exist_ok=True)
         elif not local_dir.is_dir():
             raise ValueError(f"Path is not a directory: {local_dir}")
-        
+
         return self.assign_dir(local_dir)
 
     def check_dir_arg(self, opts: dict):

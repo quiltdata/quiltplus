@@ -1,5 +1,4 @@
-from quiltcore import Registry, Namespace
-
+from quiltcore import Namespace, Registry
 from quiltplus import (
     QuiltPackage,
     QuiltPath,
@@ -12,11 +11,11 @@ from quiltplus import (
 from .conftest import pytestmark  # NOQA F401
 from .conftest import (
     BKT_URI,
+    FIRST_PKG,
     PKG_URI,
     PRP_URI,
     PTH_URI,
     SKIP_LONG_TESTS,
-    FIRST_PKG,
     VER_URI,
     pytest,
 )
@@ -49,6 +48,7 @@ def test_res_reg_core():
     names = qreg.domain.list()
     assert len(names) > 0
     assert names[0].name == FIRST_PKG
+
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_res_reg_list():

@@ -19,9 +19,7 @@ if not WRITE_BUCKET:
 
 
 def get_unique_pkg(prefix: str):
-    WRITE_URI = (
-        f"quilt+s3://{WRITE_BUCKET}#package=test/{prefix}_{QuiltType.Now()}"
-    )
+    WRITE_URI = f"quilt+s3://{WRITE_BUCKET}#package=test/{prefix}_{QuiltType.Now()}"
     return QuiltPackage.FromURI(WRITE_URI)
 
 
