@@ -53,15 +53,16 @@ class QuiltPackage(QuiltLocal):
     def remote_man(self):
         print(f"remote_man: {self.hash} for {self.package} {self.registry}")
         tag = self.attrs.get(QuiltUri.K_TAG, self.namespace.TAG_DEFAULT)
+        print(f"remote_man.tag = {tag} from {self.attrs}")
         opts = {self.domain.KEY_HSH: self.hash} if self.hash else {}
         print(f"remote_man.pkg: {self.package}:{tag}@{self.hash} -> {opts}")
         return self.namespace.get(tag, **opts)
 
-    async def child(self):
+    async def old_child(self):
         q = await self.remote_pkg()
         return list(q.keys())
 
-    async def man_child(self):
+    async def child(self):
         man = self.remote_man()
         return [entry.name for entry in man.list()]
 

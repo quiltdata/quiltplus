@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from quiltcore import Resource
 from tzlocal import get_localzone
 from un_yaml import UnUri  # type: ignore
 
@@ -51,7 +52,4 @@ class QuiltType:
 
     @staticmethod
     def Now() -> str:
-        tz = get_localzone()
-        dt = datetime.now(tz)
-        dts = dt.replace(microsecond=0)
-        return dts.isoformat()
+        return Resource.Now()
