@@ -58,10 +58,6 @@ class QuiltPackage(QuiltLocal):
         print(f"remote_man.pkg: {self.package}:{tag}@{self.hash} -> {opts}")
         return self.namespace.get(tag, **opts)
 
-    async def old_child(self):
-        q = await self.remote_pkg()
-        return list(q.keys())
-
     async def child(self):
         man = self.remote_man()
         return [entry.name for entry in man.list()]
@@ -74,30 +70,16 @@ class QuiltPackage(QuiltLocal):
             QuiltPackage.PREFIX, f"{QuiltPackage.PREFIX}{QuiltPackage.K_STAGE}+{stage}+"
         )
 
-    async def diff(self, opts: dict = {}):
-        """List files that differ from local_cache()"""
-        self.check_dir_arg(opts)
-        diffs = self._diff()
-        return [self.stage_uri(stage, filename) for filename, stage in diffs.items()]
-
-    def unexpected_loss(self, opts, get=True) -> bool:
-        """Check if _diff and fallible"""
-        modified = [k for k, v in self._diff().items() if v == "touch"]
-        fallible = opts.get(QuiltPackage.K_FAIL, False)
-        return len(modified) > 0 and fallible
-
     async def get(self, opts: dict = {}):
         """Download package to dest()"""
         dest = self.check_dir_arg(opts)
         logging.debug(f"get dest={dest}: {opts}")
-        if self.unexpected_loss(opts):
-            raise ValueError(f"{dest}: {QuiltPackage.ERR_MOD}\n{self._diff()}")
-        q = await self.remote_pkg()
-        q.fetch(dest=dest)
+        man = self.remote_man()
+        rc = self.volume.put(man)
         files = self.local_files()
         return [f"file://{fn}" for fn in files]
 
-    async def commit(self, opts: dict = {}):
+    def commit(self, opts: dict = {}):
         """Create package in the local registry"""
         pass
 

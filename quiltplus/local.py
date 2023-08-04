@@ -111,31 +111,6 @@ class QuiltLocal(QuiltRoot):
     def dest(self):
         return str(self.local_path())
 
-    def local_cache(self) -> Path:
-        base_path = Path(self.local_registry.base.path)
-        if not base_path.exists():
-            logging.warning(f"local_cache does not exist: {base_path}")
-        return base_path / self.package
-
-    def _diff(self) -> dict[str, str]:
-        """Compare files in local_dir to local cache"""
-        cache = self.local_cache()
-        if not cache.exists():
-            logging.warning(f"_diff: local_cache[{cache}] does not exist")
-            return {}
-        diff = dircmp(str(cache), self.dest())
-        # logging.debug(f"_diff.diff: {diff}")
-        results = {
-            "add": diff.right_only,
-            "rm": diff.left_only,
-            "touch": diff.diff_files,
-        }
-        return {
-            filename: stage
-            for stage, sublist in results.items()
-            for filename in sublist
-        }
-
     def write_text(self, text: str, file: str, *paths: str):
         dir = self.local_path(*paths)
         p = dir / file
