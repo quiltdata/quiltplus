@@ -55,11 +55,9 @@ async def test_pkg_write(pkg: QuiltPackage):
 def test_pkg_core_get(pkg: QuiltPackage):
     assert pkg.volume
     assert pkg.hash
-    print(f"test_pkg_core_get.pkg.hash: {pkg.hash}")
     man = pkg.remote_man()
     assert man
     assert pkg.hash in man.name
-    print(f"test_pkg_core_get.man.path: {man.path}")
     rc = pkg.volume.put(man)
     assert rc
 

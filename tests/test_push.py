@@ -23,20 +23,34 @@ def get_unique_pkg(prefix: str):
     return QuiltPackage.FromURI(WRITE_URI)
 
 
-@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-async def test_push_patch():
-    pkg = get_unique_pkg("test_push_patch")
+@pytest.fixture
+def tmpdir():
     with TemporaryDirectory() as tmpdirname:
-        key = "test.txt"
-        p = Path(tmpdirname) / key
-        p.write_text(TEST_URI)
-        str(p)
-        opts = {
-            QuiltPackage.K_MSG: f"{__name__} {TIMESTAMP}",
-            QuiltPackage.K_DIR: Path(tmpdirname),
-        }
-        result = await pkg.patch(opts)
-        assert result is not None
+        yield Path(tmpdirname)
+
+
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
+async def test_push_patch(tmpdir: Path):
+    pkg = get_unique_pkg("test_push_patch")
+    key = "test.txt"
+    p = tmpdir / key
+    p.write_text(TEST_URI)
+    str(p)
+    opts = {
+        QuiltPackage.K_MSG: f"{__name__} {TIMESTAMP}",
+        QuiltPackage.K_DIR: tmpdir,
+    }
+    result = await pkg.patch(opts)
+    assert result is not None
+
+
+def test_push_core_commit(tmpdir: Path):
+    name = "test_push_core_commit"
+    pkg = get_unique_pkg(name)
+    cache = tmpdir / name
+    pkg.assign_dir(cache)
+    man = pkg.commit()
+    assert man
 
 
 def check_file(file: str, uris: list[str]) -> bool:

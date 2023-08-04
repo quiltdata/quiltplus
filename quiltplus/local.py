@@ -1,5 +1,4 @@
 import logging
-from filecmp import dircmp
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
