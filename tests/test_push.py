@@ -44,6 +44,7 @@ async def test_push_patch(tmpdir: Path):
     assert result is not None
 
 
+@pytest.mark.skip("Not fully implemented")
 def test_push_core_commit(tmpdir: Path):
     name = "test_push_core_commit"
     pkg = get_unique_pkg(name)

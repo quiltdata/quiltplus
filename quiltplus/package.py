@@ -71,12 +71,9 @@ class QuiltPackage(QuiltLocal):
     # Create/Revise Package
     #
 
-    def n_changes(self) -> int:
-        return len(self.changes.keystore)
-
     def changeset(self) -> Changes:
         vpath = self.volume.path
-        if not hasattr(self, "changes") or self.n_changes() == 0:
+        if not hasattr(self, "changes") or len(self.changes) == 0:
             self.changes = Changes(vpath)
         if self.changes.path == vpath:
             return self.changes
@@ -92,7 +89,7 @@ class QuiltPackage(QuiltLocal):
         msg = kwargs.get(self.K_MSG, f"{__name__} {self.Now()} @ {kwargs}")
         logging.debug(f"commit[{msg}] src={src}")
         changes = self.changeset()
-        if self.n_changes() == 0:
+        if len(self.changes) == 0:
             changes.post(src)
         build = Builder(changes)
         man = build.post(build.path)
