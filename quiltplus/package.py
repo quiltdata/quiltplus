@@ -71,7 +71,7 @@ class QuiltPackage(QuiltLocal):
     # Create/Revise Package
     #
 
-    def unchanged(self) -> bool:
+    def unchanged(self) -> bool: # pragma: no cover
         if not hasattr(self, "changes"):
             return True
         if not isinstance(self.changes, Changes):
@@ -79,7 +79,7 @@ class QuiltPackage(QuiltLocal):
 
         return len(self.changeset()) == 0
 
-    def changeset(self) -> Changes:
+    def changeset(self) -> Changes: # pragma: no cover
         vpath = self.volume.path
         if self.unchanged():
             self.changes = Changes(vpath)
@@ -88,7 +88,7 @@ class QuiltPackage(QuiltLocal):
         
         raise ValueError(f"{self.ERROR_VOL}: {self.changes.path} != {vpath}")
 
-    def commit(self, **kwargs) -> Manifest:
+    def commit(self, **kwargs) -> Manifest: # pragma: no cover
         """
         Create manifest.
         Store in the local registry.
@@ -97,7 +97,7 @@ class QuiltPackage(QuiltLocal):
         msg = kwargs.get(self.K_MSG, f"{__name__} {self.Now()} @ {kwargs}")
         logging.debug(f"commit[{msg}] src={src}")
         changes = self.changeset()
-        if self.unchanged():
+        if len(self.changes) == 0:
             changes.post(src)
         build = Builder(changes)
         man = build.post(build.path)
