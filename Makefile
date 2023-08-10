@@ -21,7 +21,7 @@ install:
 update:
 	poetry update
 
-test:
+test: typecheck
 	echo "Testing with WRITE_BUCKET=$(WRITE_BUCKET)"
 	poetry run pytest $(TEST_README) --cov --cov-report xml:coverage.xml
 
@@ -46,7 +46,7 @@ tag:
 	git tag `poetry version | awk '{print $$2}'`
 	git push --tags
 
-pypi: clean
+pypi: clean clean-git
 	poetry version
 	poetry build
 	poetry publish --dry-run
