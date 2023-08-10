@@ -1,8 +1,10 @@
 # CHANGELOG
 
-## 1.0.0 UNRELEASED
+## 0.9.6 (2023-08-09)
 
-- Use QuiltCore instead of Quilt3
+- Start using QuiltCore instead of Quilt3
+- Start with get
+- Incomplete support for put
 
 ## 0.9.5 (2023-06-10)
 
