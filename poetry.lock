@@ -1401,28 +1401,24 @@ name = "quiltcore"
 version = "0.3.3"
 description = "low-level plubming to read/write Quilt packages"
 optional = false
-python-versions = "^3.10"
-files = []
-develop = false
+python-versions = ">=3.10,<4.0"
+files = [
+    {file = "quiltcore-0.3.3-py3-none-any.whl", hash = "sha256:9e1798e419bc90279d3f1940762979e5da1dc041bb078d372e5d71e63e9c338e"},
+    {file = "quiltcore-0.3.3.tar.gz", hash = "sha256:3bc7ae49ca9fba5cd2afbda777e3cb5548e0a27aad62d08a6985696c5cce873a"},
+]
 
 [package.dependencies]
 jsonlines = "1.2.0"
-multiformats = "^0.2.1"
-pandas = "^2.0.2"
-pandas-stubs = "^2.0.2.230605"
-pyarrow = "^12.0.0"
-quilt3 = "^5.3.1"
-s3fs = "^2023.6.0"
-typing-extensions = "^4.6.3"
-tzlocal = "^5.0.1"
+multiformats = ">=0.2.1,<0.3.0"
+pandas = ">=2.0.2,<3.0.0"
+pandas-stubs = ">=2.0.2.230605,<3.0.0.0"
+pyarrow = ">=12.0.0,<13.0.0"
+quilt3 = ">=5.3.1,<6.0.0"
+s3fs = ">=2023.6.0,<2024.0.0"
+typing-extensions = ">=4.6.3,<5.0.0"
+tzlocal = ">=5.0.1,<6.0.0"
 un-yaml = ">=0.3.1"
-universal-pathlib = "^0.1.0"
-
-[package.source]
-type = "git"
-url = "https://github.com/quiltdata/quiltcore.git"
-reference = "package-commit"
-resolved_reference = "efa0b8564ad56da7f63c72202f473a70f8c5ec62"
+universal-pathlib = ">=0.1.0,<0.2.0"
 
 [[package]]
 name = "referencing"
@@ -2070,4 +2066,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "ff6f31634915e1e8a25a5cd055b4e47a2c494e7132f3a3007da7fb1e3cc6c141"
+content-hash = "c8e1f0c3db4434e460981478f4d166017e350c6fab9b318dacfbbe21f3519809"
