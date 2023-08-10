@@ -1,5 +1,6 @@
 # Create Quilt URI from UnURI attributes
 
+from quiltcore import Registry
 from un_yaml import UnUri  # type: ignore
 
 from .type import QuiltType
@@ -29,9 +30,9 @@ class QuiltUri(QuiltType):
         Set local variables and additional attributes.
 
         >>> reg = "s3://quilt-example"
-        >>> pkg = "quilt/data"
+        >>> pkg = "examples/wellplates"
         >>> pkg_full = f"{pkg}:latest"
-        >>> path = "foo/bar"
+        >>> path = "README.md"
         >>> uri = f"{QuiltUri.PREFIX}{reg}#package={pkg_full}&path={path}"
         >>> attrs = UnUri(uri).attrs
         >>> quilt = QuiltUri(attrs)
@@ -44,11 +45,11 @@ class QuiltUri(QuiltType):
         >>> quilt.attrs[QuiltUri.K_PKG] == pkg_full
         True
         >>> quilt.attrs[QuiltUri.K_PKG_NAME]
-        'quilt/data'
+        'examples/wellplates'
         >>> quilt.attrs[QuiltUri.K_PKG_PRE]
-        'quilt'
+        'examples'
         >>> quilt.attrs[QuiltUri.K_PKG_SUF]
-        'data'
+        'wellplates'
         >>> quilt.attrs[QuiltUri.K_PTH] == path
         True
         """
@@ -56,6 +57,10 @@ class QuiltUri(QuiltType):
         self.uri = attrs.get(UnUri.K_URI)
         self.registry = f"{attrs.get(UnUri.K_PROT)}://{attrs.get(UnUri.K_HOST)}"
         self.package = self.parse_package()
+        if attrs.get(UnUri.K_PROT):
+            self.domain = Registry.FromURI(self.registry)
+            force = {Registry.KEY_FRC: True}
+            self.namespace = self.domain.get(self.package, **force)
 
     def __repr__(self):
         return f"QuiltUri({self.uri})"

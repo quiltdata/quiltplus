@@ -2,100 +2,117 @@
 
 import logging
 import shutil
+from pathlib import Path
 
 from quilt3 import Package  # type: ignore
-from typing_extensions import Self, Type
+from quiltcore import Builder, Changes, Manifest
 
 from .local import QuiltLocal
 from .uri import QuiltUri
 
 
 class QuiltPackage(QuiltLocal):
+    ERROR_VOL = "changeset: default volume changed"
     K_STAGE = "stage"
     K_MSG = "message"
-    ERR_MOD = (
-        f"Local files have been modified. Unset --{QuiltLocal.K_FAIL} to overwrite."
-    )
-
-    @classmethod
-    def FromURI(cls: Type[Self], uri: str):
-        attrs = QuiltUri.AttrsFromUri(uri)
-        return cls(attrs)
 
     def __init__(self, attrs: dict):
         super().__init__(attrs)
         self.hash = self.attrs.get(QuiltUri.K_HASH)
 
+    #
+    # Helper Methods
+    #
+
     def path_uri(self, sub_path: str):
-        return self.pkg_uri() + f"&{QuiltPackage.K_PTH}=" + sub_path
+        return self.pkg_uri() + f"&{self.K_PTH}=" + sub_path
 
-    async def browse(self):
-        logging.debug(f"browse {self.package} {self.registry} {self.hash}")
+    def stage_uri(self, stage: str, sub_path: str):
+        return self.path_uri(sub_path).replace(
+            self.PREFIX, f"{self.PREFIX}{self.K_STAGE}+{stage}+"
+        )
+
+    def local_man(self) -> Manifest:
         try:
-            q = (
-                Package.browse(self.package, self.registry, top_hash=self.hash)
-                if self.hash
-                else Package.browse(self.package, self.registry)
-            )
-            return q
-        except Exception as err:
-            logging.error(err)
-        return None
+            return self.volume.read_manifest(self.hash)  # type: ignore
+        except Exception:
+            raise ValueError(f"no local manifest for hash: {self.hash}")
 
-    async def local_pkg(self):
-        q = Package().set_dir(".", path=self.dest())
-        return q
+    def remote_man(self) -> Manifest:
+        tag = self.attrs.get(QuiltUri.K_TAG, self.namespace.TAG_DEFAULT)
+        opts = {self.domain.KEY_HSH: self.hash} if self.hash else {}
+        print(f"remote_man.pkg: {self.package}:{tag}@{self.hash} -> {opts}")
+        man = self.namespace.get(tag, **opts)
+        if not isinstance(man, Manifest):
+            raise ValueError(f"no remote manifest for hash: {self.hash}")
+        return man
 
-    async def remote_pkg(self):
-        return (await self.browse()) or Package()
+    #
+    # Retrieval Methods
+    #
 
     async def child(self):
-        q = await self.remote_pkg()
-        return list(q.keys())
+        man = self.remote_man()
+        return [entry.name for entry in man.list()]
 
     async def list(self, opts: dict = {}):
         return [self.path_uri(k) for k in await self.child()]
 
-    def stage_uri(self, stage: str, sub_path: str):
-        return self.path_uri(sub_path).replace(
-            QuiltPackage.PREFIX, f"{QuiltPackage.PREFIX}{QuiltPackage.K_STAGE}+{stage}+"
-        )
-
-    async def diff(self, opts: dict = {}):
-        """List files that differ from local_cache()"""
-        self.check_dir_arg(opts)
-        diffs = self._diff()
-        return [self.stage_uri(stage, filename) for filename, stage in diffs.items()]
-
-    def unexpected_loss(self, opts, get=True) -> bool:
-        """Check if _diff and fallible"""
-        modified = [k for k, v in self._diff().items() if v == "touch"]
-        fallible = opts.get(QuiltPackage.K_FAIL, False)
-        return len(modified) > 0 and fallible
-
     async def get(self, opts: dict = {}):
-        """Download package to dest()"""
+        """Download package to dest"""
         dest = self.check_dir_arg(opts)
         logging.debug(f"get dest={dest}: {opts}")
-        if self.unexpected_loss(opts):
-            raise ValueError(f"{dest}: {QuiltPackage.ERR_MOD}\n{self._diff()}")
-        q = await self.remote_pkg()
-        q.fetch(dest=dest)
+        man = self.remote_man()
+        rc = self.volume.put(man)  # TODO: update self.tag
         files = self.local_files()
         return [f"file://{fn}" for fn in files]
+    
+    #
+    # Create/Revise Package
+    #
 
-    async def commit(self, opts: dict = {}):
-        """Create package in the local registry"""
-        pass
+    def unchanged(self) -> bool: # pragma: no cover
+        if not hasattr(self, "changes"):
+            return True
+        if not isinstance(self.changes, Changes):
+            return True
+
+        return len(self.changeset()) == 0
+
+    def changeset(self) -> Changes: # pragma: no cover
+        vpath = self.volume.path
+        if self.unchanged():
+            self.changes = Changes(vpath)
+        if self.changes.path == vpath:
+            return self.changes
+        
+        raise ValueError(f"{self.ERROR_VOL}: {self.changes.path} != {vpath}")
+
+    def commit(self, **kwargs) -> Manifest: # pragma: no cover
+        """
+        Create manifest.
+        Store in the local registry.
+        """
+        src = self.check_dir_arg(kwargs)
+        msg = kwargs.get(self.K_MSG, f"{__name__} {self.Now()} @ {kwargs}")
+        logging.debug(f"commit[{msg}] src={src}")
+        changes = self.changeset()
+        if len(self.changes) == 0:
+            changes.post(src)
+        build = Builder(changes)
+        man = build.post(build.path)
+        if not isinstance(man, Manifest):
+            raise ValueError(f"can not create manifest for {changes}")
+        return man
 
     async def push(self, q: Package, opts: dict):
         """Generic handler for all push methods"""
         dest = self.check_dir_arg(opts)
         kwargs = {
-            QuiltPackage.K_REG: self.registry,
-            QuiltPackage.K_FORCE: not opts.get(QuiltPackage.K_FAIL, False),
-            QuiltPackage.K_MSG: opts.get(
-                QuiltPackage.K_MSG, f"{__name__} {QuiltPackage.Now()} @ {opts}"
+            self.K_REG: self.registry,
+            self.K_FORCE: not opts.get(self.K_FAIL, False),
+            self.K_MSG: opts.get(
+                self.K_MSG, f"{__name__} {self.Now()} @ {opts}"
             ),
         }
         logging.debug(f"push dest={dest}: {opts}\n{kwargs}")
@@ -117,6 +134,30 @@ class QuiltPackage(QuiltLocal):
         q = await self.remote_pkg()  # reset to latest
         return await self.push(q, opts)
 
+    #
+    # Legacy Methods
+    #
+
+    async def browse(self):
+        logging.debug(f"browse {self.package} {self.registry} {self.hash}")
+        try:
+            q = (
+                Package.browse(self.package, self.registry, top_hash=self.hash)
+                if self.hash
+                else Package.browse(self.package, self.registry)
+            )
+            return q
+        except Exception as err:
+            logging.error(err)
+        return None
+
+    async def local_pkg(self):
+        q = Package().set_dir(".", path=self.dest())
+        return q
+
+    async def remote_pkg(self):
+        return (await self.browse()) or Package()
+    
     def delete(self):  # remove local cache
         return shutil.rmtree(self.last_path)
 

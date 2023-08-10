@@ -52,6 +52,16 @@ async def test_pkg_write(pkg: QuiltPackage):
     assert path in str(p2)
 
 
+def test_pkg_core_get(pkg: QuiltPackage):
+    assert pkg.volume
+    assert pkg.hash
+    man = pkg.remote_man()
+    assert man
+    assert pkg.hash in man.name
+    rc = pkg.volume.put(man)
+    assert rc
+
+
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_local(pkg: QuiltPackage):
     q = await pkg.local_pkg()
@@ -72,21 +82,7 @@ async def test_pkg_local_files(pkg: QuiltPackage):
     assert ".gitignore"
 
 
-@pytest.mark.skipif(os.getenv("GITHUB_ACTIONS") == "true", reason="does not work in CI")
-async def test_pkg_diff(pkg: QuiltPackage):
-    staged = pkg.stage_uri("diff", "README.md")
-    assert staged.startswith("quilt+stage+diff")
-    assert staged.endswith("README.md")
-
-    await pkg.get()
-    diffs = await pkg.diff({})
-    assert diffs
-    assert len(diffs) > 0
-    d0 = diffs[0]
-    assert isinstance(d0, str)
-    assert d0.startswith("quilt+stage+rm")
-
-
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_child(pkg: QuiltPackage):
     files = await pkg.child()
     assert files
@@ -95,6 +91,7 @@ async def test_pkg_child(pkg: QuiltPackage):
     assert "render.html" not in files
 
 
+@pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_pkg_list(pkg: QuiltPackage):
     files = await pkg.list()
     assert files

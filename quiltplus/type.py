@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from quiltcore import Resource
 from tzlocal import get_localzone
 from un_yaml import UnUri  # type: ignore
 
@@ -23,10 +24,11 @@ class QuiltType:
     # Decomposed Package Name
     SEP_HASH = "@"
     SEP_TAG = ":"
+    SEP_PKG = "/"
     K_HASH = "_hash"
     K_TAG = "_tag"
     K_VER = "_version"
-    SEP = {K_HASH: SEP_HASH, K_TAG: SEP_TAG, K_PKG: "/"}
+    SEP = {K_HASH: SEP_HASH, K_TAG: SEP_TAG, K_PKG: SEP_PKG}
     K_PKG_NAME = "_package_name"
     K_PKG_PRE = "_package_prefix"
     K_PKG_SUF = "_package_suffix"
@@ -50,7 +52,4 @@ class QuiltType:
 
     @staticmethod
     def Now() -> str:
-        tz = get_localzone()
-        dt = datetime.now(tz)
-        dts = dt.replace(microsecond=0)
-        return dts.isoformat()
+        return Resource.Now()

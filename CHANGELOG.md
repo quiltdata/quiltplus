@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.9.6 (2023-08-09)
+
+- Start using QuiltCore instead of Quilt3
+- Start with get
+- Incomplete support for put
+
 ## 0.9.5 (2023-06-10)
 
 - Embed package names in attr dict (for parsing)

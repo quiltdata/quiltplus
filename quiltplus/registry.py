@@ -1,10 +1,15 @@
-from quilt3 import list_packages  # type: ignore
+from quiltcore import Resource
 
 from .root import QuiltRoot
 
 
 class QuiltRegistry(QuiltRoot):
     """Creates registry object from QuiltID."""
+
+    @classmethod
+    def PackageName(cls, name: Resource):
+        """Convert package name to registry name."""
+        return cls.SEP_PKG.join(name.path.parts[-2:])
 
     def __init__(self, attrs: dict):
         super().__init__(attrs)
@@ -16,4 +21,5 @@ class QuiltRegistry(QuiltRoot):
 
     async def list(self, opts: dict = {}):
         """List package URIs in registry."""
-        return [self.url(pkg) for pkg in list_packages(self.registry)]
+        pkg_names = [namespace.name for namespace in self.domain.list()]
+        return [self.url(pkg) for pkg in pkg_names]

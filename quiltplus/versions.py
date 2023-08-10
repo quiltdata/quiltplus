@@ -15,6 +15,7 @@ class QuiltVersions(QuiltPackage):
 
     async def list(self, opts: dict = {}):
         """List version URIs in package."""
+        # versions = self.namespace.list()
         return [
             self.url(hash)
             for _pkg, hash in list_package_versions(self.package, self.registry)

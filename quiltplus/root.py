@@ -1,7 +1,14 @@
+from typing_extensions import Self, Type
+
 from .uri import QuiltUri
 
 
 class QuiltRoot(QuiltUri):
+    @classmethod
+    def FromURI(cls: Type[Self], uri: str):
+        attrs = QuiltUri.AttrsFromUri(uri)
+        return cls(attrs)
+
     def __init__(self, attrs: dict):
         super().__init__(attrs)
 

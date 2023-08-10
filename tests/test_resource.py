@@ -1,3 +1,4 @@
+from quiltcore import Namespace, Registry
 from quiltplus import (
     QuiltPackage,
     QuiltPath,
@@ -10,6 +11,7 @@ from quiltplus import (
 from .conftest import pytestmark  # NOQA F401
 from .conftest import (
     BKT_URI,
+    FIRST_PKG,
     PKG_URI,
     PRP_URI,
     PTH_URI,
@@ -39,6 +41,15 @@ async def test_res_prop():
     assert isinstance(qr, QuiltProperty)
 
 
+def test_res_reg_core():
+    qreg = QuiltResourceURI(BKT_URI)
+    assert qreg.domain is not None
+    assert isinstance(qreg.domain, Registry)
+    names = qreg.domain.list()
+    assert len(names) > 0
+    assert names[0].name == FIRST_PKG
+
+
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
 async def test_res_reg_list():
     qreg = QuiltResourceURI(BKT_URI)
@@ -46,7 +57,18 @@ async def test_res_reg_list():
     assert len(result) > 0
     first = result[0]
     assert ":latest" in first
-    assert "package=" in first
+    assert f"package={FIRST_PKG}" in first
+
+
+async def test_res_ver_core():
+    qr = QuiltResourceURI(VER_URI)
+    print(qr.domain)
+    print(f"qr.package={qr.package}")
+    ns = qr.domain.get(qr.package)
+    assert ns is not None
+    assert isinstance(ns, Namespace)
+    print(f"ns={ns} -> {ns.manifests}")
+    assert ns.get("latest") is not None
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
