@@ -4,7 +4,9 @@ import logging
 import shutil
 
 from quilt3 import Package  # type: ignore
-from quiltcore import Builder, Changes, Manifest
+from quiltcore.builder import Builder
+from quiltcore.changes import Changes
+from quiltcore.manifest import Manifest
 
 from .local import QuiltLocal
 from .uri import QuiltUri
