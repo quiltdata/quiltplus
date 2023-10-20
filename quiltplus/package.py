@@ -2,7 +2,6 @@
 
 import logging
 import shutil
-from pathlib import Path
 
 from quilt3 import Package  # type: ignore
 from quiltcore import Builder, Changes, Manifest
@@ -63,15 +62,15 @@ class QuiltPackage(QuiltLocal):
         dest = self.check_dir_arg(opts)
         logging.debug(f"get dest={dest}: {opts}")
         man = self.remote_man()
-        rc = self.volume.put(man)  # TODO: update self.tag
+        self.volume.put(man)  # TODO: update self.tag
         files = self.local_files()
         return [f"file://{fn}" for fn in files]
-    
+
     #
     # Create/Revise Package
     #
 
-    def unchanged(self) -> bool: # pragma: no cover
+    def unchanged(self) -> bool:  # pragma: no cover
         if not hasattr(self, "changes"):
             return True
         if not isinstance(self.changes, Changes):
@@ -79,16 +78,16 @@ class QuiltPackage(QuiltLocal):
 
         return len(self.changeset()) == 0
 
-    def changeset(self) -> Changes: # pragma: no cover
+    def changeset(self) -> Changes:  # pragma: no cover
         vpath = self.volume.path
         if self.unchanged():
             self.changes = Changes(vpath)
         if self.changes.path == vpath:
             return self.changes
-        
+
         raise ValueError(f"{self.ERROR_VOL}: {self.changes.path} != {vpath}")
 
-    def commit(self, **kwargs) -> Manifest: # pragma: no cover
+    def commit(self, **kwargs) -> Manifest:  # pragma: no cover
         """
         Create manifest.
         Store in the local registry.
@@ -111,9 +110,7 @@ class QuiltPackage(QuiltLocal):
         kwargs = {
             self.K_REG: self.registry,
             self.K_FORCE: not opts.get(self.K_FAIL, False),
-            self.K_MSG: opts.get(
-                self.K_MSG, f"{__name__} {self.Now()} @ {opts}"
-            ),
+            self.K_MSG: opts.get(self.K_MSG, f"{__name__} {self.Now()} @ {opts}"),
         }
         logging.debug(f"push dest={dest}: {opts}\n{kwargs}")
         q.set_dir(".", dest)
@@ -157,7 +154,7 @@ class QuiltPackage(QuiltLocal):
 
     async def remote_pkg(self):
         return (await self.browse()) or Package()
-    
+
     def delete(self):  # remove local cache
         return shutil.rmtree(self.last_path)
 

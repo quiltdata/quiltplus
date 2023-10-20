@@ -45,7 +45,7 @@ async def test_push_patch(tmpdir: Path):
 
 
 @pytest.mark.skip("Not fully implemented")
-def test_push_core_commit(tmpdir: Path): # pragma: no cover
+def test_push_core_commit(tmpdir: Path):  # pragma: no cover
     name = "test_push_core_commit"
     pkg = get_unique_pkg(name)
     cache = tmpdir / name
