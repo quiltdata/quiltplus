@@ -3,7 +3,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from quilt3.backends import get_package_registry  # type: ignore
-from quiltcore import Volume
+from quiltcore.volume import Volume
 
 from .root import QuiltRoot
 

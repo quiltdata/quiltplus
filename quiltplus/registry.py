@@ -1,4 +1,4 @@
-from quiltcore import Resource
+from quiltcore.resource import Resource
 
 from .root import QuiltRoot
 

@@ -1,7 +1,4 @@
-from datetime import datetime
-
-from quiltcore import Resource
-from tzlocal import get_localzone
+from quiltcore.resource import Resource
 from un_yaml import UnUri  # type: ignore
 
 

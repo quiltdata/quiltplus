@@ -136,5 +136,4 @@ data.yaml
 examples
 quilt/
 test/
-test_*
 None*

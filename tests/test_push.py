@@ -44,8 +44,8 @@ async def test_push_patch(tmpdir: Path):
     assert result is not None
 
 
-@pytest.mark.skip("Not fully implemented")
-def test_push_core_commit(tmpdir: Path): # pragma: no cover
+@pytest.mark.skip("Switch to Domain commit")
+def test_push_core_commit(tmpdir: Path):  # pragma: no cover
     name = "test_push_core_commit"
     pkg = get_unique_pkg(name)
     cache = tmpdir / name

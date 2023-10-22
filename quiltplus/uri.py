@@ -1,6 +1,6 @@
 # Create Quilt URI from UnURI attributes
 
-from quiltcore import Registry
+from quiltcore.registry import Registry
 from un_yaml import UnUri  # type: ignore
 
 from .type import QuiltType

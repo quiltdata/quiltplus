@@ -1,3 +1,4 @@
+from .api import get_package, get_registry, list_package, list_registry  # NOQA F401
 from .ignore import GitIgnore  # NOQA F401
 from .local import QuiltLocal  # NOQA F401
 from .package import QuiltPackage  # NOQA F401
