@@ -34,10 +34,10 @@ test: typecheck
 	echo "Testing with WRITE_BUCKET=$(WRITE_BUCKET)"
 	poetry run pytest $(TEST_README) --cov --cov-report xml:coverage.xml
 
-test-short:
+test-local:
 	make test "SKIP_LONG_TESTS=True"
 
-test-long:
+test-all:
 	make test "SKIP_LONG_TESTS=False"
 
 typecheck:

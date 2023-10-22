@@ -1,6 +1,6 @@
 from quiltplus import get_package, get_registry, list_package, list_registry  # NOQA F401
 
-from conftest import TEST_BKT, TEST_PKG
+from .conftest import TEST_BKT, TEST_PKG
 
 
 def test_api_get_registry():
