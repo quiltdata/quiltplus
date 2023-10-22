@@ -21,11 +21,14 @@ install:
 update:
 	poetry update
 
+server:
+	poetry run uvicorn --app-dir quiltplus api:app --reload &
+	open http://127.0.0.1:8000
+
 check:
 	poetry check
 	make typecheck
 	make lint
-
 
 test: typecheck
 	echo "Testing with WRITE_BUCKET=$(WRITE_BUCKET)"
