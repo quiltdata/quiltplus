@@ -44,7 +44,7 @@ async def test_push_patch(tmpdir: Path):
     assert result is not None
 
 
-@pytest.mark.skip("Not fully implemented")
+@pytest.mark.skip("Switch to Domain commit")
 def test_push_core_commit(tmpdir: Path):  # pragma: no cover
     name = "test_push_core_commit"
     pkg = get_unique_pkg(name)
@@ -59,7 +59,6 @@ def check_file(file: str, uris: list[str]) -> bool:
 
 
 @pytest.mark.skipif(SKIP_LONG_TESTS, reason="Skip long tests")
-@pytest.mark.skip(reason="unexpected keyword argument 'workflow'")
 async def test_push_put():
     pkg = get_unique_pkg("test_push")
     assert pkg is not None
