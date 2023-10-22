@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 0.9.7 (2023-10-22)
+
+- QuiltCore 0.3.5
+- Pass all tests
+- Mockup FastAPI server
+
 ## 0.9.6 (2023-08-09)
 
 - Start using QuiltCore instead of Quilt3
