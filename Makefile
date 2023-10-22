@@ -7,13 +7,16 @@ ifeq ($(TEST_OS),windows-latest)
 	TEST_README=''
 endif
 
-all: install update test
+all: lock install update test
 
 clean:
 	rm -rf coverage_html
 	rm -f coverage*
 	rm -f .coverage*
 	rm -rf quiltplus/.pytest_cache
+
+lock:
+	poetry lock
 
 install:
 	poetry install
