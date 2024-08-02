@@ -25,7 +25,7 @@ un-yaml = ">=0.3.1"
 # un-yaml = {git = "https://github.com/data-yaml/un-yaml.git", rev = "main"}
 universal-pathlib = "^0.1.1"
 urllib3 = "<2"
-fastapi = "^0.104.0"
+fastapi = "^0.112.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.9.1"
