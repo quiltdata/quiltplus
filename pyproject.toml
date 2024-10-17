@@ -18,7 +18,7 @@ isort = "^5.12.0"
 quilt3 = "^5.1.0"
 quiltcore = "^0.3.5"
 # quiltcore = {git = "https://github.com/quiltdata/quiltcore.git", rev = "fix-types"}
-trio = "^0.22.2"
+trio = "^0.27.0"
 typing-extensions = "^4.7.1"
 tzlocal = "^5.0.1"
 un-yaml = ">=0.3.1"
